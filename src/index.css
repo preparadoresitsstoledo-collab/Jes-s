@@ -651,6 +651,13 @@ table.convocatorias tbody tr:hover {
   font-weight: 400;
 }
 
+.fuente-nota {
+  margin-top: 18px;
+  font-size: 0.8rem;
+  color: var(--gris-500);
+  text-align: center;
+}
+
 /* ---------- Metodología ---------- */
 .metodologia-grid {
   display: grid;

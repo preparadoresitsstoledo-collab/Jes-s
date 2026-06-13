@@ -1,110 +1,117 @@
 /**
  * ============================================================================
- *  DATOS DE CONVOCATORIAS — Cuerpo Superior de Inspección de Trabajo y S.S.
+ *  DATOS DE CONVOCATORIAS — Cuerpo Superior de Inspectores de Trabajo y S.S.
  * ============================================================================
  *
- *  ⚠️  IMPORTANTE: TODOS LOS NÚMEROS DE ESTE ARCHIVO SON DATOS DE EJEMPLO.
- *      Debes sustituirlos por las cifras OFICIALES de cada convocatoria y
- *      pegar el enlace REAL al BOE correspondiente en el campo `boe`.
+ *  ✅ PLAZAS y ENLACES AL BOE: datos OFICIALES (verificados en las
+ *     resoluciones de convocatoria publicadas en el BOE).
  *
- *  ¿Dónde encontrar los datos oficiales?
- *    - Plazas convocadas y bases:  Convocatoria en el BOE (boe.es)
- *    - Aspirantes admitidos / presentados / aprobados:
- *        Resoluciones del Tribunal y listados publicados por la
- *        Subsecretaría del Ministerio de Trabajo / OEP correspondiente.
+ *  ⏳ aspirantes / presentados / aprobados: PENDIENTES de completar.
+ *     Están en otras resoluciones del BOE (relación de admitidos y relación
+ *     de aprobados). Pon el número y la web calculará sola los porcentajes.
+ *     Mientras sean `null`, la web muestra "—" en esas celdas.
+ *
+ *  Resoluciones útiles para completar esos números:
+ *    - Convocatoria 2024 (Res. 12-mar-2024, BOE-A-2024-5637):
+ *        · Admitidos/excluidos: BOE-A-2024-9121
+ *        · Aprobados (relación final): BOE-A-2025-13095
+ *    - Convocatoria 2025 (Res. 27-dic-2024, BOE-A-2025-254):
+ *        · Admitidos/excluidos: BOE-A-2025-6974
+ *        · Aprobados (relación final): BOE-A-2026-9374
+ *    - Convocatoria 2026 (Res. 26-dic-2025, BOE-A-2026-165):
+ *        · Admitidos/excluidos: BOE-A-2026-5736
  *
  *  Campos de cada convocatoria:
- *    año        -> Año de la convocatoria (número).
- *    plazas     -> Nº de plazas convocadas (acceso libre).
- *    aspirantes -> Nº de aspirantes admitidos / inscritos.
- *    presentados-> Nº de aspirantes que se presentaron al 1er ejercicio.
- *    aprobados  -> Nº de aprobados que obtuvieron plaza.
- *    boe        -> URL al anuncio del BOE (déjalo en '' si aún no lo tienes).
- *    boeRef     -> Texto de referencia del BOE (ej. "BOE-A-2024-XXXXX").
- *
- *  El porcentaje de aprobados sobre presentados se calcula automáticamente
- *  en la web; no hace falta que lo escribas aquí.
+ *    año            -> Año de la convocatoria.
+ *    plazasLibre    -> Plazas por el sistema general de acceso libre.
+ *    plazasPI       -> Plazas por promoción interna (null si no aplica/desconocido).
+ *    aspirantes     -> Aspirantes admitidos (null = pendiente).
+ *    presentados    -> Presentados al 1er ejercicio (null = pendiente).
+ *    aprobados      -> Aprobados que obtuvieron plaza (null = pendiente).
+ *    boe / boeRef   -> Enlace y referencia de la convocatoria en el BOE.
+ *    nota           -> Texto descriptivo de la resolución.
  * ============================================================================
  */
 
 export const convocatorias = [
   {
-    año: 2020,
-    plazas: 90,
-    aspirantes: 2100,
-    presentados: 1400,
-    aprobados: 88,
-    boe: '',
-    boeRef: 'BOE-A-2020-XXXXX (sustituir)',
-  },
-  {
-    año: 2021,
-    plazas: 95,
-    aspirantes: 2350,
-    presentados: 1520,
-    aprobados: 93,
-    boe: '',
-    boeRef: 'BOE-A-2021-XXXXX (sustituir)',
-  },
-  {
-    año: 2022,
-    plazas: 110,
-    aspirantes: 2600,
-    presentados: 1680,
-    aprobados: 108,
-    boe: '',
-    boeRef: 'BOE-A-2022-XXXXX (sustituir)',
-  },
-  {
-    año: 2023,
-    plazas: 120,
-    aspirantes: 2900,
-    presentados: 1850,
-    aprobados: 117,
-    boe: '',
-    boeRef: 'BOE-A-2023-XXXXX (sustituir)',
-  },
-  {
     año: 2024,
-    plazas: 130,
-    aspirantes: 3100,
-    presentados: 1980,
-    aprobados: 126,
-    boe: '',
-    boeRef: 'BOE-A-2024-XXXXX (sustituir)',
+    plazasLibre: 99,
+    plazasPI: null,
+    aspirantes: null,
+    presentados: null,
+    aprobados: null,
+    boe: 'https://www.boe.es/diario_boe/txt.php?id=BOE-A-2024-5637',
+    boeRef: 'BOE-A-2024-5637',
+    nota: 'Resolución de 12 de marzo de 2024 (convocatoria). 99 plazas de acceso libre, 5 reservadas a personas con discapacidad.',
+  },
+  {
+    año: 2025,
+    plazasLibre: 147,
+    plazasPI: 46,
+    aspirantes: null,
+    presentados: null,
+    aprobados: null,
+    boe: 'https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-254',
+    boeRef: 'BOE-A-2025-254',
+    nota: 'Resolución de 27 de diciembre de 2024 (convocatoria), publicada el 6 de enero de 2025. 147 plazas de acceso libre y 46 de promoción interna.',
+  },
+  {
+    año: 2026,
+    plazasLibre: 151,
+    plazasPI: null,
+    aspirantes: null,
+    presentados: null,
+    aprobados: null,
+    boe: 'https://www.boe.es/diario_boe/txt.php?id=BOE-A-2026-165',
+    boeRef: 'BOE-A-2026-165',
+    nota: 'Resolución de 26 de diciembre de 2025 (convocatoria), publicada el 3 de enero de 2026. 151 plazas de acceso libre, 12 reservadas a personas con discapacidad.',
   },
 ]
 
+/** Total de plazas (libre + PI si se conoce) de una convocatoria. */
+export function plazasTotales(c) {
+  return (c.plazasLibre || 0) + (c.plazasPI || 0)
+}
+
 /**
- * Devuelve la convocatoria enriquecida con los porcentajes calculados.
- *   tasaAprobadosPresentados -> % aprobados sobre los presentados.
- *   tasaAprobadosPlazas      -> % de cobertura de plazas.
- *   ratioAspirantesPlaza     -> aspirantes por cada plaza.
+ * Devuelve la convocatoria con los porcentajes calculados.
+ * Si falta el dato base, el porcentaje correspondiente es `null`.
  */
 export function convocatoriaConCalculos(c) {
-  const pct = (num, den) => (den > 0 ? (num / den) * 100 : 0)
+  const pct = (num, den) => (num != null && den ? (num / den) * 100 : null)
   return {
     ...c,
+    plazasTotales: plazasTotales(c),
     tasaAprobadosPresentados: pct(c.aprobados, c.presentados),
     tasaAprobadosAspirantes: pct(c.aprobados, c.aspirantes),
-    tasaCoberturaPlazas: pct(c.aprobados, c.plazas),
-    ratioAspirantesPlaza: c.plazas > 0 ? c.aspirantes / c.plazas : 0,
+    ratioAspirantesPlaza:
+      c.aspirantes != null && c.plazasLibre ? c.aspirantes / c.plazasLibre : null,
   }
 }
 
 export const convocatoriasCalculadas = convocatorias.map(convocatoriaConCalculos)
 
-/** Totales agregados de todas las convocatorias cargadas. */
+/** Totales agregados (los campos pendientes solo suman lo que haya disponible). */
 export const totales = convocatorias.reduce(
   (acc, c) => ({
-    plazas: acc.plazas + c.plazas,
-    aspirantes: acc.aspirantes + c.aspirantes,
-    presentados: acc.presentados + c.presentados,
-    aprobados: acc.aprobados + c.aprobados,
+    plazasLibre: acc.plazasLibre + (c.plazasLibre || 0),
+    plazasPI: acc.plazasPI + (c.plazasPI || 0),
+    aspirantes: acc.aspirantes + (c.aspirantes || 0),
+    presentados: acc.presentados + (c.presentados || 0),
+    aprobados: acc.aprobados + (c.aprobados || 0),
   }),
-  { plazas: 0, aspirantes: 0, presentados: 0, aprobados: 0 },
+  { plazasLibre: 0, plazasPI: 0, aspirantes: 0, presentados: 0, aprobados: 0 },
 )
 
-/** Tasa media de aprobados sobre presentados en el periodo cargado. */
+/** ¿Hay ya datos de aprobados/presentados cargados? */
+export const hayDatosAprobados = convocatorias.some(
+  (c) => c.aprobados != null && c.presentados != null,
+)
+
+/** Tasa media de aprobados sobre presentados (null si aún no hay datos). */
 export const tasaMediaAprobados =
-  totales.presentados > 0 ? (totales.aprobados / totales.presentados) * 100 : 0
+  totales.presentados > 0 ? (totales.aprobados / totales.presentados) * 100 : null
+
+/** Convocatoria más reciente (para destacar en la portada). */
+export const ultimaConvocatoria = convocatorias[convocatorias.length - 1]

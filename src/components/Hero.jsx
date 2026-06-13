@@ -1,5 +1,5 @@
 import { marca } from '../data/sitio.js'
-import { totales, tasaMediaAprobados } from '../data/convocatorias.js'
+import { totales, ultimaConvocatoria } from '../data/convocatorias.js'
 
 export default function Hero() {
   return (
@@ -24,12 +24,12 @@ export default function Hero() {
 
         <div className="hero__datos">
           <div className="hero__dato">
-            <strong>{tasaMediaAprobados.toFixed(0)}%</strong>
-            <span>tasa media de aprobados sobre presentados*</span>
+            <strong>{ultimaConvocatoria.plazasLibre}</strong>
+            <span>plazas de acceso libre en la convocatoria {ultimaConvocatoria.año}</span>
           </div>
           <div className="hero__dato">
-            <strong>{totales.plazas.toLocaleString('es-ES')}</strong>
-            <span>plazas convocadas en el periodo*</span>
+            <strong>{totales.plazasLibre}</strong>
+            <span>plazas convocadas en las últimas 3 convocatorias</span>
           </div>
           <div className="hero__dato">
             <strong>Presencial</strong>
