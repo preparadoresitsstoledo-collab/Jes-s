@@ -19,23 +19,27 @@ export const marca = {
 
 /** Sección "El preparador" / Quién soy. */
 export const preparador = {
-  nombre: 'Nombre Apellidos', // (EDITAR)
-  cargo: 'Preparador de la oposición · Inspector/a de Trabajo y Seguridad Social', // (EDITAR)
+  nombre: 'Jesús María Prieto Valbuena',
+  cargo: 'Inspector de Trabajo y Seguridad Social · Preparador de la oposición',
   // Ruta a tu foto. Coloca el archivo en /public/preparador.jpg
   foto: '', // ej: './preparador.jpg' (déjalo vacío para mostrar un avatar genérico)
+  // Bio redactada a partir de información pública (entrevistas en prensa).
+  // Revisa y ajusta cualquier dato que quieras matizar.
   bio: [
-    'Aquí va tu presentación (EDITAR). Explica tu trayectoria: cuántos años llevas preparando la oposición, tu experiencia profesional en la Inspección de Trabajo y Seguridad Social, tu formación y qué te diferencia como preparador.',
-    'Añade un segundo párrafo con tu enfoque pedagógico: clases presenciales, seguimiento personalizado, corrección de casos prácticos, simulacros de examen, etc.',
+    'Soy Jesús María Prieto Valbuena, Inspector de Trabajo y Seguridad Social. Licenciado en Derecho por la Universidad Carlos III de Madrid, donde me especialicé en Derecho Laboral y Tributario, descubrí en esa etapa la vocación que hoy oriento tanto a mi profesión como a la preparación de futuros inspectores.',
+    'Desde 2016 desarrollo mi carrera en la Inspección Provincial de Toledo, donde he ocupado distintos puestos —comenzando como subinspector y pasando por jefe de equipo— hasta ser jefe de la Unidad de Seguridad Social. Esa experiencia diaria en la vigilancia del cumplimiento de la legislación laboral y de Seguridad Social es la base con la que preparo a quienes quieren conseguir su plaza.',
+    'Compagino mi labor como inspector con la preparación presencial de la oposición en Toledo, con un método cercano, exigente y orientado a resultados.',
   ],
   // Vídeo de presentación. Pega el ID o la URL de embed de YouTube/Vimeo.
-  // Ejemplo YouTube: 'https://www.youtube.com/embed/XXXXXXXXXXX'
-  videoUrl: '', // (EDITAR) déjalo vacío si todavía no tienes vídeo
+  // (EDITAR) Vídeo público encontrado sobre la oposición. Sustitúyelo si prefieres
+  // tu propio vídeo de presentación.
+  videoUrl: 'https://www.youtube.com/watch?v=xHMBxCNN-4I',
   // Méritos / referencias rápidas que se muestran como tarjetas.
   meritos: [
-    'Inspector/a de Trabajo y S.S. en activo (EDITAR)',
-    'X años preparando la oposición (EDITAR)',
-    'X alumnos/as aprobados/as (EDITAR)',
-    'Material propio y actualizado a la convocatoria (EDITAR)',
+    'Inspector de Trabajo y Seguridad Social en activo',
+    'Jefe de la Unidad de Seguridad Social · Inspección Provincial de Toledo',
+    'Licenciado en Derecho (Univ. Carlos III) · Laboral y Tributario',
+    'Colaborador habitual en medios como "Aquí hay trabajo" (TVE)',
   ],
 }
 
