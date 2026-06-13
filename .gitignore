@@ -6,6 +6,8 @@ node_modules
 # Build
 dist
 dist-ssr
+dist-singlefile
+*-vista-previa.html
 *.local
 
 # Logs
