@@ -2,7 +2,7 @@ name: Desplegar en GitHub Pages
 
 on:
   push:
-    branches: [claude/labor-inspector-exam-prep-q1l328]
+    branches: [main]
   workflow_dispatch:
 
 # Permisos necesarios para publicar en GitHub Pages
