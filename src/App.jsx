@@ -2,6 +2,7 @@ import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Preparador from './components/Preparador.jsx'
 import Estadisticas from './components/Estadisticas.jsx'
+import Proceso from './components/Proceso.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Precios from './components/Precios.jsx'
 import Testimonios from './components/Testimonios.jsx'
@@ -17,6 +18,7 @@ export default function App() {
         <Hero />
         <Preparador />
         <Estadisticas />
+        <Proceso />
         <Metodologia />
         <Precios />
         <Testimonios />

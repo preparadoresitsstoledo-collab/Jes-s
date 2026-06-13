@@ -658,6 +658,146 @@ table.convocatorias tbody tr:hover {
   text-align: center;
 }
 
+/* ---------- Proceso selectivo ---------- */
+.ejercicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+  margin-bottom: 40px;
+}
+
+.ejercicio {
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-top: 4px solid var(--azul-500);
+  border-radius: var(--radio);
+  padding: 24px;
+  box-shadow: var(--sombra-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.ejercicio__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ejercicio__num {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--azul-700);
+  color: var(--blanco);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.ejercicio__cabecera h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.ejercicio__forma {
+  font-size: 0.8rem;
+  color: var(--acento);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ejercicio__meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.ejercicio__meta span {
+  background: var(--gris-50);
+  border: 1px solid var(--gris-100);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  color: var(--gris-700);
+  font-weight: 600;
+}
+
+.ejercicio__desc {
+  color: var(--gris-700);
+  font-size: 0.93rem;
+  margin: 0 0 14px;
+  flex: 1;
+}
+
+.ejercicio__calif {
+  font-size: 0.85rem;
+  color: var(--gris-700);
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--gris-300);
+}
+
+.ejercicio__calif strong {
+  color: var(--azul-900);
+}
+
+.temario {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  align-items: center;
+  background: linear-gradient(135deg, var(--azul-700), var(--azul-500));
+  color: var(--blanco);
+  border-radius: var(--radio);
+  padding: 32px;
+  box-shadow: var(--sombra-md);
+}
+
+.temario__texto h3 {
+  color: var(--blanco);
+  font-size: 1.4rem;
+}
+
+.temario__texto p {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.temario__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.temario__lista li {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radio-sm);
+  padding: 11px 16px;
+  font-size: 0.92rem;
+  position: relative;
+  padding-left: 38px;
+}
+
+.temario__lista li::before {
+  content: '📘';
+  position: absolute;
+  left: 13px;
+}
+
+@media (max-width: 720px) {
+  .temario {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Metodología ---------- */
 .metodologia-grid {
   display: grid;

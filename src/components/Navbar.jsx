@@ -4,6 +4,7 @@ import { marca } from '../data/sitio.js'
 const enlaces = [
   { href: '#preparador', texto: 'El preparador' },
   { href: '#estadisticas', texto: 'Estadísticas' },
+  { href: '#proceso', texto: 'El examen' },
   { href: '#metodologia', texto: 'Metodología' },
   { href: '#precios', texto: 'Precios' },
   { href: '#testimonios', texto: 'Referencias' },
