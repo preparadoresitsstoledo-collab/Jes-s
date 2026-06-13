@@ -9,8 +9,8 @@ Construida con **React + Vite**. Es una página de una sola pantalla (landing) c
 - **El preparador:** quién eres, bio, méritos y vídeo de presentación.
 - **Estadísticas:** plazas, aspirantes, presentados y aprobados por convocatoria, con el
   porcentaje de aprobados sobre presentados y enlace al BOE de cada año.
+- **El examen:** estructura del proceso selectivo (ejercicios, temas, tiempos) y temario.
 - **Metodología:** cómo son las clases (100% presenciales en Toledo, sin videoconferencia).
-- **Precios:** coste de la preparación.
 - **Referencias:** testimonios de antiguos alumnos.
 - **Preguntas frecuentes.**
 - **Contacto:** email, teléfono, WhatsApp y formulario.
@@ -60,7 +60,6 @@ El **porcentaje de aprobados sobre presentados** se calcula solo; no hace falta 
 - `preparador`: tu nombre, cargo, **foto**, **bio**, **vídeo** y méritos.
 - `testimonios`: referencias de alumnos.
 - `metodologia`: tarjetas explicando cómo son las clases.
-- `planes`: **precios** y conceptos.
 - `faqs`: preguntas frecuentes.
 
 #### Foto del preparador

@@ -7,7 +7,6 @@ const enlaces = [
   { href: '#estadisticas', texto: 'Estadísticas' },
   { href: '#proceso', texto: 'El examen' },
   { href: '#metodologia', texto: 'Metodología' },
-  { href: '#precios', texto: 'Precios' },
   { href: '#testimonios', texto: 'Referencias' },
   { href: '#contacto', texto: 'Contacto' },
 ]

@@ -17,8 +17,8 @@ export default function Footer() {
 
           <div>
             <strong style={{ color: '#fff', display: 'block', marginBottom: 8 }}>Secciones</strong>
-            <a href="#preparador">El preparador</a> · <a href="#estadisticas">Estadísticas</a> ·{' '}
-            <a href="#precios">Precios</a> · <a href="#contacto">Contacto</a>
+            <a href="#preparador">El preparador</a> · <a href="#resultados">Resultados</a> ·{' '}
+            <a href="#proceso">El examen</a> · <a href="#contacto">Contacto</a>
           </div>
 
           <div>

@@ -13,8 +13,8 @@ export const marca = {
   claim: 'Preparación presencial para el Cuerpo Superior de Inspección de Trabajo y Seguridad Social',
   ciudad: 'Toledo',
   email: 'preparadoresitsstoledo@gmail.com',
-  telefono: '+34 600 000 000', // (EDITAR) tu teléfono real
-  whatsapp: '34600000000', // (EDITAR) número para enlace de WhatsApp, sin signos
+  telefono: '+34 670 24 38 76',
+  whatsapp: '34670243876', // número para enlace de WhatsApp, sin signos
 }
 
 /** Sección "El preparador" / Quién soy. */
@@ -133,53 +133,6 @@ export const metodologia = [
   },
 ]
 
-/**
- * Planes de precios. (EDITAR) Ajusta importes y conceptos a tu oferta real.
- * Pon `destacado: true` en el plan que quieras resaltar.
- */
-export const planes = [
-  {
-    nombre: 'Mensualidad',
-    precio: '—',
-    periodo: '/ mes',
-    descripcion: 'Cuota mensual de preparación presencial.',
-    incluye: [
-      'Clases presenciales semanales en Toledo',
-      'Material y casos prácticos',
-      'Corrección de supuestos',
-      'Resolución de dudas en clase',
-    ],
-    destacado: true,
-    nota: 'Importe a definir (EDITAR)',
-  },
-  {
-    nombre: 'Matrícula',
-    precio: '—',
-    periodo: 'pago único',
-    descripcion: 'Matrícula inicial de acceso al curso.',
-    incluye: [
-      'Alta en el grupo',
-      'Acceso al material base',
-      'Plan de estudio personalizado',
-    ],
-    destacado: false,
-    nota: 'Importe a definir (EDITAR)',
-  },
-  {
-    nombre: 'Clases sueltas / repaso',
-    precio: '—',
-    periodo: 'según necesidad',
-    descripcion: 'Sesiones puntuales de refuerzo o repaso intensivo.',
-    incluye: [
-      'Sesiones presenciales puntuales',
-      'Repaso intensivo antes del examen',
-      'Corrección individual',
-    ],
-    destacado: false,
-    nota: 'Importe a definir (EDITAR)',
-  },
-]
-
 /** Preguntas frecuentes. (EDITAR) Adáptalas a tu caso. */
 export const faqs = [
   {
@@ -195,7 +148,7 @@ export const faqs = [
     respuesta: 'Consulta las fechas de inicio y disponibilidad de plazas por email o teléfono. (EDITAR)',
   },
   {
-    pregunta: '¿Cuánto cuesta la preparación?',
-    respuesta: 'Consulta el apartado de precios. Los importes definitivos se confirman al formalizar la matrícula. (EDITAR)',
+    pregunta: '¿Cómo solicito información o reservo plaza?',
+    respuesta: 'Puedes escribirme por email o por WhatsApp, o llamarme por teléfono. Te explico cómo funciona la preparación y la disponibilidad del grupo.',
   },
 ]
