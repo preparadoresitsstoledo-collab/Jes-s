@@ -859,6 +859,36 @@ table.convocatorias tbody tr:hover {
   margin: 0;
 }
 
+.temario__comprar {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.temario__comprar-titulo {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--acento-claro);
+  font-weight: 700;
+}
+
+.temario__comprar a {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--blanco);
+  border-radius: var(--radio-sm);
+  padding: 9px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.temario__comprar a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+}
+
 .temario__lista {
   list-style: none;
   margin: 0;

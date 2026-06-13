@@ -68,4 +68,15 @@ export const temario = {
     'Material orientado a la memorización y a la exposición de los temas.',
     'Actualización conforme a la convocatoria vigente.',
   ],
+  // Enlaces oficiales de compra del temario CEF.
+  comprar: [
+    {
+      etiqueta: 'Temario CEF · Ejercicio 1 (bloque obligatorio y específico)',
+      url: 'https://tienda.cef.udima.es/temario-oposiciones/INSPECCION-DE-TRABAJO-Y-SEGURIDAD-SOCIAL-EJERCICIO-1-ID1660.asp',
+    },
+    {
+      etiqueta: 'Temario CEF · Ejercicio 2',
+      url: 'https://tienda.cef.udima.es/temario-oposiciones/inspeccion-trabajo-seguridad-social-ejercicio-2.html',
+    },
+  ],
 }

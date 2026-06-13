@@ -102,19 +102,29 @@ export const metodologia = [
     icono: '👥',
   },
   {
-    titulo: 'Temario y casos prácticos',
-    texto: 'Trabajo del temario oficial, casos prácticos reales de la Inspección y supuestos tipo examen, con corrección detallada.',
-    icono: '📚',
+    titulo: 'Sistema de bloques y semiarrastre',
+    texto: 'Cada cuatro semanas se refresca lo estudiado en las tres anteriores, fijando el temario a largo plazo. Es una carrera de fondo: constancia semanal por encima del número de temas.',
+    icono: '🔁',
   },
   {
-    titulo: 'Simulacros y exposiciones',
-    texto: 'Simulacros periódicos en condiciones de examen y práctica de exposición oral para preparar todas las fases del proceso selectivo.',
-    icono: '✍️',
+    titulo: '«Cantar» los temas',
+    texto: 'Desde el inicio se recitan los temas en voz alta, preparando a la vez el primer ejercicio escrito y, sobre todo, el segundo ejercicio oral, donde se gana la soltura que marca la diferencia.',
+    icono: '🗣️',
+  },
+  {
+    titulo: 'Técnicas de memorización',
+    texto: 'Reglas mnemotécnicas para memorizar fechas, reales decretos y textos con la rigurosidad que exige la oposición, optimizando el tiempo de estudio.',
+    icono: '🧠',
   },
   {
     titulo: 'Planificación semanal del estudio',
     texto: 'Cada semana se planifica qué hay que estudiar, marcando objetivos concretos para avanzar de forma ordenada y constante a lo largo de toda la convocatoria.',
     icono: '🗓️',
+  },
+  {
+    titulo: 'Exámenes y simulacros',
+    texto: 'Exámenes escritos periódicos con lectura y corrección posterior, casos prácticos y práctica de exposición oral para preparar todas las fases del proceso selectivo.',
+    icono: '✍️',
   },
   {
     titulo: 'Seguimiento continuo',

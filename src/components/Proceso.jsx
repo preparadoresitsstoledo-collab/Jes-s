@@ -36,6 +36,16 @@ export default function Proceso() {
           <div className="temario__texto">
             <h3>El temario</h3>
             <p>{temario.intro}</p>
+            {temario.comprar?.length > 0 && (
+              <div className="temario__comprar">
+                <span className="temario__comprar-titulo">Dónde adquirir el temario CEF:</span>
+                {temario.comprar.map((c, i) => (
+                  <a key={i} href={c.url} target="_blank" rel="noopener noreferrer">
+                    {c.etiqueta} ↗
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
           <ul className="temario__lista">
             {temario.puntos.map((p, i) => (
