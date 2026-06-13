@@ -28,7 +28,7 @@ export const preparador = {
   bio: [
     'Soy Jesús María Prieto Valbuena, Inspector de Trabajo y Seguridad Social. Licenciado en Derecho por la Universidad Carlos III de Madrid, donde me especialicé en Derecho Laboral y Tributario, descubrí en esa etapa la vocación que hoy oriento tanto a mi profesión como a la preparación de futuros inspectores.',
     'Desde 2016 desarrollo mi carrera en la Inspección Provincial de Toledo, donde he ocupado distintos puestos —comenzando como subinspector y pasando por jefe de equipo— hasta ser jefe de la Unidad de Seguridad Social. Esa experiencia diaria en la vigilancia del cumplimiento de la legislación laboral y de Seguridad Social es la base con la que preparo a quienes quieren conseguir su plaza.',
-    'Compagino mi labor como inspector con la preparación presencial de la oposición en Toledo, con un método cercano, exigente y orientado a resultados.',
+    'La preparación de futuros inspectores es mi proyecto personal: compagino mi labor diaria como inspector con las clases presenciales de la oposición en Toledo, con un método cercano, exigente y orientado a resultados.',
   ],
   // Vídeo de presentación. Pega el ID o la URL de embed de YouTube/Vimeo.
   // (EDITAR) Vídeo público encontrado sobre la oposición. Sustitúyelo si prefieres
