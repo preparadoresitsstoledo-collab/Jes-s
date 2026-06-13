@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.preparacionitsstoledo.es/sitemap.xml
+Sitemap: https://preparadoresitsstoledo-collab.github.io/jes-s/sitemap.xml
