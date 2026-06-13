@@ -25,8 +25,12 @@ export default function Footer() {
             <strong style={{ color: '#fff', display: 'block', marginBottom: 8 }}>Contacto</strong>
             <a href={`mailto:${marca.email}`}>{marca.email}</a>
             <br />
-            <a href={`tel:${marca.telefono.replace(/\s/g, '')}`}>{marca.telefono}</a>
-            <br />
+            {marca.mostrarTelefono && (
+              <>
+                <a href={`tel:${marca.telefono.replace(/\s/g, '')}`}>{marca.telefono}</a>
+                <br />
+              </>
+            )}
             {marca.x && (
               <a href={marca.x} target="_blank" rel="noopener noreferrer">
                 X {marca.xUsuario}

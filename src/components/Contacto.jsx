@@ -45,15 +45,17 @@ export default function Contacto() {
                   <a href={`mailto:${marca.email}`}>{marca.email}</a>
                 </div>
               </li>
-              <li>
-                <span className="contacto__icono" aria-hidden="true">
-                  📞
-                </span>
-                <div>
-                  <strong>Teléfono</strong>
-                  <a href={`tel:${marca.telefono.replace(/\s/g, '')}`}>{marca.telefono}</a>
-                </div>
-              </li>
+              {marca.mostrarTelefono && (
+                <li>
+                  <span className="contacto__icono" aria-hidden="true">
+                    📞
+                  </span>
+                  <div>
+                    <strong>Teléfono</strong>
+                    <a href={`tel:${marca.telefono.replace(/\s/g, '')}`}>{marca.telefono}</a>
+                  </div>
+                </li>
+              )}
               <li>
                 <span className="contacto__icono" aria-hidden="true">
                   💬

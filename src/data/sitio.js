@@ -13,6 +13,8 @@ export const marca = {
   claim: 'Preparación presencial para el Cuerpo Superior de Inspección de Trabajo y Seguridad Social',
   ciudad: 'Toledo',
   email: 'preparadoresitsstoledo@gmail.com',
+  // Para volver a MOSTRAR el teléfono, pon `mostrarTelefono: true`.
+  mostrarTelefono: false,
   telefono: '+34 670 24 38 76',
   whatsapp: '34670243876', // número para enlace de WhatsApp, sin signos
   // Redes sociales (deja la cadena vacía para ocultar el enlace).
