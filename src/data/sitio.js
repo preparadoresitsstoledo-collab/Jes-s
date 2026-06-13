@@ -45,7 +45,7 @@ export const preparador = {
     'Inspector de Trabajo y Seguridad Social en activo',
     'Jefe de la Unidad de Seguridad Social · Inspección Provincial de Toledo',
     'Vocal del Sindicato de Inspectores de Trabajo y Seguridad Social',
-    'Licenciado en Derecho · especializado en Derecho Laboral',
+    '10 alumnos aprobados en las últimas convocatorias (grupo reducido)',
   ],
   // Apariciones en medios (mencionadas en la entrevista).
   medios: [
@@ -54,6 +54,19 @@ export const preparador = {
     'Antena 3 Noticias',
     'La Sexta',
     'Telemadrid',
+  ],
+}
+
+/**
+ * Resultados de la preparación (alumnos aprobados por convocatoria).
+ * Grupo único y reducido, 100% presencial.
+ */
+export const resultados = {
+  nota: 'Datos de un grupo único y reducido, 100% presencial en Toledo.',
+  porConvocatoria: [
+    { año: 2023, libre: 3, promocionInterna: 3 },
+    { año: 2024, libre: 1, promocionInterna: 0 },
+    { año: 2025, libre: 2, promocionInterna: 1 },
   ],
 }
 
@@ -84,8 +97,8 @@ export const metodologia = [
     icono: '🏛️',
   },
   {
-    titulo: 'Grupos reducidos',
-    texto: 'Plazas limitadas para garantizar atención personalizada y seguimiento individual de cada aspirante.',
+    titulo: 'Grupo único y reducido',
+    texto: 'Un solo grupo, con plazas muy limitadas, para garantizar atención personalizada y seguimiento individual de cada aspirante.',
     icono: '👥',
   },
   {

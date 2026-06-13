@@ -658,6 +658,97 @@ table.convocatorias tbody tr:hover {
   text-align: center;
 }
 
+/* ---------- Resultados ---------- */
+.resultado-destacado {
+  text-align: center;
+  background: linear-gradient(135deg, var(--verde), #2f9e6a);
+  color: var(--blanco);
+  border-radius: var(--radio);
+  padding: 30px 24px;
+  box-shadow: var(--sombra-md);
+  margin-bottom: 28px;
+}
+
+.resultado-destacado strong {
+  display: block;
+  font-size: 3.4rem;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.resultado-destacado > span {
+  font-size: 1.05rem;
+  opacity: 0.95;
+}
+
+.resultado-destacado__desglose {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+
+.resultados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.resultado-card {
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-top: 4px solid var(--verde);
+  border-radius: var(--radio);
+  padding: 22px;
+  box-shadow: var(--sombra-sm);
+  text-align: center;
+}
+
+.resultado-card__año {
+  font-weight: 700;
+  color: var(--azul-900);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.82rem;
+}
+
+.resultado-card__total {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--verde);
+  margin: 6px 0 10px;
+}
+
+.resultado-card__total span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gris-500);
+  display: block;
+}
+
+.resultado-card__detalle {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.resultado-card__detalle li {
+  font-size: 0.9rem;
+  color: var(--gris-700);
+  background: var(--gris-50);
+  border-radius: var(--radio-sm);
+  padding: 6px 10px;
+}
+
+.resultado-card__detalle strong {
+  color: var(--azul-900);
+}
+
 /* ---------- Proceso selectivo ---------- */
 .ejercicios-grid {
   display: grid;
