@@ -112,8 +112,13 @@ export const metodologia = [
     icono: '✍️',
   },
   {
+    titulo: 'Planificación semanal del estudio',
+    texto: 'Cada semana se planifica qué hay que estudiar, marcando objetivos concretos para avanzar de forma ordenada y constante a lo largo de toda la convocatoria.',
+    icono: '🗓️',
+  },
+  {
     titulo: 'Seguimiento continuo',
-    texto: 'Planificación del estudio, control de progreso y orientación durante toda la convocatoria.',
+    texto: 'Control del progreso y orientación personalizada durante todo el proceso, ajustando el plan según la evolución de cada aspirante.',
     icono: '📈',
   },
 ]
