@@ -1,4 +1,10 @@
-import { procesoIntro, ejercicios, temario } from '../data/proceso.js'
+import {
+  procesoIntro,
+  ejercicios,
+  temario,
+  requisitos,
+  requisitosNota,
+} from '../data/proceso.js'
 
 export default function Proceso() {
   return (
@@ -30,6 +36,18 @@ export default function Proceso() {
               </p>
             </article>
           ))}
+        </div>
+
+        <div className="requisitos">
+          <div className="requisitos__cabecera">
+            <h3>Requisitos para presentarte</h3>
+            <p>{requisitosNota}</p>
+          </div>
+          <ul className="requisitos__lista">
+            {requisitos.map((r, i) => (
+              <li key={i}>{r}</li>
+            ))}
+          </ul>
         </div>
 
         <div className="temario">

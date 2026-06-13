@@ -3,11 +3,10 @@ import { marca } from '../data/sitio.js'
 
 const enlaces = [
   { href: '#preparador', texto: 'El preparador' },
+  { href: '#profesion', texto: 'La profesión' },
   { href: '#resultados', texto: 'Resultados' },
-  { href: '#estadisticas', texto: 'Estadísticas' },
   { href: '#proceso', texto: 'El examen' },
   { href: '#metodologia', texto: 'Metodología' },
-  { href: '#testimonios', texto: 'Referencias' },
   { href: '#contacto', texto: 'Contacto' },
 ]
 

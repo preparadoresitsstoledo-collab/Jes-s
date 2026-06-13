@@ -5,12 +5,16 @@ Inspección de Trabajo y Seguridad Social (ITSS)** en la provincia de Toledo.
 
 Construida con **React + Vite**. Es una página de una sola pantalla (landing) con estas secciones:
 
-- **Inicio (Hero):** presentación y reclamo principal.
-- **El preparador:** quién eres, bio, méritos y vídeo de presentación.
+- **Inicio (Hero):** presentación y reclamo principal, con silueta del skyline de Toledo.
+- **Ventajas:** franja con los diferenciadores principales.
+- **El preparador:** quién eres, bio, méritos, cita, medios y vídeo de presentación.
+- **La profesión:** en qué consiste el trabajo de inspector (servicio público, garante de la legalidad, las visitas) y marco normativo (OIT 81/129, Ley 23/2015).
+- **Resultados:** alumnos aprobados por convocatoria.
 - **Estadísticas:** plazas, aspirantes, presentados y aprobados por convocatoria, con el
   porcentaje de aprobados sobre presentados y enlace al BOE de cada año.
-- **El examen:** estructura del proceso selectivo (ejercicios, temas, tiempos) y temario.
+- **El examen:** estructura del proceso selectivo (ejercicios, temas, tiempos), requisitos y temario (CEF + temario propio).
 - **Metodología:** cómo son las clases (100% presenciales en Toledo, sin videoconferencia).
+- **Cómo empezar:** pasos para incorporarse a la preparación.
 - **Referencias:** testimonios de antiguos alumnos.
 - **Preguntas frecuentes.**
 - **Contacto:** email, teléfono, WhatsApp y formulario.
@@ -71,6 +75,30 @@ En `preparador.videoUrl` pega la URL de tu vídeo de YouTube (la web la conviert
 al formato de inserción). Si lo dejas vacío, se muestra un aviso en su lugar.
 
 ---
+
+## SEO (posicionamiento en buscadores)
+
+La web está preparada para buscadores: etiquetas meta, Open Graph y Twitter Card,
+geolocalización en Toledo, datos estructurados **JSON-LD** (organización educativa,
+persona, curso y FAQ), `robots.txt`, `sitemap.xml`, imagen social `og-image.jpg` y un
+fallback `<noscript>`.
+
+**⚠️ Importante — antes de publicar, cambia el dominio de ejemplo por el tuyo real**
+(`https://www.preparacionitsstoledo.es`) en estos archivos:
+
+- `index.html` (canonical, Open Graph, Twitter y JSON-LD)
+- `public/robots.txt`
+- `public/sitemap.xml`
+
+Tras publicar, da de alta la web en **Google Search Bing Webmaster Tools** y envía el
+`sitemap.xml` para acelerar la indexación.
+
+### Imagen de fondo de Toledo
+
+El hero incluye una **silueta del skyline de Toledo** (Alcázar y catedral) en SVG, sin
+depender de archivos externos. Si prefieres una **foto real**, sigue las instrucciones
+del comentario `.hero--foto` en `src/index.css` (añade `public/hero-toledo.jpg` y la
+clase `hero--foto` al hero).
 
 ## Despliegue
 

@@ -17,6 +17,113 @@ export const marca = {
   whatsapp: '34670243876', // número para enlace de WhatsApp, sin signos
 }
 
+/**
+ * Sección "La profesión": en qué consiste el trabajo de Inspector de Trabajo
+ * y Seguridad Social. Redactado a partir de la entrevista del preparador.
+ */
+export const profesion = {
+  intro:
+    'La Inspección de Trabajo y Seguridad Social es un servicio público y gratuito, como la educación o la sanidad. El inspector es el garante del cumplimiento de la legalidad y de los derechos de las personas trabajadoras. Es una profesión apasionante y con sentido: una parte del Derecho muy viva, que nos afecta a todos.',
+  cita: {
+    texto:
+      'Me gusta pensar que nuestro puesto de trabajo no es una oficina, sino el puesto de trabajo de la gente.',
+  },
+  // Marco normativo de la Inspección de Trabajo y Seguridad Social.
+  marco: {
+    titulo: 'Marco normativo',
+    normas: [
+      {
+        nombre: 'Convenio n.º 81 de la OIT',
+        detalle: 'Sobre la inspección del trabajo en la industria y el comercio (1947).',
+      },
+      {
+        nombre: 'Convenio n.º 129 de la OIT',
+        detalle: 'Sobre la inspección del trabajo en la agricultura (1969).',
+      },
+      {
+        nombre: 'Ley 23/2015, de 21 de julio',
+        detalle: 'Ordenadora del Sistema de Inspección de Trabajo y Seguridad Social.',
+      },
+    ],
+  },
+  puntos: [
+    {
+      icono: '🛡️',
+      titulo: 'Garante de la legalidad',
+      texto: 'Vela por el cumplimiento de la legislación laboral, de Seguridad Social y de prevención de riesgos.',
+    },
+    {
+      icono: '🤝',
+      titulo: 'Servicio público y gratuito',
+      texto: 'Al servicio de la ciudadanía y de las empresas, como la educación o la sanidad.',
+    },
+    {
+      icono: '👷',
+      titulo: 'Protección de las personas trabajadoras',
+      texto: 'Defiende sus derechos y la prevención de los riesgos laborales en el día a día.',
+    },
+    {
+      icono: '🚶',
+      titulo: 'Las visitas de inspección',
+      texto: 'El trabajo se desarrolla sobre el terreno: visitas a empresas y centros para comprobar la realidad de cada puesto de trabajo.',
+    },
+    {
+      icono: '⚖️',
+      titulo: 'Procedimientos ágiles',
+      texto: 'Procedimientos administrativos rápidos y eficaces para resolver irregularidades laborales.',
+    },
+    {
+      icono: '🌍',
+      titulo: 'Un trabajo con sentido',
+      texto: 'Contribuir, con su granito de arena, a que la sociedad sea un poco mejor.',
+    },
+  ],
+}
+
+/** Franja de ventajas / "por qué elegir esta preparación". */
+export const ventajas = [
+  {
+    icono: '🏛️',
+    titulo: 'Presencial en Toledo',
+    texto: 'Clases 100% presenciales, sin videoconferencia.',
+  },
+  {
+    icono: '🕵️',
+    titulo: 'Inspector en activo',
+    texto: 'Te prepara quien ejerce la profesión cada día.',
+  },
+  {
+    icono: '👥',
+    titulo: 'Grupo único y reducido',
+    texto: 'Atención personalizada y plazas limitadas.',
+  },
+  {
+    icono: '🏅',
+    titulo: 'Resultados probados',
+    texto: '10 alumnos aprobados en las últimas convocatorias.',
+  },
+]
+
+/** Pasos para empezar la preparación. */
+export const pasos = [
+  {
+    titulo: 'Contacta',
+    texto: 'Escríbeme por email, teléfono o WhatsApp y cuéntame en qué punto estás.',
+  },
+  {
+    titulo: 'Reunión inicial',
+    texto: 'Valoramos tu punto de partida, te explico el método y resolvemos tus dudas.',
+  },
+  {
+    titulo: 'Plan personalizado',
+    texto: 'Diseñamos tu planificación de estudio adaptada a tu disponibilidad.',
+  },
+  {
+    titulo: 'Empiezas a preparar',
+    texto: 'Te incorporas al grupo presencial en Toledo y arranca la preparación.',
+  },
+]
+
 /** Sección "El preparador" / Quién soy. */
 export const preparador = {
   nombre: 'Jesús María Prieto Valbuena',

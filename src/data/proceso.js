@@ -58,6 +58,22 @@ export const ejercicios = [
   },
 ]
 
+/**
+ * Requisitos de acceso (sistema general de acceso libre), conforme a la
+ * convocatoria 2026 (BOE-A-2026-165). Conviene revisar siempre las bases de
+ * la convocatoria vigente.
+ */
+export const requisitos = [
+  'Tener la nacionalidad española.',
+  'Tener cumplidos 18 años y no exceder de la edad máxima de jubilación forzosa.',
+  'Estar en posesión (o en condiciones de obtener) de un título universitario: Grado, Licenciatura, Ingeniería, Arquitectura o Doctorado. Las titulaciones extranjeras deben estar homologadas.',
+  'Poseer la capacidad funcional para el desempeño de las tareas.',
+  'No haber sido separado del servicio por expediente disciplinario ni hallarse inhabilitado para empleos o cargos públicos, ni pertenecer ya al mismo cuerpo.',
+]
+
+export const requisitosNota =
+  'Requisitos del turno de acceso libre conforme a la convocatoria 2026 (BOE-A-2026-165). Revisa siempre las bases de la convocatoria en vigor.'
+
 /** Temario de preparación. */
 export const temario = {
   intro:
