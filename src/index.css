@@ -359,6 +359,69 @@ img {
   box-shadow: var(--sombra-sm);
 }
 
+.cita-destacada {
+  margin: 26px 0 0;
+  padding: 18px 22px;
+  border-left: 4px solid var(--acento);
+  background: var(--gris-50);
+  border-radius: 0 var(--radio-sm) var(--radio-sm) 0;
+}
+
+.cita-destacada p {
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+  font-style: italic;
+  color: var(--azul-900);
+}
+
+.cita-destacada p::before {
+  content: '“';
+  color: var(--acento);
+  font-size: 1.6rem;
+  line-height: 0;
+  vertical-align: -0.35em;
+  margin-right: 4px;
+}
+
+.cita-destacada cite {
+  font-size: 0.82rem;
+  color: var(--gris-500);
+  font-style: normal;
+}
+
+.medios {
+  margin-top: 24px;
+}
+
+.medios__titulo {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--acento);
+  margin-bottom: 10px;
+}
+
+.medios__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.medios__lista li {
+  background: var(--blanco);
+  border: 1px solid var(--gris-300);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  color: var(--gris-700);
+  font-weight: 500;
+}
+
 .video {
   margin-top: 28px;
   border-radius: var(--radio);

@@ -47,6 +47,24 @@ export default function Preparador() {
               ))}
             </ul>
 
+            {preparador.cita && (
+              <blockquote className="cita-destacada">
+                <p>{preparador.cita.texto}</p>
+                {preparador.cita.fuente && <cite>{preparador.cita.fuente}</cite>}
+              </blockquote>
+            )}
+
+            {preparador.medios?.length > 0 && (
+              <div className="medios">
+                <span className="medios__titulo">En los medios</span>
+                <ul className="medios__lista">
+                  {preparador.medios.map((m, i) => (
+                    <li key={i}>{m}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="video">
               {embed ? (
                 <iframe

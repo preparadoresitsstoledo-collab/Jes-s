@@ -23,13 +23,19 @@ export const preparador = {
   cargo: 'Inspector de Trabajo y Seguridad Social · Preparador de la oposición',
   // Ruta a tu foto. Coloca el archivo en /public/preparador.jpg
   foto: '', // ej: './preparador.jpg' (déjalo vacío para mostrar un avatar genérico)
-  // Bio redactada a partir de información pública (entrevistas en prensa).
+  // Bio redactada a partir de tu entrevista en La Revista de Valdemoro (jun. 2025).
   // Revisa y ajusta cualquier dato que quieras matizar.
   bio: [
-    'Soy Jesús María Prieto Valbuena, Inspector de Trabajo y Seguridad Social. Licenciado en Derecho por la Universidad Carlos III de Madrid, donde me especialicé en Derecho Laboral y Tributario, descubrí en esa etapa la vocación que hoy oriento tanto a mi profesión como a la preparación de futuros inspectores.',
-    'Desde 2016 desarrollo mi carrera en la Inspección Provincial de Toledo, donde he ocupado distintos puestos —comenzando como subinspector y pasando por jefe de equipo— hasta ser jefe de la Unidad de Seguridad Social. Esa experiencia diaria en la vigilancia del cumplimiento de la legislación laboral y de Seguridad Social es la base con la que preparo a quienes quieren conseguir su plaza.',
-    'La preparación de futuros inspectores es mi proyecto personal: compagino mi labor diaria como inspector con las clases presenciales de la oposición en Toledo, con un método cercano, exigente y orientado a resultados.',
+    'Soy Jesús María Prieto Valbuena, Inspector de Trabajo y Seguridad Social. Cuando terminé la carrera de Derecho descubrí la oposición a la Inspección y, en cuanto indagué de qué se trataba, supe que ese iba a ser mi trabajo: lo que quería hacer el resto de mi vida.',
+    'Comencé como subinspector de empleo y hoy soy jefe de la Unidad de Seguridad Social de la Inspección Provincial de Toledo. Esa experiencia diaria —garantizar el cumplimiento de la legislación laboral y de Seguridad Social y proteger los derechos de los trabajadores— es la base con la que preparo a quienes quieren conseguir su plaza. Además soy vocal del Sindicato de Inspectores de Trabajo y Seguridad Social.',
+    'Preparar a futuros inspectores es mi proyecto personal. Conozco de primera mano lo exigente que es esta oposición —y lo que cuesta sostener años de estudio—, por eso preparo de forma 100% presencial en Toledo, con un método cercano, exigente y orientado a resultados.',
   ],
+  // Cita destacada (literal de la entrevista en La Revista de Valdemoro).
+  cita: {
+    texto:
+      'El rigor de nuestros procesos de oposiciones elige a profesionales muy cualificados, bien formados y personalmente capacitados.',
+    fuente: 'Entrevista en La Revista de Valdemoro, junio de 2025',
+  },
   // Vídeo de presentación. Pega el ID o la URL de embed de YouTube/Vimeo.
   // (EDITAR) Vídeo público encontrado sobre la oposición. Sustitúyelo si prefieres
   // tu propio vídeo de presentación.
@@ -38,8 +44,16 @@ export const preparador = {
   meritos: [
     'Inspector de Trabajo y Seguridad Social en activo',
     'Jefe de la Unidad de Seguridad Social · Inspección Provincial de Toledo',
-    'Licenciado en Derecho (Univ. Carlos III) · Laboral y Tributario',
-    'Colaborador habitual en medios como "Aquí hay trabajo" (TVE)',
+    'Vocal del Sindicato de Inspectores de Trabajo y Seguridad Social',
+    'Licenciado en Derecho · especializado en Derecho Laboral',
+  ],
+  // Apariciones en medios (mencionadas en la entrevista).
+  medios: [
+    'TVE — «Aquí hay trabajo» (La 2)',
+    'Antena 3 — «Espejo Público»',
+    'Antena 3 Noticias',
+    'La Sexta',
+    'Telemadrid',
   ],
 }
 
