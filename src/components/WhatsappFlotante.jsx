@@ -1,6 +1,9 @@
 import { marca } from '../data/sitio.js'
 
 export default function WhatsappFlotante() {
+  // Si no hay número de WhatsApp configurado, no se muestra el botón.
+  if (!marca.whatsapp) return null
+
   return (
     <a
       className="wa-flotante"

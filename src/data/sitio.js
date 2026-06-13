@@ -13,10 +13,11 @@ export const marca = {
   claim: 'Preparación presencial para el Cuerpo Superior de Inspección de Trabajo y Seguridad Social',
   ciudad: 'Toledo',
   email: 'preparadoresitsstoledo@gmail.com',
-  // Para volver a MOSTRAR el teléfono, pon `mostrarTelefono: true`.
+  // TELÉFONO Y WHATSAPP OCULTOS. Para volver a activarlos, escribe el número en
+  // los campos `telefono` / `whatsapp` y pon el `mostrar...` correspondiente a true.
   mostrarTelefono: false,
-  telefono: '+34 670 24 38 76',
-  whatsapp: '34670243876', // número para enlace de WhatsApp, sin signos
+  telefono: '', // ej. '+34 600 00 00 00'
+  whatsapp: '', // ej. '34600000000' (sin signos). Vacío = sin botón de WhatsApp.
   // Redes sociales (deja la cadena vacía para ocultar el enlace).
   x: 'https://x.com/Jesus_Prieto_V',
   xUsuario: '@Jesus_Prieto_V',
@@ -115,7 +116,7 @@ export const ventajas = [
 export const pasos = [
   {
     titulo: 'Contacta',
-    texto: 'Escríbeme por email, teléfono o WhatsApp y cuéntame en qué punto estás.',
+    texto: 'Escríbeme por email o por el formulario de contacto y cuéntame en qué punto estás.',
   },
   {
     titulo: 'Reunión inicial',
@@ -259,10 +260,10 @@ export const faqs = [
   },
   {
     pregunta: '¿Cuándo empiezan los grupos?',
-    respuesta: 'Consulta las fechas de inicio y disponibilidad de plazas por email o teléfono. (EDITAR)',
+    respuesta: 'Consulta las fechas de inicio y disponibilidad de plazas por email. (EDITAR)',
   },
   {
     pregunta: '¿Cómo solicito información o reservo plaza?',
-    respuesta: 'Puedes escribirme por email o por WhatsApp, o llamarme por teléfono. Te explico cómo funciona la preparación y la disponibilidad del grupo.',
+    respuesta: 'Escríbeme por email o por el formulario de contacto y te explico cómo funciona la preparación y la disponibilidad del grupo.',
   },
 ]

@@ -56,21 +56,23 @@ export default function Contacto() {
                   </div>
                 </li>
               )}
-              <li>
-                <span className="contacto__icono" aria-hidden="true">
-                  💬
-                </span>
-                <div>
-                  <strong>WhatsApp</strong>
-                  <a
-                    href={`https://wa.me/${marca.whatsapp}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Enviar mensaje
-                  </a>
-                </div>
-              </li>
+              {marca.whatsapp && (
+                <li>
+                  <span className="contacto__icono" aria-hidden="true">
+                    💬
+                  </span>
+                  <div>
+                    <strong>WhatsApp</strong>
+                    <a
+                      href={`https://wa.me/${marca.whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Enviar mensaje
+                    </a>
+                  </div>
+                </li>
+              )}
               <li>
                 <span className="contacto__icono" aria-hidden="true">
                   📍

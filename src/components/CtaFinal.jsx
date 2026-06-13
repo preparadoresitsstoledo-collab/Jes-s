@@ -10,13 +10,8 @@ export default function CtaFinal() {
           <a className="btn btn--primario" href="#contacto">
             Solicita información
           </a>
-          <a
-            className="btn btn--secundario"
-            href={`https://wa.me/${marca.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Escríbeme por WhatsApp
+          <a className="btn btn--secundario" href={`mailto:${marca.email}`}>
+            Escríbeme por email
           </a>
         </div>
       </div>
