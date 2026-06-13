@@ -15,6 +15,11 @@ export const marca = {
   email: 'preparadoresitsstoledo@gmail.com',
   telefono: '+34 670 24 38 76',
   whatsapp: '34670243876', // número para enlace de WhatsApp, sin signos
+  // Redes sociales (deja la cadena vacía para ocultar el enlace).
+  x: 'https://x.com/Jesus_Prieto_V',
+  xUsuario: '@Jesus_Prieto_V',
+  // (VERIFICAR) URL de LinkedIn deducida del perfil; confirma que es correcta.
+  linkedin: 'https://es.linkedin.com/in/jes%C3%BAs-mar%C3%ADa-prieto-valbuena-7163022ba',
 }
 
 /**

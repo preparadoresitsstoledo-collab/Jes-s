@@ -1458,6 +1458,34 @@ table.convocatorias tbody tr:hover {
   justify-content: center;
 }
 
+.contacto__redes {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.contacto__redes a {
+  font-weight: 600;
+}
+
+/* ---------- Actualidad (X timeline) ---------- */
+.actualidad {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-radius: var(--radio);
+  padding: 12px;
+  box-shadow: var(--sombra-sm);
+  min-height: 120px;
+}
+
+.actualidad__fallback {
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 10px 0 4px;
+}
+
 /* ---------- Footer ---------- */
 .footer {
   background: var(--azul-900);

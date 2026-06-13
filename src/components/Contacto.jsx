@@ -78,6 +78,28 @@ export default function Contacto() {
                   Preparación presencial en {marca.ciudad} y provincia (sin videoconferencia)
                 </div>
               </li>
+              {(marca.x || marca.linkedin) && (
+                <li>
+                  <span className="contacto__icono" aria-hidden="true">
+                    🔗
+                  </span>
+                  <div>
+                    <strong>Redes</strong>
+                    <span className="contacto__redes">
+                      {marca.x && (
+                        <a href={marca.x} target="_blank" rel="noopener noreferrer">
+                          X {marca.xUsuario}
+                        </a>
+                      )}
+                      {marca.linkedin && (
+                        <a href={marca.linkedin} target="_blank" rel="noopener noreferrer">
+                          LinkedIn
+                        </a>
+                      )}
+                    </span>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
 

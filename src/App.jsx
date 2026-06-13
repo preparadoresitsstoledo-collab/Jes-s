@@ -9,6 +9,7 @@ import Proceso from './components/Proceso.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Pasos from './components/Pasos.jsx'
 import Testimonios from './components/Testimonios.jsx'
+import Actualidad from './components/Actualidad.jsx'
 import Faq from './components/Faq.jsx'
 import CtaFinal from './components/CtaFinal.jsx'
 import Contacto from './components/Contacto.jsx'
@@ -30,6 +31,7 @@ export default function App() {
         <Metodologia />
         <Pasos />
         <Testimonios />
+        <Actualidad />
         <Faq />
         <CtaFinal />
         <Contacto />

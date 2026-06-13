@@ -26,6 +26,18 @@ export default function Footer() {
             <a href={`mailto:${marca.email}`}>{marca.email}</a>
             <br />
             <a href={`tel:${marca.telefono.replace(/\s/g, '')}`}>{marca.telefono}</a>
+            <br />
+            {marca.x && (
+              <a href={marca.x} target="_blank" rel="noopener noreferrer">
+                X {marca.xUsuario}
+              </a>
+            )}
+            {marca.x && marca.linkedin && ' · '}
+            {marca.linkedin && (
+              <a href={marca.linkedin} target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+            )}
           </div>
         </div>
 
