@@ -1,0 +1,6 @@
+# robots.txt — Preparación ITSS Toledo
+# ⚠️ Sustituye el dominio de ejemplo por el tuyo real.
+User-agent: *
+Allow: /
+
+Sitemap: https://preparadoresitsstoledo-collab.github.io/Jes-s/sitemap.xml
