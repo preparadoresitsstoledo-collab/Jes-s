@@ -48,14 +48,17 @@ export const profesion = {
       {
         nombre: 'Convenio n.º 81 de la OIT',
         detalle: 'Sobre la inspección del trabajo en la industria y el comercio (1947).',
+        url: 'https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:12100:0::NO::P12100_ILO_CODE:C081',
       },
       {
         nombre: 'Convenio n.º 129 de la OIT',
         detalle: 'Sobre la inspección del trabajo en la agricultura (1969).',
+        url: 'https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:12100:0::NO::P12100_ILO_CODE:C129',
       },
       {
         nombre: 'Ley 23/2015, de 21 de julio',
         detalle: 'Ordenadora del Sistema de Inspección de Trabajo y Seguridad Social.',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-8168',
       },
     ],
   },

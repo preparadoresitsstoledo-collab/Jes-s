@@ -30,7 +30,13 @@ export default function Profesion() {
             <ul className="marco__lista">
               {profesion.marco.normas.map((n, i) => (
                 <li key={i}>
-                  <strong>{n.nombre}</strong>
+                  {n.url ? (
+                    <a href={n.url} target="_blank" rel="noopener noreferrer">
+                      <strong>{n.nombre}</strong> ↗
+                    </a>
+                  ) : (
+                    <strong>{n.nombre}</strong>
+                  )}
                   <span>{n.detalle}</span>
                 </li>
               ))}
