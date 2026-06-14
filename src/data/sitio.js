@@ -17,7 +17,7 @@ export const marca = {
   nombre: 'Preparación ITSS Toledo',
   claim: 'Preparación presencial para el Cuerpo Superior de Inspección de Trabajo y Seguridad Social',
   ciudad: 'Toledo',
-  email: 'preparadoresitsstoledo@gmail.com',
+  email: 'info@preparadoritsstoledo.es',
   // TELÉFONO Y WHATSAPP OCULTOS. Para volver a activarlos, escribe el número en
   // los campos `telefono` / `whatsapp` y pon el `mostrar...` correspondiente a true.
   mostrarTelefono: false,
