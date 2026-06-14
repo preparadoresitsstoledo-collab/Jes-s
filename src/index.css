@@ -28,7 +28,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 100px;
 }
 
 body {
@@ -164,7 +164,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
+  height: 92px;
 }
 
 .navbar__marca {
@@ -177,14 +177,14 @@ img {
 }
 
 .navbar__logo-img {
-  height: 56px;
+  height: 78px;
   width: auto;
   display: block;
 }
 
 @media (max-width: 520px) {
   .navbar__logo-img {
-    height: 46px;
+    height: 60px;
   }
 }
 
@@ -347,9 +347,9 @@ img {
   width: 100%;
   border-radius: var(--radio);
   box-shadow: var(--sombra-lg);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center top;
 }
 
 .preparador__avatar {
@@ -1563,7 +1563,7 @@ table.convocatorias tbody tr:hover {
   .navbar__links--abierto {
     display: flex;
     position: absolute;
-    top: 72px;
+    top: 92px;
     left: 0;
     right: 0;
     flex-direction: column;
