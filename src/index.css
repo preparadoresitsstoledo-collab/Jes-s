@@ -837,6 +837,17 @@ table.convocatorias tbody tr:hover {
   box-shadow: var(--sombra-sm);
 }
 
+.marco__lista a {
+  text-decoration: none;
+  color: var(--azul-500);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.marco__lista a:hover strong {
+  text-decoration: underline;
+}
+
 .marco__lista strong {
   display: block;
   color: var(--azul-900);
