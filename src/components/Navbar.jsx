@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { marca } from '../data/sitio.js'
+import logo from '../assets/logo.png'
 
 const enlaces = [
   { href: '#preparador', texto: 'El preparador' },
@@ -17,8 +17,13 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="contenedor navbar__inner">
         <a className="navbar__marca" href="#inicio" onClick={() => setAbierto(false)}>
-          <span className="navbar__logo">ITSS</span>
-          <span>{marca.nombre}</span>
+          <img
+            className="navbar__logo-img"
+            src={logo}
+            alt="Preparador de Oposiciones · Inspección de Trabajo · Provincia de Toledo"
+            width="180"
+            height="180"
+          />
         </a>
 
         <ul className={`navbar__links ${abierto ? 'navbar__links--abierto' : ''}`}>
