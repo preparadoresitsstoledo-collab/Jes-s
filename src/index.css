@@ -837,21 +837,29 @@ table.convocatorias tbody tr:hover {
   box-shadow: var(--sombra-sm);
 }
 
-.marco__lista a {
+.marco__enlace {
+  display: block;
   text-decoration: none;
-  color: var(--azul-500);
-  font-size: 0.78rem;
-  font-weight: 700;
+  color: inherit;
 }
 
-.marco__lista a:hover strong {
+.marco__enlace:hover {
+  text-decoration: none;
+}
+
+.marco__enlace:hover strong {
   text-decoration: underline;
+}
+
+.marco__lista li:hover {
+  border-left-color: var(--acento);
 }
 
 .marco__lista strong {
   display: block;
-  color: var(--azul-900);
+  color: var(--azul-500);
   font-size: 0.95rem;
+  margin-bottom: 2px;
 }
 
 .marco__lista span {
