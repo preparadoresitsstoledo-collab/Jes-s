@@ -4,7 +4,10 @@ import {
   temario,
   requisitos,
   requisitosNota,
+  modelosExamen,
 } from '../data/proceso.js'
+
+const BASE = import.meta.env.BASE_URL
 
 export default function Proceso() {
   return (
@@ -71,6 +74,40 @@ export default function Proceso() {
             ))}
           </ul>
         </div>
+
+        {modelosExamen?.length > 0 && (
+          <div className="modelos">
+            <h3 className="modelos__titulo">Modelos de examen para descargar</h3>
+            <p className="modelos__intro">
+              Exámenes reales del Tribunal de Oposiciones para que practiques con el formato y el
+              nivel de la prueba.
+            </p>
+            <div className="modelos-grid">
+              {modelosExamen.map((m, i) => (
+                <a
+                  key={i}
+                  className="modelo-card"
+                  href={`${BASE}${m.archivo}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                >
+                  <span className="modelo-card__icono" aria-hidden="true">
+                    📄
+                  </span>
+                  <span className="modelo-card__cuerpo">
+                    <strong>{m.titulo}</strong>
+                    <span className="modelo-card__desc">{m.descripcion}</span>
+                    <span className="modelo-card__meta">{m.meta} · Descargar ↓</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+            <p className="fuente-nota">
+              Fuente: Tribunal de Oposiciones · Ministerio de Trabajo y Economía Social.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   )

@@ -74,6 +74,38 @@ export const requisitos = [
 export const requisitosNota =
   'Requisitos del turno de acceso libre conforme a la convocatoria 2026 (BOE-A-2026-165). Revisa siempre las bases de la convocatoria en vigor.'
 
+/**
+ * Modelos de examen para descargar (PDF). Documentos del Tribunal de
+ * Oposiciones (Ministerio de Trabajo y Economía Social). Los archivos están
+ * en public/modelos/.
+ */
+export const modelosExamen = [
+  {
+    titulo: 'Modelos de examen 2023 (recopilación)',
+    descripcion: 'Recopilación de modelos de los ejercicios del proceso selectivo (acceso libre).',
+    archivo: 'modelos/2023-modelos-examenes.pdf',
+    meta: 'PDF · 57 págs',
+  },
+  {
+    titulo: 'Caso práctico e idiomas · Turno libre',
+    descripcion: 'Cuarto ejercicio: supuesto práctico y prueba de idioma del turno de acceso libre.',
+    archivo: 'modelos/caso-practico-idiomas-turno-libre.pdf',
+    meta: 'PDF · 18 págs',
+  },
+  {
+    titulo: 'Casos prácticos e idioma · Promoción interna',
+    descripcion: 'Casos prácticos de los ejercicios 1 y 2 y prueba de idioma (promoción interna).',
+    archivo: 'modelos/casos-practicos-idioma-promocion-interna.pdf',
+    meta: 'PDF · 27 págs',
+  },
+  {
+    titulo: 'Modelos de examen 2024 · Promoción interna (Letra E)',
+    descripcion: 'Modelos de examen del turno de promoción interna (Letra E).',
+    archivo: 'modelos/2024-modelos-promocion-interna-letra-e.pdf',
+    meta: 'PDF · 4 págs',
+  },
+]
+
 /** Temario de preparación. */
 export const temario = {
   intro:
