@@ -245,6 +245,10 @@ export const metodologia = [
 /** Preguntas frecuentes. (EDITAR) Adáptalas a tu caso. */
 export const faqs = [
   {
+    pregunta: '¿Dónde se preparan las oposiciones de Inspección de Trabajo en Toledo?',
+    respuesta: 'La preparación es presencial en la provincia de Toledo, impartida por un Inspector de Trabajo y Seguridad Social en activo, en un grupo único y reducido.',
+  },
+  {
     pregunta: '¿Las clases son presenciales u online?',
     respuesta: 'Exclusivamente presenciales en la provincia de Toledo. No se ofrece preparación por videoconferencia.',
   },
