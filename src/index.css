@@ -1336,6 +1336,79 @@ table.convocatorias tbody tr:hover {
   }
 }
 
+/* ---------- Modelos de examen (descargas) ---------- */
+.modelos {
+  margin-top: 40px;
+}
+
+.modelos__titulo {
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.modelos__intro {
+  text-align: center;
+  color: var(--gris-500);
+  max-width: 640px;
+  margin: 0 auto 24px;
+}
+
+.modelos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.modelo-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-left: 4px solid var(--azul-500);
+  border-radius: var(--radio);
+  padding: 18px 20px;
+  box-shadow: var(--sombra-sm);
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.modelo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-md);
+  border-left-color: var(--acento);
+  text-decoration: none;
+}
+
+.modelo-card__icono {
+  font-size: 1.8rem;
+  flex: 0 0 auto;
+}
+
+.modelo-card__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modelo-card__cuerpo strong {
+  color: var(--azul-900);
+  font-size: 1rem;
+}
+
+.modelo-card__desc {
+  color: var(--gris-700);
+  font-size: 0.9rem;
+}
+
+.modelo-card__meta {
+  color: var(--azul-500);
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
 /* ---------- Metodología ---------- */
 .metodologia-grid {
   display: grid;
