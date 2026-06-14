@@ -36,8 +36,8 @@ export default function Hero() {
             <span>plazas de acceso libre en la convocatoria {ultimaConvocatoria.año}</span>
           </div>
           <div className="hero__dato">
-            <strong>{totales.plazasLibre}</strong>
-            <span>plazas convocadas en las últimas 3 convocatorias</span>
+            <strong>{totales.plazas.toLocaleString('es-ES')}</strong>
+            <span>plazas convocadas entre 2019 y 2025</span>
           </div>
           <div className="hero__dato">
             <strong>Presencial</strong>
