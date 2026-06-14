@@ -242,6 +242,21 @@ export const metodologia = [
   },
 ]
 
+/** Precio de la preparación. */
+export const precio = {
+  importe: '175 €',
+  periodo: 'al mes',
+  descripcion: 'Cuota mensual de la preparación presencial en Toledo.',
+  incluye: [
+    'Clases presenciales en grupo único y reducido',
+    'Planificación semanal del estudio',
+    'Casos prácticos y simulacros de examen',
+    'Corrección y seguimiento personalizado',
+    'Práctica de exposición oral («cantar» los temas)',
+  ],
+  nota: 'Plazas limitadas. Consulta la disponibilidad del grupo.',
+}
+
 /** Preguntas frecuentes. (EDITAR) Adáptalas a tu caso. */
 export const faqs = [
   {
