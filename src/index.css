@@ -349,6 +349,7 @@ img {
   box-shadow: var(--sombra-lg);
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  object-position: center 25%;
 }
 
 .preparador__avatar {
@@ -455,6 +456,22 @@ img {
   font-size: 0.82rem;
   color: var(--gris-700);
   font-weight: 500;
+}
+
+.medios__galeria {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.medios__galeria img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--gris-100);
+  box-shadow: var(--sombra-sm);
 }
 
 .video {

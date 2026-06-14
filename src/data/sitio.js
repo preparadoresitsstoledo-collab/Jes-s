@@ -7,6 +7,11 @@
  * ============================================================================
  */
 
+import fotoPreparador from '../assets/preparador.jpg'
+import mediaTve1 from '../assets/media-tve-1.jpg'
+import mediaTve2 from '../assets/media-tve-2.jpg'
+
+
 /** Datos de marca / cabecera. */
 export const marca = {
   nombre: 'Preparación ITSS Toledo',
@@ -136,8 +141,13 @@ export const pasos = [
 export const preparador = {
   nombre: 'Jesús María Prieto Valbuena',
   cargo: 'Inspector de Trabajo y Seguridad Social · Preparador de la oposición',
-  // Ruta a tu foto. Coloca el archivo en /public/preparador.jpg
-  foto: '', // ej: './preparador.jpg' (déjalo vacío para mostrar un avatar genérico)
+  // Foto del preparador (importada desde src/assets/preparador.jpg).
+  foto: fotoPreparador,
+  // Galería "En los medios" (apariciones en televisión).
+  galeria: [
+    { src: mediaTve1, alt: 'Jesús Prieto en «Aquí hay trabajo» (TVE)' },
+    { src: mediaTve2, alt: 'Jesús Prieto en «Aquí hay trabajo» (TVE)' },
+  ],
   // Bio redactada a partir de tu entrevista en La Revista de Valdemoro (jun. 2025).
   // Revisa y ajusta cualquier dato que quieras matizar.
   bio: [

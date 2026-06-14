@@ -62,6 +62,13 @@ export default function Preparador() {
                     <li key={i}>{m}</li>
                   ))}
                 </ul>
+                {preparador.galeria?.length > 0 && (
+                  <div className="medios__galeria">
+                    {preparador.galeria.map((g, i) => (
+                      <img key={i} src={g.src} alt={g.alt} loading="lazy" />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
