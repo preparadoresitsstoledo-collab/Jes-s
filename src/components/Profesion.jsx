@@ -31,13 +31,21 @@ export default function Profesion() {
               {profesion.marco.normas.map((n, i) => (
                 <li key={i}>
                   {n.url ? (
-                    <a href={n.url} target="_blank" rel="noopener noreferrer">
-                      <strong>{n.nombre}</strong> ↗
+                    <a
+                      className="marco__enlace"
+                      href={n.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <strong>{n.nombre} ↗</strong>
+                      <span>{n.detalle}</span>
                     </a>
                   ) : (
-                    <strong>{n.nombre}</strong>
+                    <>
+                      <strong>{n.nombre}</strong>
+                      <span>{n.detalle}</span>
+                    </>
                   )}
-                  <span>{n.detalle}</span>
                 </li>
               ))}
             </ul>
