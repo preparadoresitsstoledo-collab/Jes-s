@@ -195,25 +195,6 @@ export const resultados = {
   ],
 }
 
-/** Referencias / testimonios de antiguos alumnos. */
-export const testimonios = [
-  {
-    nombre: 'Alumno/a aprobado/a (EDITAR)',
-    promocion: 'Promoción 2023',
-    texto: 'Testimonio de ejemplo. Sustituye por una referencia real de un alumno o alumna que haya aprobado contigo.',
-  },
-  {
-    nombre: 'Alumno/a aprobado/a (EDITAR)',
-    promocion: 'Promoción 2022',
-    texto: 'Otro testimonio de ejemplo. Las referencias reales aportan mucha confianza a quien visita la web.',
-  },
-  {
-    nombre: 'Alumno/a aprobado/a (EDITAR)',
-    promocion: 'Promoción 2021',
-    texto: 'Tercer testimonio de ejemplo.',
-  },
-]
-
 /** Pasos de la metodología (todo presencial en Toledo). */
 export const metodologia = [
   {
