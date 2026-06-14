@@ -7,6 +7,7 @@ import Resultados from './components/Resultados.jsx'
 import Estadisticas from './components/Estadisticas.jsx'
 import Proceso from './components/Proceso.jsx'
 import Metodologia from './components/Metodologia.jsx'
+import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
 import Testimonios from './components/Testimonios.jsx'
 import Actualidad from './components/Actualidad.jsx'
@@ -29,6 +30,7 @@ export default function App() {
         <Estadisticas />
         <Proceso />
         <Metodologia />
+        <Toledo />
         <Pasos />
         <Testimonios />
         <Actualidad />
