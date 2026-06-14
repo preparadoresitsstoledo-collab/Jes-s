@@ -1,4 +1,5 @@
 import toledoCiudad from '../assets/toledo-ciudad.jpg'
+import trabajoSepe from '../assets/trabajo-sepe.jpg'
 
 export default function Toledo() {
   return (
@@ -34,6 +35,12 @@ export default function Toledo() {
             </p>
 
             <div className="toledo__lugar">
+              <img
+                className="toledo__lugar-foto"
+                src={trabajoSepe}
+                alt="Jesús Prieto frente a una oficina del Ministerio de Trabajo y Economía Social"
+                loading="lazy"
+              />
               <h3>🏛️ Donde trabajo cada día</h3>
               <p>
                 Ejerzo como Inspector de Trabajo y Seguridad Social en la{' '}
