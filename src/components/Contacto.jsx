@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { marca } from '../data/sitio.js'
 
 export default function Contacto() {
-  const [form, setForm] = useState({ nombre: '', email: '', telefono: '', mensaje: '' })
+  const [form, setForm] = useState({ nombre: '', email: '', mensaje: '' })
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
@@ -13,8 +13,7 @@ export default function Contacto() {
     const asunto = `Información preparación ITSS — ${form.nombre || 'Solicitud'}`
     const cuerpo =
       `Nombre: ${form.nombre}\n` +
-      `Email: ${form.email}\n` +
-      `Teléfono: ${form.telefono}\n\n` +
+      `Email: ${form.email}\n\n` +
       `${form.mensaje}`
     window.location.href = `mailto:${marca.email}?subject=${encodeURIComponent(
       asunto,
@@ -126,15 +125,6 @@ export default function Contacto() {
               value={form.email}
               onChange={onChange}
               required
-            />
-
-            <label htmlFor="telefono">Teléfono</label>
-            <input
-              id="telefono"
-              name="telefono"
-              type="tel"
-              value={form.telefono}
-              onChange={onChange}
             />
 
             <label htmlFor="mensaje">Mensaje</label>
