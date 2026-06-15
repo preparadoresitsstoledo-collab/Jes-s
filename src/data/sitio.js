@@ -26,8 +26,7 @@ export const marca = {
   // Redes sociales (deja la cadena vacía para ocultar el enlace).
   x: 'https://x.com/Jesus_Prieto_V',
   xUsuario: '@Jesus_Prieto_V',
-  // (VERIFICAR) URL de LinkedIn deducida del perfil; confirma que es correcta.
-  linkedin: 'https://es.linkedin.com/in/jes%C3%BAs-mar%C3%ADa-prieto-valbuena-7163022ba',
+  linkedin: 'https://www.linkedin.com/in/jes%C3%BAs-mar%C3%ADa-prieto-valbuena-7163022ba/',
 }
 
 /**
