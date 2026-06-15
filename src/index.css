@@ -1465,6 +1465,47 @@ table.convocatorias tbody tr:hover {
 }
 
 /* ---------- Precio ---------- */
+.precio-desplegable {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.precio-desplegable > summary {
+  list-style: none;
+  cursor: pointer;
+  text-align: center;
+  background: var(--azul-700);
+  color: var(--blanco);
+  font-weight: 700;
+  padding: 15px 24px;
+  border-radius: 999px;
+  box-shadow: var(--sombra-md);
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.precio-desplegable > summary::-webkit-details-marker {
+  display: none;
+}
+
+.precio-desplegable > summary::after {
+  content: ' ▾';
+  color: var(--acento-claro);
+}
+
+.precio-desplegable[open] > summary {
+  background: var(--azul-500);
+  margin-bottom: 18px;
+}
+
+.precio-desplegable[open] > summary::after {
+  content: ' ▴';
+}
+
+.precio-desplegable > summary:hover {
+  background: var(--azul-500);
+}
+
 .precio-card {
   max-width: 460px;
   margin: 0 auto;
