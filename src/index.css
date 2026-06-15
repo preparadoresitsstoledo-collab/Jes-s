@@ -1464,6 +1464,73 @@ table.convocatorias tbody tr:hover {
   margin: 0;
 }
 
+/* ---------- Precio ---------- */
+.precio-card {
+  max-width: 460px;
+  margin: 0 auto;
+  background: var(--blanco);
+  border: 2px solid var(--acento);
+  border-radius: var(--radio);
+  padding: 34px 30px;
+  box-shadow: var(--sombra-md);
+  text-align: center;
+}
+
+.precio-card__importe {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: var(--azul-700);
+  line-height: 1;
+}
+
+.precio-card__periodo {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gris-500);
+  margin-left: 6px;
+}
+
+.precio-card__desc {
+  color: var(--gris-700);
+  margin: 12px 0 0;
+}
+
+.precio-card__incluye {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.precio-card__incluye li {
+  position: relative;
+  padding: 9px 0 9px 30px;
+  color: var(--gris-700);
+  font-size: 0.95rem;
+  border-bottom: 1px dashed var(--gris-100);
+}
+
+.precio-card__incluye li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--verde);
+  font-weight: 800;
+}
+
+.precio-card__nota {
+  font-size: 0.85rem;
+  color: var(--gris-500);
+  font-style: italic;
+  margin: 0 0 20px;
+}
+
+.precio-card .btn {
+  width: 100%;
+  justify-content: center;
+}
+
 /* ---------- Testimonios ---------- */
 .testimonios-grid {
   display: grid;

@@ -9,6 +9,7 @@ import Proceso from './components/Proceso.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
+import Precios from './components/Precios.jsx'
 import Testimonios from './components/Testimonios.jsx'
 import Actualidad from './components/Actualidad.jsx'
 import Faq from './components/Faq.jsx'
@@ -32,6 +33,7 @@ export default function App() {
         <Metodologia />
         <Toledo />
         <Pasos />
+        <Precios />
         <Testimonios />
         <Actualidad />
         <Faq />

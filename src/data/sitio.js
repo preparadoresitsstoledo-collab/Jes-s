@@ -17,7 +17,7 @@ export const marca = {
   nombre: 'Preparación ITSS Toledo',
   claim: 'Preparación presencial para el Cuerpo Superior de Inspección de Trabajo y Seguridad Social',
   ciudad: 'Toledo',
-  email: 'preparadoresitsstoledo@gmail.com',
+  email: 'info@preparadoritsstoledo.es',
   // TELÉFONO Y WHATSAPP OCULTOS. Para volver a activarlos, escribe el número en
   // los campos `telefono` / `whatsapp` y pon el `mostrar...` correspondiente a true.
   mostrarTelefono: false,
@@ -241,6 +241,21 @@ export const metodologia = [
     icono: '📈',
   },
 ]
+
+/** Precio de la preparación. */
+export const precio = {
+  importe: '175 €',
+  periodo: 'al mes',
+  descripcion: 'Cuota mensual de la preparación presencial en Toledo.',
+  incluye: [
+    'Clases presenciales en grupo único y reducido',
+    'Planificación semanal del estudio',
+    'Casos prácticos y simulacros de examen',
+    'Corrección y seguimiento personalizado',
+    'Práctica de exposición oral («cantar» los temas)',
+  ],
+  nota: 'Plazas limitadas. Consulta la disponibilidad del grupo.',
+}
 
 /** Preguntas frecuentes. (EDITAR) Adáptalas a tu caso. */
 export const faqs = [
