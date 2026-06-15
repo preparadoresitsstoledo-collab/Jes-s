@@ -13,10 +13,7 @@ export default function Precios() {
 
           <div className="precio-card">
             <div className="precio-card__cabecera">
-              <div className="precio-card__importe">
-                {precio.importe}
-                <span className="precio-card__periodo">{precio.periodo}</span>
-              </div>
+              <div className="precio-card__importe-texto">{precio.importe}</div>
               <p className="precio-card__desc">{precio.descripcion}</p>
             </div>
 

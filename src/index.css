@@ -1550,6 +1550,13 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   line-height: 1;
 }
 
+.precio-card__importe-texto {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--azul-700);
+  line-height: 1.1;
+}
+
 .precio-card__periodo {
   display: inline-block;
   font-size: 1rem;

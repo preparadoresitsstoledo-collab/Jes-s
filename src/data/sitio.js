@@ -244,9 +244,8 @@ export const metodologia = [
 
 /** Precio de la preparación. */
 export const precio = {
-  importe: '175 €',
-  periodo: 'al mes',
-  descripcion: 'Cuota mensual de la preparación presencial en Toledo.',
+  importe: 'Cuota mensual',
+  descripcion: 'El importe se indicará en el correo de respuesta.',
   incluye: [
     'Clases presenciales en grupo único y reducido',
     'Planificación semanal del estudio',
