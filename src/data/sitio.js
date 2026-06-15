@@ -275,11 +275,11 @@ export const faqs = [
   },
   {
     pregunta: '¿Necesito tener una titulación concreta para presentarme?',
-    respuesta: 'Sí. La oposición exige una titulación universitaria (Grado, Licenciatura, Ingeniería, Arquitectura o Doctorado), conforme a las bases de cada convocatoria. Te orientamos sobre los requisitos vigentes.',
+    respuesta: 'Hay que estar en posesión —o en condiciones de obtener— del título de Doctor, Licenciado, Ingeniero, Arquitecto o Grado, conforme a la última convocatoria (BOE-A-2026-165). Las titulaciones obtenidas en el extranjero deben estar homologadas.',
   },
   {
     pregunta: '¿Cuándo empiezan los grupos?',
-    respuesta: 'Escríbeme por email y te informo de las fechas de inicio y de la disponibilidad de plazas del grupo.',
+    respuesta: 'Empiezan en función de lo que se pacte de forma individualizada con cada alumno, atendiendo a su situación particular. Al ser un grupo pequeño y una preparación individualizada, no existe la misma preparación para dos alumnos: es personal de cada uno.',
   },
   {
     pregunta: '¿Cómo solicito información o reservo plaza?',
