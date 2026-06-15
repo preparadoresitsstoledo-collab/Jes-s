@@ -253,6 +253,16 @@ export const precio = {
   nota: 'Plazas limitadas. Consulta la disponibilidad del grupo.',
 }
 
+/** Testimonios reales de alumnos (publicados con su consentimiento). */
+export const testimonios = [
+  {
+    texto:
+      'Ser opositor implica no solo enfrentarte a un temario y a los exámenes, sino a ti mismo. Con esto quiero decir que habrá momentos de alegría, tristeza, concentración, vagueza, enfado, frustración y cuantos estados sentimentales se te puedan ocurrir, pero el final del camino supera a todos ellos. Haber preparado con «Preparadores ITSS Toledo» me ha ayudado a llevar una buena organización a efectos de acumular y arrastrar todos los temas. Siempre con una planificación individual de cada uno, sabiendo cuándo hay que exigir y cuándo hay que aflojar con cada persona. Agradezco la cercanía y, sobre todo, la rigurosidad en el estudio de los temas. Sin ellos no hubiera podido alcanzar la meta: ser Inspectora de Trabajo y Seguridad Social.',
+    autor: 'Alumna aprobada',
+    cargo: 'Inspectora de Trabajo y Seguridad Social',
+  },
+]
+
 /** Preguntas frecuentes. */
 export const faqs = [
   {
