@@ -1819,6 +1819,21 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   font-size: 0.9rem;
 }
 
+.footer__logo {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.footer__logo img {
+  width: 300px;
+  max-width: 78%;
+  height: auto;
+  background: #fff;
+  border-radius: var(--radio);
+  padding: 22px;
+  box-shadow: var(--sombra-md);
+}
+
 .footer__grid {
   display: flex;
   justify-content: space-between;

@@ -1,4 +1,5 @@
 import { marca } from '../data/sitio.js'
+import logo from '../assets/logo.png'
 
 export default function Footer() {
   const año = new Date().getFullYear()
@@ -6,6 +7,15 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="contenedor">
+        <div className="footer__logo">
+          <img
+            src={logo}
+            alt="Preparador de Oposiciones · Inspección de Trabajo · Provincia de Toledo"
+            width="360"
+            height="360"
+          />
+        </div>
+
         <div className="footer__grid">
           <div>
             <div className="footer__marca">{marca.nombre}</div>
