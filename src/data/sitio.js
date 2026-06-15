@@ -163,9 +163,7 @@ export const preparador = {
       'El rigor de nuestros procesos de oposiciones elige a profesionales muy cualificados, bien formados y personalmente capacitados.',
     fuente: 'Entrevista en La Revista de Valdemoro, junio de 2025',
   },
-  // Vídeo de presentación. Pega el ID o la URL de embed de YouTube/Vimeo.
-  // (EDITAR) Vídeo público encontrado sobre la oposición. Sustitúyelo si prefieres
-  // tu propio vídeo de presentación.
+  // Vídeo de presentación del preparador (YouTube). Confirmado por Jesús Prieto.
   videoUrl: 'https://www.youtube.com/watch?v=xHMBxCNN-4I',
   // Méritos / referencias rápidas que se muestran como tarjetas.
   meritos: [
