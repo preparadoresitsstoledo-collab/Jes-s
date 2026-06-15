@@ -21,8 +21,11 @@ import WhatsappFlotante from './components/WhatsappFlotante.jsx'
 export default function App() {
   return (
     <>
+      <a className="skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
       <Navbar />
-      <main>
+      <main id="contenido">
         <Hero />
         <Ventajas />
         <Preparador />

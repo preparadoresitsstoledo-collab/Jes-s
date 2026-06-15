@@ -256,7 +256,7 @@ export const precio = {
   nota: 'Plazas limitadas. Consulta la disponibilidad del grupo.',
 }
 
-/** Preguntas frecuentes. (EDITAR) Adáptalas a tu caso. */
+/** Preguntas frecuentes. */
 export const faqs = [
   {
     pregunta: '¿Dónde se preparan las oposiciones de Inspección de Trabajo en Toledo?',
@@ -268,11 +268,11 @@ export const faqs = [
   },
   {
     pregunta: '¿Necesito tener una titulación concreta para presentarme?',
-    respuesta: 'La oposición al Cuerpo Superior de Inspección de Trabajo y Seguridad Social exige titulación universitaria según las bases de cada convocatoria. Te orientamos sobre los requisitos vigentes. (EDITAR / confirmar con la convocatoria en vigor).',
+    respuesta: 'Sí. La oposición exige una titulación universitaria (Grado, Licenciatura, Ingeniería, Arquitectura o Doctorado), conforme a las bases de cada convocatoria. Te orientamos sobre los requisitos vigentes.',
   },
   {
     pregunta: '¿Cuándo empiezan los grupos?',
-    respuesta: 'Consulta las fechas de inicio y disponibilidad de plazas por email. (EDITAR)',
+    respuesta: 'Escríbeme por email y te informo de las fechas de inicio y de la disponibilidad de plazas del grupo.',
   },
   {
     pregunta: '¿Cómo solicito información o reservo plaza?',

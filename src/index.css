@@ -68,6 +68,43 @@ img {
   padding: 0 20px;
 }
 
+/* ---------- Accesibilidad ---------- */
+/* Enlace "saltar al contenido" para teclado/lectores de pantalla */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--azul-900);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 0 0 var(--radio-sm) 0;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* Foco visible y claro al navegar con teclado */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+
+/* Respeta a quien prefiere menos animación */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
 .seccion {
   padding: 72px 0;
 }
@@ -238,41 +275,6 @@ img {
   background-size: 40px 40px;
   pointer-events: none;
 }
-
-/* Silueta del skyline de Toledo en la base del hero */
-.hero__skyline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 240px;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.hero__skyline-back rect {
-  fill: rgba(255, 255, 255, 0.06);
-}
-
-.hero__skyline-front rect,
-.hero__skyline-front polygon,
-.hero__skyline-front path {
-  fill: rgba(0, 0, 0, 0.22);
-}
-
-/*
-  ¿Quieres una FOTO REAL de Toledo de fondo en lugar de la silueta?
-  1) Añade el archivo public/hero-toledo.jpg (apaisado, p. ej. 1920x1080).
-  2) Añade la clase "hero--foto" al <header> en src/components/Hero.jsx.
-  3) Descomenta esta regla:
-
-  .hero--foto {
-    background-image: linear-gradient(rgba(11,37,69,0.78), rgba(11,37,69,0.88)), url('./hero-toledo.jpg');
-    background-size: cover;
-    background-position: center;
-  }
-*/
 
 .hero__inner {
   position: relative;
@@ -1543,26 +1545,11 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   text-align: center;
 }
 
-.precio-card__importe {
-  font-size: 3.2rem;
-  font-weight: 800;
-  color: var(--azul-700);
-  line-height: 1;
-}
-
 .precio-card__importe-texto {
   font-size: 1.9rem;
   font-weight: 800;
   color: var(--azul-700);
   line-height: 1.1;
-}
-
-.precio-card__periodo {
-  display: inline-block;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--gris-500);
-  margin-left: 6px;
 }
 
 .precio-card__desc {
