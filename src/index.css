@@ -682,6 +682,32 @@ table.convocatorias tbody tr:hover {
   background: var(--gris-50);
 }
 
+table.convocatorias tbody tr.fila-destacada {
+  background: rgba(201, 162, 39, 0.12);
+}
+
+table.convocatorias tbody tr.fila-destacada:hover {
+  background: rgba(201, 162, 39, 0.18);
+}
+
+table.convocatorias tbody tr.fila-destacada td:first-child {
+  box-shadow: inset 4px 0 0 var(--acento);
+}
+
+.badge-nuevo {
+  display: inline-block;
+  margin-left: 8px;
+  background: var(--acento);
+  color: var(--azul-900);
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
 .pill-tasa {
   display: inline-block;
   background: rgba(31, 122, 77, 0.12);
