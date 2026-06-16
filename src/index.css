@@ -1784,6 +1784,39 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   justify-content: center;
 }
 
+.form .btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+/* Campo trampa antispam: fuera de pantalla */
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__aviso {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+.form__aviso--ok {
+  background: rgba(31, 122, 77, 0.12);
+  color: var(--verde);
+}
+
+.form__aviso--error {
+  background: #fdecec;
+  color: #b3261e;
+}
+
 .contacto__redes {
   display: flex;
   gap: 14px;
