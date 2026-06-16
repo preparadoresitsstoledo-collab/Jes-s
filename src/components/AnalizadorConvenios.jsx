@@ -106,7 +106,7 @@ export default function AnalizadorConvenios() {
   function textoInforme() {
     const L = []
     L.push(cabecera.organismo)
-    L.push(cabecera.delegacion)
+    if (cabecera.delegacion) L.push(cabecera.delegacion)
     L.push('')
     L.push(`FECHA: ${fecha}`)
     L.push(`ASUNTO: ${cabecera.asunto}.`)
@@ -178,6 +178,24 @@ export default function AnalizadorConvenios() {
         {/* Columna de entrada y valoración */}
         <section className="analizador__panel no-impresion">
           <h2>1. Datos del informe</h2>
+          <div className="campo">
+            <label>Organismo / Autoridad Laboral</label>
+            <input
+              type="text"
+              value={cabecera.organismo}
+              onChange={(e) => actualizarCabecera('organismo', e.target.value)}
+              placeholder="Inspección de Trabajo y Seguridad Social"
+            />
+          </div>
+          <div className="campo">
+            <label>Unidad / Delegación (opcional)</label>
+            <input
+              type="text"
+              value={cabecera.delegacion}
+              onChange={(e) => actualizarCabecera('delegacion', e.target.value)}
+              placeholder="Dirección Territorial / Provincial…"
+            />
+          </div>
           <div className="campo">
             <label>Nombre del convenio</label>
             <input
@@ -309,7 +327,7 @@ export default function AnalizadorConvenios() {
 
           <article className="documento">
             <p className="documento__org">{cabecera.organismo}</p>
-            <p className="documento__org">{cabecera.delegacion}</p>
+            {cabecera.delegacion && <p className="documento__org">{cabecera.delegacion}</p>}
             <p className="documento__meta">
               <strong>FECHA:</strong> {fecha}
               <br />

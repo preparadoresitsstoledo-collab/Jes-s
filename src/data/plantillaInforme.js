@@ -20,9 +20,10 @@ export const ESTADOS = {
 }
 
 // Datos de cabecera del informe (editables en la herramienta).
+// Genéricos para toda España; cada Autoridad Laboral puede personalizarlos.
 export const CABECERA_DEFECTO = {
-  organismo: 'CONSEJERÍA DE ECONOMÍA, EMPRESAS Y EMPLEO',
-  delegacion: 'Delegación Provincial de Toledo. Servicio de Trabajo',
+  organismo: 'INSPECCIÓN DE TRABAJO Y SEGURIDAD SOCIAL',
+  delegacion: '',
   asunto: 'INFORME CONVENIO COLECTIVO',
   inspector: '',
 }

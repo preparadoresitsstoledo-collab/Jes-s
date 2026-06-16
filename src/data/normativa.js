@@ -1,16 +1,16 @@
 // Referencias normativas usadas por el analizador de convenios.
 // ⚠️ Revisa y actualiza estas cifras cada año (sobre todo el SMI).
 
-// Salario Mínimo Interprofesional. Valor por defecto: 2025 (RD 87/2025).
+// Salario Mínimo Interprofesional. Valor por defecto: 2026 (RD 126/2026).
 // En la herramienta el usuario puede ajustarlo al SMI vigente.
 export const SMI = {
-  anio: 2025,
-  mensual: 1184, // €/mes en 14 pagas
+  anio: 2026,
+  mensual: 1221, // €/mes en 14 pagas
   pagas: 14,
   get anual() {
     return this.mensual * this.pagas
   },
-  ref: 'RD 87/2025',
+  ref: 'RD 126/2026',
 }
 
 // Límites del Estatuto de los Trabajadores (RDL 2/2015) usados por las
