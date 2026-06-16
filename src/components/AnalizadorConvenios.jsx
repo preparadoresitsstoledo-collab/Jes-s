@@ -10,6 +10,7 @@ import {
 } from '../data/plantillaInforme.js'
 import { ARTICULOS, SMI } from '../data/normativa.js'
 import { analizarConvenio } from '../lib/analizadorConvenios.js'
+// El extractor (pdf.js + mammoth) se carga de forma diferida solo al subir un archivo.
 
 const EJEMPLO = `CONVENIO COLECTIVO DE EJEMPLO
 
@@ -44,13 +45,43 @@ export default function AnalizadorConvenios() {
   const [notas, setNotas] = useState({})
   const [avisos, setAvisos] = useState([])
   const [analizado, setAnalizado] = useState(false)
+  const [cargando, setCargando] = useState(false)
+  const [archivoNombre, setArchivoNombre] = useState('')
 
   function actualizarCabecera(campo, valor) {
     setCabecera((c) => ({ ...c, [campo]: valor }))
   }
 
-  function ejecutarAnalisis() {
-    const { sugerencias, avisos: nuevosAvisos } = analizarConvenio(texto, { smiMensual })
+  async function onArchivo(e) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // permite volver a subir el mismo archivo
+    if (!file) return
+    setCargando(true)
+    setArchivoNombre(file.name)
+    try {
+      const { extraerTextoArchivo } = await import('../lib/extraerTexto.js')
+      const { texto: extraido, aviso } = await extraerTextoArchivo(file)
+      setTexto(extraido)
+      if (!nombreConvenio) {
+        setNombreConvenio(file.name.replace(/\.[^.]+$/, ''))
+      }
+      ejecutarAnalisis(extraido)
+      if (aviso) setAvisos((prev) => [{ tipo: 'info', texto: aviso }, ...prev])
+    } catch (err) {
+      setAvisos([
+        {
+          tipo: 'alerta',
+          texto: `No se ha podido leer el archivo (${err.message || 'error desconocido'}). Prueba a pegar el texto.`,
+        },
+      ])
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  function ejecutarAnalisis(textoArg) {
+    const fuente = typeof textoArg === 'string' ? textoArg : texto
+    const { sugerencias, avisos: nuevosAvisos } = analizarConvenio(fuente, { smiMensual })
     setEstados((prev) => {
       const next = { ...prev }
       for (const [id, sug] of Object.entries(sugerencias)) {
@@ -76,6 +107,7 @@ export default function AnalizadorConvenios() {
     setAnalizado(false)
     setTexto('')
     setNombreConvenio('')
+    setArchivoNombre('')
   }
 
   function cargarEjemplo() {
@@ -231,8 +263,23 @@ export default function AnalizadorConvenios() {
 
           <h2>2. Texto del convenio</h2>
           <p className="campo__ayuda">
-            Pega aquí el texto. Si tienes un <code>.doc/.pdf</code>, ábrelo y copia el contenido.
+            Sube el archivo (<code>PDF</code>, <code>Word</code> o <code>TXT</code>) y se extraerá el
+            texto automáticamente, o pégalo directamente. 🔒 Los archivos se procesan en tu navegador;
+            no se suben a ningún servidor.
           </p>
+          <div className="analizador__subir">
+            <label className="btn btn--secundario">
+              {cargando ? 'Leyendo archivo…' : '📄 Subir convenio (PDF/Word/TXT)'}
+              <input
+                type="file"
+                accept=".pdf,.docx,.doc,.txt"
+                onChange={onArchivo}
+                hidden
+                disabled={cargando}
+              />
+            </label>
+            {archivoNombre && <span className="analizador__archivo">{archivoNombre}</span>}
+          </div>
           <textarea
             className="analizador__texto"
             value={texto}

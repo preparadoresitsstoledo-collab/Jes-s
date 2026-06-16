@@ -2170,3 +2170,31 @@ select.chip {
     padding: 0;
   }
 }
+
+/* Subida de archivo en el analizador */
+.analizador__subir {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.analizador__subir .btn--secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.analizador__subir input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.analizador__archivo {
+  font-size: 0.85rem;
+  color: var(--gris-600, #4b5563);
+  background: var(--gris-100);
+  padding: 4px 10px;
+  border-radius: 999px;
+  word-break: break-all;
+}
