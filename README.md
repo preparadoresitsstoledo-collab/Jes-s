@@ -76,6 +76,35 @@ al formato de inserción). Si lo dejas vacío, se muestra un aviso en su lugar.
 
 ---
 
+## 🔍 Analizador de convenios colectivos
+
+La web incluye una herramienta de apoyo al **control de legalidad de convenios colectivos**
+(art. 90.5 y 6 ET), al estilo de los informes de la Inspección de Trabajo. Se accede desde el
+menú (**Analizador de convenios**) o en la ruta `#/analizador`.
+
+Cómo funciona:
+
+1. Rellena los datos del informe (nombre del convenio, fecha, SMI vigente, inspector/a).
+2. Pega el texto del convenio y pulsa **Analizar automáticamente**: la herramienta pre-marca
+   los puntos detectables del cuadro (categorías vs grupos profesionales del art. 22, jubilación
+   forzosa, vacaciones e IT, contrato de obra o servicio derogado, salario inferior al SMI, plan
+   de igualdad, protocolo de acoso…).
+3. Revisa y ajusta cada punto del **cuadro de verificación** (estado + observación).
+4. El **informe** se genera en el formato oficial y puede **copiarse** o **imprimirse/guardarse en PDF**.
+
+Archivos relevantes:
+
+- `src/data/plantillaInforme.js` — cuadro de verificación y textos fijos del informe.
+- `src/data/normativa.js` — SMI, límites del ET y transcripciones de artículos.
+- `src/lib/analizadorConvenios.js` — motor de detección automática (heurístico).
+- `src/components/AnalizadorConvenios.jsx` — interfaz de la herramienta.
+
+> ⚖️ Es una herramienta **orientativa y educativa**: no sustituye el criterio profesional ni
+> constituye asesoramiento jurídico. La detección automática se basa en coincidencias de texto y
+> **el SMI debe mantenerse actualizado** en `src/data/normativa.js`.
+
+---
+
 ## SEO (posicionamiento en buscadores)
 
 La web está preparada para buscadores: etiquetas meta, Open Graph y Twitter Card,
