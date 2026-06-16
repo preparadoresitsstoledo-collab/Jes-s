@@ -261,6 +261,12 @@ export const testimonios = [
     autor: 'África',
     cargo: 'Alumna aprobada · Inspectora de Trabajo y Seguridad Social',
   },
+  {
+    texto:
+      'La preparación con Jesús fue clave para poder aprobar. No solo por todos los conocimientos que me transmitió, sino por el apoyo que me brindó durante toda la oposición, creando un ambiente de confianza tan necesario entre preparador y opositora. En aquellos momentos en los que pensaba en tirar la toalla, él siempre me ayudó a superar los baches. La preparación del caso práctico fue clave: tiene un método que requiere mucha dedicación, pero analizas muchísima casuística. Además de ser un gran preparador, tiene un carisma excepcional que hace que cada clase sea motivadora, amena y muy productiva. Sin duda, recomendable 100 %.',
+    autor: 'Blanca',
+    cargo: 'Alumna aprobada · Inspectora de Trabajo y Seguridad Social',
+  },
 ]
 
 /** Preguntas frecuentes. */

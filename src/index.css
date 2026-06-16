@@ -28,7 +28,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 128px;
+  scroll-padding-top: 160px;
 }
 
 body {
@@ -58,6 +58,7 @@ a:hover {
 
 img {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 
@@ -201,7 +202,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 120px;
+  height: 150px;
 }
 
 .navbar__marca {
@@ -214,14 +215,14 @@ textarea:focus-visible {
 }
 
 .navbar__logo-img {
-  height: 102px;
+  height: 132px;
   width: auto;
   display: block;
 }
 
 @media (max-width: 520px) {
   .navbar__logo-img {
-    height: 74px;
+    height: 92px;
   }
 }
 
@@ -342,7 +343,7 @@ textarea:focus-visible {
 
 .preparador__media {
   position: sticky;
-  top: 96px;
+  top: 168px;
 }
 
 .preparador__foto {
@@ -1886,7 +1887,7 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   .navbar__links--abierto {
     display: flex;
     position: absolute;
-    top: 120px;
+    top: 150px;
     left: 0;
     right: 0;
     flex-direction: column;
