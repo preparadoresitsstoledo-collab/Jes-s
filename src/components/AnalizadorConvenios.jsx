@@ -47,6 +47,8 @@ export default function AnalizadorConvenios() {
   const [analizado, setAnalizado] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [archivoNombre, setArchivoNombre] = useState('')
+  const [pdfParaOcr, setPdfParaOcr] = useState(null)
+  const [ocrProgreso, setOcrProgreso] = useState('')
 
   function actualizarCabecera(campo, valor) {
     setCabecera((c) => ({ ...c, [campo]: valor }))
@@ -58,6 +60,8 @@ export default function AnalizadorConvenios() {
     if (!file) return
     setCargando(true)
     setArchivoNombre(file.name)
+    setPdfParaOcr(null)
+    const esPdf = /\.pdf$/i.test(file.name) || file.type === 'application/pdf'
     try {
       const { extraerTextoArchivo } = await import('../lib/extraerTexto.js')
       const { texto: extraido, aviso } = await extraerTextoArchivo(file)
@@ -67,6 +71,10 @@ export default function AnalizadorConvenios() {
       }
       ejecutarAnalisis(extraido)
       if (aviso) setAvisos((prev) => [{ tipo: 'info', texto: aviso }, ...prev])
+      // PDF con poco texto → probablemente escaneado: ofrecer OCR.
+      if (esPdf && extraido.trim().length < 200) {
+        setPdfParaOcr(file)
+      }
     } catch (err) {
       setAvisos([
         {
@@ -76,6 +84,28 @@ export default function AnalizadorConvenios() {
       ])
     } finally {
       setCargando(false)
+    }
+  }
+
+  async function ejecutarOcr() {
+    if (!pdfParaOcr) return
+    setOcrProgreso('Preparando OCR…')
+    try {
+      const { ocrPdf } = await import('../lib/ocr.js')
+      const buffer = await pdfParaOcr.arrayBuffer()
+      const texto = await ocrPdf(buffer, ({ pagina, total }) =>
+        setOcrProgreso(`Reconociendo texto… página ${pagina} de ${total}`),
+      )
+      setTexto(texto)
+      ejecutarAnalisis(texto)
+      setOcrProgreso('')
+      setPdfParaOcr(null)
+    } catch (err) {
+      setOcrProgreso('')
+      setAvisos((prev) => [
+        { tipo: 'alerta', texto: `El OCR no se ha podido completar (${err.message || 'error'}). Requiere conexión a internet.` },
+        ...prev,
+      ])
     }
   }
 
@@ -108,6 +138,8 @@ export default function AnalizadorConvenios() {
     setTexto('')
     setNombreConvenio('')
     setArchivoNombre('')
+    setPdfParaOcr(null)
+    setOcrProgreso('')
   }
 
   function cargarEjemplo() {
@@ -280,6 +312,15 @@ export default function AnalizadorConvenios() {
             </label>
             {archivoNombre && <span className="analizador__archivo">{archivoNombre}</span>}
           </div>
+          {pdfParaOcr && !ocrProgreso && (
+            <div className="aviso aviso--info analizador__ocr">
+              Este PDF parece escaneado (sin texto seleccionable).{' '}
+              <button className="btn btn--secundario" onClick={ejecutarOcr}>
+                🔎 Reconocer texto (OCR)
+              </button>
+            </div>
+          )}
+          {ocrProgreso && <p className="analizador__ocr-progreso">⏳ {ocrProgreso}</p>}
           <textarea
             className="analizador__texto"
             value={texto}

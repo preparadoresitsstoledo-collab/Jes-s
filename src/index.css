@@ -2198,3 +2198,16 @@ select.chip {
   border-radius: 999px;
   word-break: break-all;
 }
+
+.analizador__ocr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+}
+.analizador__ocr-progreso {
+  margin: 0 0 10px;
+  font-weight: 600;
+  color: var(--azul-500);
+}
