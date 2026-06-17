@@ -7,22 +7,29 @@ export default function Contacto() {
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  // Envía el formulario a contacto.php (en el propio servidor), que manda el
-  // correo a info@preparadoritsstoledo.es. No abre ninguna app del visitante.
+  // Envía el formulario por correo a info@preparadoritsstoledo.es a través de
+  // FormSubmit (servicio gratuito, sin backend propio). El visitante no necesita
+  // ninguna app: el correo se manda en segundo plano.
   const onSubmit = async (e) => {
     e.preventDefault()
     setEstado('enviando')
     try {
-      const datos = new FormData()
-      datos.append('nombre', form.nombre)
-      datos.append('email', form.email)
-      datos.append('mensaje', form.mensaje)
-      datos.append('website', form.website) // honeypot antispam
-
-      const resp = await fetch('contacto.php', { method: 'POST', body: datos })
+      const resp = await fetch('https://formsubmit.co/ajax/info@preparadoritsstoledo.es', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          Nombre: form.nombre,
+          Email: form.email,
+          Mensaje: form.mensaje,
+          _subject: `Solicitud de información — ${form.nombre}`,
+          _template: 'table',
+          _captcha: 'false',
+          _honey: form.website, // antispam
+        }),
+      })
       const json = await resp.json().catch(() => ({}))
 
-      if (resp.ok && json.ok) {
+      if (resp.ok && String(json.success) === 'true') {
         setEstado('ok')
         setForm({ nombre: '', email: '', mensaje: '', website: '' })
       } else {
