@@ -14,7 +14,7 @@ export default function Contacto() {
     e.preventDefault()
     setEstado('enviando')
     try {
-      const resp = await fetch('https://formsubmit.co/ajax/info@preparadoritsstoledo.es', {
+      const resp = await fetch('https://formsubmit.co/ajax/45b42e56f8d27d27eb7a8a31303bef84', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
