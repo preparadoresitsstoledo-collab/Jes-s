@@ -169,17 +169,18 @@ export default function AnalizadorConvenios() {
 
   function textoInforme() {
     const L = []
-    L.push(cabecera.organismo)
-    if (cabecera.delegacion) L.push(cabecera.delegacion)
-    L.push('')
-    L.push(`FECHA: ${fecha}`)
-    L.push(`ASUNTO: ${cabecera.asunto}.`)
-    L.push('')
-    L.push(parrafoApertura(nombreConvenio))
+    if (cabecera.encabezado) {
+      L.push(cabecera.encabezado)
+      L.push('')
+    }
+    L.push(cabecera.asunto.toUpperCase())
+    L.push(`Fecha: ${fecha}`)
     L.push('')
     L.push((nombreConvenio || '[NOMBRE DEL CONVENIO]').toUpperCase())
     L.push('')
-    L.push('CUADRO DE VERIFICACIÓN — Restricción o vulneración')
+    L.push(parrafoApertura(nombreConvenio))
+    L.push('')
+    L.push('CUADRO DE REVISIÓN')
     if (informe.filasCuadro.length === 0) {
       L.push('(Sin puntos valorados todavía.)')
     } else {
@@ -189,7 +190,7 @@ export default function AnalizadorConvenios() {
       })
     }
     L.push('')
-    L.push('RESULTADO DE LA VERIFICACIÓN:')
+    L.push('RESULTADO DE LA REVISIÓN')
     L.push(informe.hayVulneraciones ? RESULTADO_INTRO.conVulneraciones : RESULTADO_INTRO.sinVulneraciones)
     L.push('')
     informe.observaciones.forEach((o, i) => {
@@ -202,8 +203,10 @@ export default function AnalizadorConvenios() {
       L.push('')
     })
     L.push(CIERRE)
-    L.push('')
-    L.push(`Fdo. ${cabecera.inspector || '[Inspector/a de Trabajo y Seguridad Social]'}`)
+    if (cabecera.autor) {
+      L.push('')
+      L.push(`Revisado por: ${cabecera.autor}`)
+    }
     return L.join('\n')
   }
 
@@ -225,11 +228,11 @@ export default function AnalizadorConvenios() {
       <header className="analizador__hero no-impresion">
         <div className="contenedor">
           <a className="analizador__volver" href="#inicio">← Volver a la web</a>
-          <h1>Analizador de convenios colectivos</h1>
+          <h1>Revisión de convenios colectivos</h1>
           <p className="analizador__lema">
-            Herramienta de apoyo para el <strong>control de legalidad</strong> de convenios colectivos
-            (art. 90.5 y 6 ET), al estilo de los informes de la Inspección de Trabajo. Pega el texto del
-            convenio, revisa el cuadro de verificación y genera el informe.
+            Herramienta de apoyo para <strong>revisar la legalidad</strong> de convenios colectivos
+            frente al Estatuto de los Trabajadores. Sube o pega el texto del convenio, revisa el cuadro
+            y genera una <strong>revisión</strong> lista para guardar o imprimir.
           </p>
           <p className="analizador__aviso-legal">
             ⚖️ Herramienta orientativa y educativa. No sustituye el criterio del/de la profesional ni
@@ -241,23 +244,14 @@ export default function AnalizadorConvenios() {
       <div className="contenedor analizador__grid">
         {/* Columna de entrada y valoración */}
         <section className="analizador__panel no-impresion">
-          <h2>1. Datos del informe</h2>
+          <h2>1. Datos de la revisión</h2>
           <div className="campo">
-            <label>Organismo / Autoridad Laboral</label>
+            <label>Encabezado del documento (opcional)</label>
             <input
               type="text"
-              value={cabecera.organismo}
-              onChange={(e) => actualizarCabecera('organismo', e.target.value)}
-              placeholder="Inspección de Trabajo y Seguridad Social"
-            />
-          </div>
-          <div className="campo">
-            <label>Unidad / Delegación (opcional)</label>
-            <input
-              type="text"
-              value={cabecera.delegacion}
-              onChange={(e) => actualizarCabecera('delegacion', e.target.value)}
-              placeholder="Dirección Territorial / Provincial…"
+              value={cabecera.encabezado}
+              onChange={(e) => actualizarCabecera('encabezado', e.target.value)}
+              placeholder="Tu nombre, despacho o academia (opcional)"
             />
           </div>
           <div className="campo">
@@ -284,11 +278,11 @@ export default function AnalizadorConvenios() {
             </div>
           </div>
           <div className="campo">
-            <label>Inspector/a firmante</label>
+            <label>Revisado por (opcional)</label>
             <input
               type="text"
-              value={cabecera.inspector}
-              onChange={(e) => actualizarCabecera('inspector', e.target.value)}
+              value={cabecera.autor}
+              onChange={(e) => actualizarCabecera('autor', e.target.value)}
               placeholder="Nombre y apellidos"
             />
           </div>
@@ -355,7 +349,7 @@ export default function AnalizadorConvenios() {
             </p>
           )}
 
-          <h2>3. Cuadro de verificación</h2>
+          <h2>3. Cuadro de revisión</h2>
           <p className="campo__ayuda">
             Revisa y ajusta cada punto. Las marcas propuestas automáticamente pueden corregirse.
           </p>
@@ -404,7 +398,7 @@ export default function AnalizadorConvenios() {
         {/* Columna del informe generado */}
         <section className="analizador__informe" id="informe-generado">
           <div className="analizador__informe-acciones no-impresion">
-            <h2>Informe generado</h2>
+            <h2>Revisión generada</h2>
             <div>
               <button className="btn btn--secundario" onClick={copiar}>Copiar texto</button>
               <button className="btn btn--primario" onClick={() => window.print()}>
@@ -414,19 +408,18 @@ export default function AnalizadorConvenios() {
           </div>
 
           <article className="documento">
-            <p className="documento__org">{cabecera.organismo}</p>
-            {cabecera.delegacion && <p className="documento__org">{cabecera.delegacion}</p>}
+            {cabecera.encabezado && <p className="documento__org">{cabecera.encabezado}</p>}
             <p className="documento__meta">
-              <strong>FECHA:</strong> {fecha}
+              <strong>{cabecera.asunto.toUpperCase()}</strong>
               <br />
-              <strong>ASUNTO:</strong> {cabecera.asunto}.
+              <strong>Fecha:</strong> {fecha}
             </p>
-            <p>{parrafoApertura(nombreConvenio)}</p>
             <h3 className="documento__titulo">
               {(nombreConvenio || '[NOMBRE DEL CONVENIO]').toUpperCase()}
             </h3>
+            <p>{parrafoApertura(nombreConvenio)}</p>
 
-            <h4>Cuadro de verificación · Restricción o vulneración</h4>
+            <h4>Cuadro de revisión</h4>
             {informe.filasCuadro.length === 0 ? (
               <p className="documento__vacio">
                 Aún no has valorado ningún punto del cuadro. Usa “Analizar automáticamente” o ajusta los
@@ -436,7 +429,7 @@ export default function AnalizadorConvenios() {
               <table className="documento__tabla">
                 <thead>
                   <tr>
-                    <th>Punto verificado</th>
+                    <th>Punto revisado</th>
                     <th>Fundamento</th>
                     <th>Valoración</th>
                     <th>Observación</th>
@@ -459,7 +452,7 @@ export default function AnalizadorConvenios() {
               </table>
             )}
 
-            <h4>Resultado de la verificación</h4>
+            <h4>Resultado de la revisión</h4>
             <p>
               {informe.hayVulneraciones
                 ? RESULTADO_INTRO.conVulneraciones
@@ -485,10 +478,10 @@ export default function AnalizadorConvenios() {
               ))}
             </ol>
 
-            <p>{CIERRE}</p>
-            <p className="documento__firma">
-              Fdo. {cabecera.inspector || '[Inspector/a de Trabajo y Seguridad Social]'}
-            </p>
+            <p className="documento__cierre">{CIERRE}</p>
+            {cabecera.autor && (
+              <p className="documento__firma">Revisado por: {cabecera.autor}</p>
+            )}
           </article>
         </section>
       </div>

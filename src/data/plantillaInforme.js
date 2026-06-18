@@ -19,40 +19,35 @@ export const ESTADOS = {
   na: { etiqueta: 'No aplica', color: 'gris' },
 }
 
-// Datos de cabecera del informe (editables en la herramienta).
-// Genéricos para toda España; cada Autoridad Laboral puede personalizarlos.
+// Datos de cabecera del documento (editables en la herramienta).
+// Sin membrete oficial: es una revisión privada, no un informe del Estado.
 export const CABECERA_DEFECTO = {
-  organismo: 'INSPECCIÓN DE TRABAJO Y SEGURIDAD SOCIAL',
-  delegacion: '',
-  asunto: 'INFORME CONVENIO COLECTIVO',
-  inspector: '',
+  encabezado: '',
+  asunto: 'REVISIÓN DE CONVENIO COLECTIVO',
+  autor: '',
 }
 
-// Fórmula de apertura del informe (art. 90.5 y 6 ET).
+// Fórmula de apertura de la revisión (neutra, sin referencia al art. 90.5/6 ET).
 export function parrafoApertura(nombreConvenio) {
   const nombre = (nombreConvenio || '[NOMBRE DEL CONVENIO]').toUpperCase()
   return (
-    'En relación con la petición de informe efectuada al amparo del artículo 90.5 y 6 ' +
-    'del Estatuto de los Trabajadores por la Autoridad Laboral, relativa al control de ' +
-    `legalidad del contenido del ${nombre}, cúmpleme efectuar las siguientes observaciones:`
+    `Revisión del contenido del ${nombre}, de cuyo análisis resultan las siguientes ` +
+    'observaciones:'
   )
 }
 
-// Texto introductorio del apartado "RESULTADO DE LA VERIFICACIÓN".
+// Texto introductorio del apartado de conclusiones.
 export const RESULTADO_INTRO = {
   conVulneraciones:
-    'Como consecuencia de las restricciones o vulneraciones reflejadas en el cuadro anterior, ' +
-    'se estima procedente que se procediera a la subsanación de los siguientes aspectos del ' +
-    'convenio colectivo examinado:',
+    'De la revisión realizada se desprende que convendría revisar o subsanar los siguientes aspectos ' +
+    'del convenio colectivo examinado:',
   sinVulneraciones:
-    'Se observa, con respecto a algunas de las materias objeto de verificación, que este convenio ' +
-    'remite expresamente al Estatuto de los Trabajadores, entendiéndose reguladas en los términos ' +
-    'contenidos en la precitada normativa. Igualmente, respecto de otras materias, no existe regulación ' +
-    'alguna en el convenio, entendiéndose remitidas a la legislación laboral común; no entendiéndose ' +
-    'conculcada la legislación vigente al no ser reguladas.',
+    'En las materias revisadas, el convenio remite a la legislación laboral común o no contiene una ' +
+    'regulación que contradiga la normativa vigente.',
 }
 
-export const CIERRE = 'De todo ello se informa a los efectos oportunos.'
+export const CIERRE =
+  'Estas observaciones tienen carácter orientativo y no constituyen un informe oficial ni asesoramiento jurídico.'
 
 // Cuadro de verificación. Estructura idéntica a la de los informes reales.
 export const CUADRO_VERIFICACION = [

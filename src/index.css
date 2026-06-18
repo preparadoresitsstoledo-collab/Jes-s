@@ -2211,3 +2211,10 @@ select.chip {
   font-weight: 600;
   color: var(--azul-500);
 }
+
+.documento__cierre {
+  margin-top: 18px;
+  font-size: 0.82rem;
+  color: var(--gris-500);
+  font-style: italic;
+}
