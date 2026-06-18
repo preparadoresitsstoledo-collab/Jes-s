@@ -126,10 +126,11 @@ export function analizarConvenio(texto, opciones = {}) {
 
   // ───────────────────────────── MSCT (art. 41)
   if (/modificaci[oó]n sustancial/.test(norm)) {
-    avisar(
-      'info',
-      'Se regula la modificación sustancial de condiciones de trabajo: comprobar que no es menos ' +
-        'favorable que el art. 41 ET (punto del cuadro: MSCT).',
+    marcar(
+      'msct',
+      'vulneracion',
+      '⚠️ Revisar: se regula la modificación sustancial de condiciones de trabajo; comprobar que no ' +
+        'es menos favorable que el art. 41 ET.',
     )
   }
 
@@ -187,28 +188,29 @@ export function analizarConvenio(texto, opciones = {}) {
     )
   }
   if (/contrato[s]? eventual|eventual por circunstancias/.test(norm)) {
-    avisar('info', 'Se regula el contrato eventual: comprobar su adecuación al art. 15.2 ET.')
+    marcar('contrato_eventual', 'vulneracion', '⚠️ Revisar: contrato eventual; comprobar su adecuación al art. 15.2 ET.')
   }
   if (/fijos?\s+discontinu/.test(norm)) {
-    avisar('info', 'Se regulan los contratos fijos discontinuos: comprobar su adecuación al art. 16 ET.')
+    marcar('fijos_discontinuos', 'vulneracion', '⚠️ Revisar: contratos fijos discontinuos; comprobar su adecuación al art. 16 ET.')
   }
   if (/contrato[s]? formativ|en pr[aá]cticas|para la formaci[oó]n/.test(norm)) {
-    avisar('info', 'Se regulan contratos formativos: comprobar su adecuación al art. 11 ET.')
+    marcar('formativos', 'vulneracion', '⚠️ Revisar: contratos formativos; comprobar su adecuación al art. 11 ET.')
   }
   if (/jubilaci[oó]n parcial|contrato de relevo/.test(norm)) {
-    avisar('info', 'Se regula la jubilación parcial / contrato de relevo: comprobar el art. 12.6 y 7 ET.')
+    marcar('jubilacion_parcial', 'vulneracion', '⚠️ Revisar: jubilación parcial / contrato de relevo; comprobar el art. 12.6 y 7 ET.')
   }
 
   // ───────────────────────────── Movilidad funcional (art. 39)
   if (/movilidad funcional/.test(norm)) {
-    avisar('info', 'Se regula la movilidad funcional: comprobar los límites del art. 39 ET.')
+    marcar('movilidad_funcional', 'vulneracion', '⚠️ Revisar: movilidad funcional; comprobar los límites del art. 39 ET.')
   }
 
   // ───────────────────────────── Excedencia por cuidado de hijos (art. 46.3)
   if (/excedencia[^.]{0,80}(cuidado de hijos|hijo|familiar)/.test(norm)) {
-    avisar(
-      'info',
-      'Se regula la excedencia por cuidado de hijos/familiares: comprobar que no limita el derecho ' +
+    marcar(
+      'excedencia_simultanea',
+      'vulneracion',
+      '⚠️ Revisar: excedencia por cuidado de hijos/familiares; comprobar que no limita el derecho ' +
         'sin razones justificadas (art. 46.3 ET).',
     )
   }
@@ -255,9 +257,10 @@ export function analizarConvenio(texto, opciones = {}) {
 
   // ───────────────────────────── Régimen disciplinario: prescripción (art. 60)
   if (/prescrip/.test(norm) && /(falta|infraccion)/.test(norm)) {
-    avisar(
-      'info',
-      'Se regula la prescripción de faltas: comprobar que no supera los plazos del art. 60 ET ' +
+    marcar(
+      'prescripcion_faltas',
+      'vulneracion',
+      '⚠️ Revisar: prescripción de faltas; comprobar que no supera los plazos del art. 60 ET ' +
         '(leves 10 días, graves 20 días, muy graves 60 días).',
     )
   }
@@ -307,6 +310,23 @@ export function analizarConvenio(texto, opciones = {}) {
         'Se acuerda la acumulación de la lactancia pero no se aprecia el número concreto de días.',
       )
     }
+  }
+
+  // ───────────────────────────── Diferencias retributivas (modo agresivo)
+  if (/nuevo ingreso|nuevos ingresos|doble escala|nueva contrataci[oó]n/.test(norm)) {
+    marcar('retrib_a', 'vulneracion', '⚠️ Revisar: posibles diferencias retributivas para personal de nuevo ingreso sin justificación objetiva.')
+  }
+  if (/(por raz[oó]n de edad|en funci[oó]n de la edad|seg[uú]n la edad)/.test(norm)) {
+    marcar('retrib_b', 'vulneracion', '⚠️ Revisar: posible desigualdad retributiva por razón de edad.')
+  }
+  if (/festivo/.test(norm)) {
+    marcar('retrib_d', 'vulneracion', '⚠️ Revisar: comprobar que la compensación por trabajo en festivo no es inferior a la fijada en convenio.')
+  }
+  if (/(permiso|licencia)/.test(norm) && /(no retribuid|sin retribuci|no remunerad)/.test(norm)) {
+    marcar('retrib_e', 'vulneracion', '⚠️ Revisar: posible retribución inferior a la legal durante los permisos del art. 37.3 ET.')
+  }
+  if (/vacaciones/.test(norm) && /compensaci[oó]n econ[oó]mica/.test(norm)) {
+    marcar('retrib_f', 'vulneracion', '⚠️ Revisar: posible sustitución de vacaciones por compensación económica (art. 38.1 ET).')
   }
 
   // ───────────────────────────── Salario inferior al SMI (art. 27)
