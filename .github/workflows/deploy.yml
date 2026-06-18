@@ -14,8 +14,9 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
-# La web vive en https://preparadoritsstoledo.es (hosting propio).
-# GitHub Pages solo publica una página de REENVÍO a ese dominio.
+# Construye la aplicación (web + analizador de convenios) y la publica en
+# GitHub Pages. La app queda accesible en la URL de Pages del repositorio y el
+# analizador en .../#/analizador
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,13 +24,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Construir
+        run: npm run build
+
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 
-      - name: Subir artefacto (reenvío)
+      - name: Subir artefacto (build)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: redirect
+          path: dist
 
   deploy:
     needs: build

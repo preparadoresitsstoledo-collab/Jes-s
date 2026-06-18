@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Ventajas from './components/Ventajas.jsx'
@@ -17,8 +18,25 @@ import CtaFinal from './components/CtaFinal.jsx'
 import Contacto from './components/Contacto.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsappFlotante from './components/WhatsappFlotante.jsx'
+import AnalizadorConvenios from './components/AnalizadorConvenios.jsx'
+
+function useRutaHash() {
+  const [ruta, setRuta] = useState(() => window.location.hash)
+  useEffect(() => {
+    const onHash = () => setRuta(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  return ruta
+}
 
 export default function App() {
+  const ruta = useRutaHash()
+
+  if (ruta.startsWith('#/analizador')) {
+    return <AnalizadorConvenios />
+  }
+
   return (
     <>
       <Navbar />
