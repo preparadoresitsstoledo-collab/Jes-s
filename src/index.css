@@ -2218,3 +2218,169 @@ select.chip {
   color: var(--gris-500);
   font-style: italic;
 }
+
+/* ───────────────────────── Calculadora de indemnizaciones ───────────────── */
+.aviso--ambar {
+  background: #fdf3e0;
+  border-left: 3px solid #d39400;
+}
+
+/* Selects del formulario a ancho completo, con aspecto de campo */
+.calc select.chip {
+  display: block;
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid var(--gris-300, #d1d5db);
+  background: var(--blanco, #fff);
+  color: inherit;
+}
+
+.calc__radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 4px 0;
+}
+.calc__radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.calc__radio input {
+  width: auto;
+  margin: 0;
+}
+
+.calc__base {
+  font-size: 0.82rem;
+  color: var(--gris-600, #4b5563);
+  margin: 4px 0;
+}
+
+.calc__informe {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+}
+.calc__placeholder {
+  color: var(--gris-500, #6b7280);
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.calc__informe-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.calc__informe-cabecera h2 {
+  margin: 0;
+}
+.calc__causa-titulo {
+  font-weight: 700;
+  color: var(--azul-500);
+  margin: 2px 0 14px;
+}
+
+.calc__cifra {
+  text-align: center;
+  background: #e8f0fa;
+  border: 1px solid #c6dcf3;
+  border-radius: var(--radio, 10px);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.calc__cifra--cero {
+  background: var(--gris-100);
+  border-color: var(--gris-300, #d1d5db);
+}
+.calc__importe {
+  display: block;
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: var(--azul-700, #163a66);
+  line-height: 1.1;
+}
+.calc__importe-sub {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--gris-600, #4b5563);
+  margin-top: 4px;
+}
+
+.calc__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+}
+.calc__tabla th,
+.calc__tabla td {
+  border: 1px solid var(--gris-100);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.calc__tabla th {
+  background: var(--gris-100);
+  font-weight: 600;
+  width: 55%;
+}
+.calc__tabla--tramos th {
+  width: auto;
+}
+.calc__tabla--tramos thead th {
+  background: var(--azul-500);
+  color: #fff;
+}
+.calc__tabla-total td {
+  font-weight: 700;
+  background: #f3f6fb;
+}
+
+.calc__formula {
+  background: var(--gris-100);
+  border-radius: var(--radio-sm, 6px);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  margin: 12px 0;
+}
+.calc__disclaimer {
+  font-size: 0.8rem;
+  color: var(--gris-500, #6b7280);
+  font-style: italic;
+  border-top: 1px solid var(--gris-100);
+  padding-top: 12px;
+  margin-top: 18px;
+}
+
+.calc__otras {
+  margin-top: 28px;
+}
+.calc__otras-lista {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.calc__otras-lista li {
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-radius: var(--radio-sm, 6px);
+  padding: 12px 14px;
+  font-size: 0.88rem;
+}
+
+@media print {
+  .calc,
+  .calc__informe {
+    position: static;
+  }
+}

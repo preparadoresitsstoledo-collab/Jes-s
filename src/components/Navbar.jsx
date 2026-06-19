@@ -10,6 +10,7 @@ const enlaces = [
   { href: '#toledo', texto: 'Toledo' },
   { href: '#precio', texto: 'Precio' },
   { href: '#/analizador', texto: 'Analizador de convenios' },
+  { href: '#/indemnizaciones', texto: 'Cálculo de indemnizaciones' },
   { href: '#contacto', texto: 'Contacto' },
 ]
 

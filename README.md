@@ -112,6 +112,40 @@ Archivos relevantes:
 
 ---
 
+## ⚖️ Cálculo de indemnizaciones por extinción del contrato
+
+Al estilo de la herramienta del Poder Judicial, la web incluye un **formulario para el cálculo de la
+cuantía de las indemnizaciones laborales por extinción del contrato de trabajo**, conforme al
+**Estatuto de los Trabajadores** y a las normas de las **relaciones laborales de carácter especial**
+(art. 2 ET). Se accede desde el menú (**Cálculo de indemnizaciones**) o en la ruta
+`#/indemnizaciones`.
+
+Qué calcula:
+
+1. **Régimen y causa de extinción.** Régimen común (despido improcedente, objetivo/colectivo, fin de
+   temporal, arts. 40/41/50 ET, fuerza mayor, supuestos sin indemnización) y relaciones especiales:
+   **alta dirección** (RD 1382/1985), **deportistas profesionales** (RD 1006/1985), **artistas**
+   (RD 1435/1985), **representantes de comercio** (RD 1438/1985), **empleados de hogar**
+   (RD 1620/2011) y **abogados de despachos** (RD 1331/2006).
+2. **Régimen transitorio (DT 11ª ET):** para el despido improcedente, calcula el doble tramo
+   **45 días/año hasta el 11/02/2012 + 33 días/año desde el 12/02/2012**, aplicando el tope de 720
+   días, salvo que lo devengado antes de la reforma sea superior (máximo absoluto de 42 mensualidades).
+3. **Variantes de contrato:** jornada completa, **tiempo parcial** y **fijo-discontinuo** (con
+   descuento del tiempo no computable), y periodos no computables (excedencias).
+4. **Informe imprimible** con el desglose paso a paso, el fundamento legal citado y los avisos.
+
+Archivos relevantes:
+
+- `src/data/indemnizaciones.js` — regímenes, causas, módulos, topes y base legal.
+- `src/lib/calcIndemnizacion.js` — motor de cálculo (módulo, prorrateo por meses y DT 11ª).
+- `src/components/CalculadoraIndemnizaciones.jsx` — interfaz de la herramienta.
+
+> ⚖️ Herramienta **orientativa e informativa**: los resultados **no son vinculantes** ni constituyen
+> asesoramiento jurídico. La cuantía definitiva depende del salario regulador, de la calificación
+> judicial del despido y de los pactos individuales o de convenio.
+
+---
+
 ## SEO (posicionamiento en buscadores)
 
 La web está preparada para buscadores: etiquetas meta, Open Graph y Twitter Card,
