@@ -18,6 +18,7 @@ import CtaFinal from './components/CtaFinal.jsx'
 import Contacto from './components/Contacto.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsappFlotante from './components/WhatsappFlotante.jsx'
+import Herramientas from './components/Herramientas.jsx'
 import PortalHerramientas from './components/PortalHerramientas.jsx'
 import { herramientaPorRuta } from './data/herramientas.js'
 
@@ -64,6 +65,7 @@ export default function App() {
         <Estadisticas />
         <Proceso />
         <Metodologia />
+        <Herramientas />
         <Toledo />
         <Pasos />
         <Precios />

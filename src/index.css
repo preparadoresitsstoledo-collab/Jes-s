@@ -2460,3 +2460,51 @@ select.chip {
   font-weight: 700;
   color: var(--azul-500);
 }
+
+/* Sección de herramientas en la home */
+.home-herramientas-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  margin-top: 12px;
+}
+.home-herramienta {
+  display: flex;
+  flex-direction: column;
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-top: 4px solid var(--azul-500);
+  border-radius: var(--radio, 12px);
+  padding: 24px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--sombra-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.home-herramienta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra, 0 10px 30px rgba(0, 0, 0, 0.1));
+}
+.home-herramienta__icono {
+  font-size: 2rem;
+  line-height: 1;
+}
+.home-herramienta h3 {
+  margin: 12px 0 8px;
+  font-size: 1.2rem;
+  color: var(--azul-700, #163a66);
+}
+.home-herramienta p {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--gris-600, #4b5563);
+  flex: 1;
+}
+.home-herramienta__abrir {
+  font-weight: 700;
+  color: var(--azul-500);
+}
+.home-herramientas-pie {
+  text-align: center;
+  margin-top: 28px;
+}
