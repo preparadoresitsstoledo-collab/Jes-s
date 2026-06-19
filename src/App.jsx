@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Ventajas from './components/Ventajas.jsx'
@@ -18,8 +18,8 @@ import CtaFinal from './components/CtaFinal.jsx'
 import Contacto from './components/Contacto.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsappFlotante from './components/WhatsappFlotante.jsx'
-import AnalizadorConvenios from './components/AnalizadorConvenios.jsx'
-import CalculadoraIndemnizaciones from './components/CalculadoraIndemnizaciones.jsx'
+import PortalHerramientas from './components/PortalHerramientas.jsx'
+import { herramientaPorRuta } from './data/herramientas.js'
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -34,12 +34,22 @@ function useRutaHash() {
 export default function App() {
   const ruta = useRutaHash()
 
-  if (ruta.startsWith('#/analizador')) {
-    return <AnalizadorConvenios />
+  if (ruta.startsWith('#/herramientas')) {
+    return <PortalHerramientas />
   }
 
-  if (ruta.startsWith('#/indemnizaciones')) {
-    return <CalculadoraIndemnizaciones />
+  const herramienta = herramientaPorRuta(ruta)
+  if (herramienta) {
+    const Componente = herramienta.Componente
+    return (
+      <Suspense
+        fallback={
+          <div className="contenedor herramienta__cargando">Cargando herramienta…</div>
+        }
+      >
+        <Componente />
+      </Suspense>
+    )
   }
 
   return (
