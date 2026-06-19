@@ -2508,3 +2508,50 @@ select.chip {
   text-align: center;
   margin-top: 28px;
 }
+
+/* ───────────────────────── Informes de amianto ──────────────────────────── */
+.amianto__subtitulo {
+  color: var(--azul-500);
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+.amianto__vacio {
+  color: var(--gris-500, #6b7280);
+  font-style: italic;
+}
+.documento__bloque {
+  margin: 16px 0;
+}
+.documento__bloque h3 {
+  margin: 0 0 6px;
+  color: var(--azul-700, #163a66);
+  font-size: 1.05rem;
+}
+.amianto__normativa {
+  margin-top: 28px;
+  padding-bottom: 56px;
+}
+.amianto__normativa h3 {
+  margin: 22px 0 8px;
+  color: var(--azul-700, #163a66);
+}
+.amianto__lista,
+.amianto__articulos {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.amianto__lista li,
+.amianto__articulos li {
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-left: 4px solid var(--azul-500);
+  border-radius: var(--radio-sm, 6px);
+  padding: 12px 14px;
+  font-size: 0.9rem;
+}
+.amianto__lista a {
+  font-weight: 600;
+  color: var(--azul-500);
+}

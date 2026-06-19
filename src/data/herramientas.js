@@ -28,6 +28,17 @@ export const HERRAMIENTAS = [
     etiquetas: ['Convenios', 'Inspección de Trabajo', 'Informe'],
     Componente: lazy(() => import('../components/AnalizadorConvenios.jsx')),
   },
+  {
+    id: 'amianto',
+    ruta: '#/amianto',
+    nombre: 'Informes de amianto',
+    icono: '🏗️',
+    resumen: 'Plan de trabajo y documentación de amianto',
+    descripcion:
+      'Apoyo a la elaboración de informes en materia de amianto (plan de trabajo, identificación de materiales y evaluación de la exposición) conforme al RD 396/2006 y a la documentación técnica del INSST. Solo fuentes oficiales (BOE e INSST).',
+    etiquetas: ['Amianto', 'RD 396/2006', 'INSST'],
+    Componente: lazy(() => import('../components/InformesAmianto.jsx')),
+  },
 ]
 
 // Devuelve la herramienta cuya ruta coincide con el hash actual (o null).
