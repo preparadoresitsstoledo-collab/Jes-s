@@ -2555,3 +2555,30 @@ select.chip {
   font-weight: 600;
   color: var(--azul-500);
 }
+.amianto__item {
+  border: 1px solid var(--gris-100);
+  border-radius: var(--radio-sm, 6px);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.amianto__item-cab {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.amianto__item-cab select {
+  flex-shrink: 0;
+}
+.amianto__item input[type='text'] {
+  margin-top: 8px;
+}
+.documento__organo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--gris-600, #4b5563);
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}

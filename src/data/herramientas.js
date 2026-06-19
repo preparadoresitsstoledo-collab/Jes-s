@@ -33,9 +33,9 @@ export const HERRAMIENTAS = [
     ruta: '#/amianto',
     nombre: 'Informes de amianto',
     icono: '🏗️',
-    resumen: 'Plan de trabajo y documentación de amianto',
+    resumen: 'Informe de Inspección sobre el plan de trabajo',
     descripcion:
-      'Apoyo a la elaboración de informes en materia de amianto (plan de trabajo, identificación de materiales y evaluación de la exposición) conforme al RD 396/2006 y a la documentación técnica del INSST. Solo fuentes oficiales (BOE e INSST).',
+      'Apoyo para el informe de valoración del plan de trabajo con riesgo de exposición al amianto presentado ante la autoridad laboral (arts. 11 y 12 RD 396/2006): cuadro de verificación del contenido mínimo, comprobaciones y propuesta. Solo fuentes oficiales (BOE e INSST).',
     etiquetas: ['Amianto', 'RD 396/2006', 'INSST'],
     Componente: lazy(() => import('../components/InformesAmianto.jsx')),
   },

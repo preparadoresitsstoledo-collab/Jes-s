@@ -135,71 +135,143 @@ export const ARTICULOS_396 = [
   },
 ]
 
-// Tipos de informe que la herramienta podrá generar. (Estructura provisional,
-// se ajustará al modelo oficial que proporcione el usuario.)
-export const TIPOS_INFORME = [
-  {
-    id: 'plan',
-    nombre: 'Plan de trabajo (art. 11 RD 396/2006)',
-    descripcion:
-      'Documento previo, obligatorio, para la realización de trabajos con riesgo de exposición al amianto, que se presenta ante la autoridad laboral para su aprobación (art. 12).',
-  },
-  {
-    id: 'identificacion',
-    nombre: 'Identificación / diagnóstico de materiales con amianto (MCA)',
-    descripcion:
-      'Localización e identificación de materiales con amianto instalados y valoración de su riesgo potencial, de apoyo a la gestión y, en su caso, al censo de la Ley 7/2022.',
-  },
-  {
-    id: 'evaluacion',
-    nombre: 'Evaluación de la exposición (mediciones)',
-    descripcion:
-      'Resultado de la evaluación de riesgos con mediciones de concentración de fibras en aire y comparación con el valor límite del art. 4.',
-  },
+// ─── Informe de la Inspección/autoridad laboral sobre el plan de trabajo ───
+// (arts. 11 y 12 RD 396/2006)
+
+// Estados de cada punto del cuadro de verificación.
+export const ESTADOS_VERIFICACION = [
+  { id: 'pendiente', etiqueta: 'Pendiente', color: 'gris' },
+  { id: 'correcto', etiqueta: 'Consta / correcto', color: 'verde' },
+  { id: 'subsanar', etiqueta: 'A subsanar', color: 'ambar' },
+  { id: 'noconsta', etiqueta: 'No consta', color: 'rojo' },
+  { id: 'naplica', etiqueta: 'No aplica', color: 'gris' },
 ]
 
-// Secciones por defecto del informe (provisional, alineadas con el contenido
-// mínimo del plan de trabajo del art. 11 RD 396/2006). Cada sección es un
-// bloque de texto editable en la herramienta.
-export const SECCIONES_DEFECTO = [
+// Contenido mínimo del plan de trabajo a verificar (art. 11.2 RD 396/2006).
+export const CONTENIDO_PLAN = [
   {
-    id: 'objeto',
-    titulo: '1. Objeto y descripción del trabajo',
-    ayuda: 'Tipo de actividad (retirada, demolición, mantenimiento…), ubicación y duración prevista.',
+    id: 'descripcion',
+    titulo: 'Descripción del trabajo y tipo de actividad',
+    base: 'Art. 11.2.a) RD 396/2006',
+    ayuda: 'Tipo de actividad: retirada/desamiantado, demolición, mantenimiento o reparación.',
   },
   {
-    id: 'materiales',
-    titulo: '2. Materiales con amianto',
-    ayuda: 'Tipo de material (friable / no friable, amianto-cemento…), cantidad estimada y estado de conservación.',
+    id: 'material',
+    titulo: 'Tipo de material (friable / no friable) y cantidad',
+    base: 'Art. 11.2.b) RD 396/2006',
+    ayuda: 'Identificación del material con amianto, su carácter friable o no friable y la cantidad estimada.',
+  },
+  {
+    id: 'ubicacion',
+    titulo: 'Ubicación del lugar de los trabajos',
+    base: 'Art. 11.2.c) RD 396/2006',
+    ayuda: 'Emplazamiento concreto donde se ejecutarán los trabajos.',
+  },
+  {
+    id: 'fechas',
+    titulo: 'Fecha de inicio y duración prevista',
+    base: 'Art. 11.2.d) RD 396/2006',
+    ayuda: 'Cronograma de la actuación.',
+  },
+  {
+    id: 'trabajadores',
+    titulo: 'Relación de trabajadores, formación y aptitud médica',
+    base: 'Art. 11.2.e) RD 396/2006',
+    ayuda: 'Relación nominal, categoría/oficio, formación específica y aptitud según vigilancia de la salud.',
   },
   {
     id: 'procedimientos',
-    titulo: '3. Procedimientos de trabajo y medidas preventivas',
-    ayuda: 'Método de intervención, medidas técnicas y organizativas para reducir la exposición al mínimo (arts. 6 y 7).',
+    titulo: 'Procedimientos de trabajo y su adecuación',
+    base: 'Art. 11.2.f) RD 396/2006',
+    ayuda: 'Procedimientos aplicables y particularidades de adecuación al trabajo concreto.',
+  },
+  {
+    id: 'medidasPrev',
+    titulo: 'Medidas para limitar la generación, dispersión y exposición a fibras',
+    base: 'Art. 11.2.g) RD 396/2006',
+    ayuda: 'Medidas técnicas y organizativas para reducir al mínimo la emisión y la exposición.',
   },
   {
     id: 'epi',
-    titulo: '4. Protección individual y colectiva',
-    ayuda: 'Equipos de protección (vías respiratorias, ropa de trabajo), descontaminación e higiene personal (art. 8).',
+    titulo: 'Equipos de protección colectiva e individual',
+    base: 'Art. 11.2.h) RD 396/2006',
+    ayuda: 'Protección respiratoria, ropa de trabajo y demás equipos, con sus características.',
   },
   {
-    id: 'mediciones',
-    titulo: '5. Mediciones ambientales',
-    ayuda: 'Plan de mediciones de fibras en aire y comparación con el valor límite (0,1 fibras/cm³, art. 4).',
+    id: 'terceros',
+    titulo: 'Medidas para proteger a terceros en el lugar',
+    base: 'Art. 11.2.i) RD 396/2006',
+    ayuda: 'Medidas para evitar la exposición de otras personas presentes en el emplazamiento.',
+  },
+  {
+    id: 'informacion',
+    titulo: 'Medidas de información a los trabajadores',
+    base: 'Art. 11.2.j) RD 396/2006',
+    ayuda: 'Información sobre los riesgos y las precauciones a adoptar.',
   },
   {
     id: 'residuos',
-    titulo: '6. Gestión de residuos',
-    ayuda: 'Identificación, envasado, etiquetado, transporte y entrega a gestor autorizado conforme a la normativa de residuos.',
+    titulo: 'Gestión y eliminación de residuos (gestor y destino autorizados)',
+    base: 'Art. 11.2.k) RD 396/2006',
+    ayuda: 'Envasado, etiquetado, transportista y vertedero/gestor autorizados conforme a la normativa de residuos.',
+  },
+  {
+    id: 'mediciones',
+    titulo: 'Procedimiento de evaluación y control del ambiente (mediciones)',
+    base: 'Art. 11.2.l) RD 396/2006 (en relación con art. 5)',
+    ayuda: 'Plan de mediciones de fibras en aire y comparación con el valor límite (0,1 fibras/cm³).',
+  },
+]
+
+// Comprobaciones complementarias del expediente.
+export const COMPROBACIONES = [
+  {
+    id: 'rera',
+    titulo: 'Empresa inscrita en el RERA',
+    base: 'Art. 17 RD 396/2006',
+    ayuda: 'La empresa que ejecuta debe estar inscrita en el Registro de Empresas con Riesgo de Amianto.',
+  },
+  {
+    id: 'presentacion',
+    titulo: 'Presentación del plan ante la autoridad laboral competente',
+    base: 'Art. 12 RD 396/2006',
+    ayuda: 'El plan se presenta para su aprobación antes del inicio de los trabajos.',
+  },
+  {
+    id: 'recursos',
+    titulo: 'Designación de recursos preventivos',
+    base: 'Art. 32 bis LPRL y disp. relacionadas',
+    ayuda: 'Presencia de recursos preventivos durante los trabajos con amianto.',
   },
   {
     id: 'formacion',
-    titulo: '7. Formación e información',
-    ayuda: 'Formación específica de los trabajadores expuestos (art. 13) e información (art. 14).',
+    titulo: 'Acreditación de la formación específica',
+    base: 'Art. 13 RD 396/2006',
+    ayuda: 'Formación específica, suficiente y adecuada de los trabajadores expuestos.',
   },
   {
     id: 'salud',
-    titulo: '8. Vigilancia de la salud',
-    ayuda: 'Reconocimientos médicos específicos antes, durante y tras la exposición (art. 16).',
+    titulo: 'Vigilancia de la salud de los trabajadores',
+    base: 'Art. 16 RD 396/2006',
+    ayuda: 'Reconocimientos médicos específicos y aptitud para el puesto.',
+  },
+]
+
+// Propuesta/conclusión del informe.
+export const PROPUESTAS = [
+  {
+    id: 'favorable',
+    etiqueta: 'Favorable a la aprobación del plan de trabajo',
+    color: 'verde',
+  },
+  {
+    id: 'subsanacion',
+    etiqueta: 'Requerimiento de subsanación previo a la aprobación',
+    color: 'ambar',
+  },
+  {
+    id: 'desfavorable',
+    etiqueta: 'Desfavorable / propuesta de no aprobación',
+    color: 'rojo',
   },
 ]
