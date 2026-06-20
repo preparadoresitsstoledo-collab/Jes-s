@@ -27,7 +27,6 @@ export const DATOS_CAMPOS = [
   { id: 'cif', label: 'CIF / NIF' },
   { id: 'rera', label: 'Nº de inscripción RERA' },
   { id: 'emplazamiento', label: 'Emplazamiento de los trabajos', ancho: 'full' },
-  { id: 'provincia', label: 'Provincia / ámbito' },
   { id: 'fechaEntrada', label: 'Fecha de entrada del plan' },
   { id: 'fechaInforme', label: 'Fecha del informe' },
   { id: 'actuante', label: 'Inspector/a o técnico/a actuante' },

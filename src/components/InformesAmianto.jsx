@@ -14,14 +14,13 @@ function estadoInicial() {
   for (const c of DATOS_CAMPOS) datos[c.id] = ''
   const apartados = {}
   for (const a of APARTADOS) apartados[a.id] = ''
-  return { datos, apertura: '', apartados, cierre: '' }
+  return { datos, apertura: '', apartados }
 }
 
 export default function InformesAmianto() {
   const [datos, setDatos] = useState(() => estadoInicial().datos)
   const [apertura, setApertura] = useState('')
   const [apartados, setApartados] = useState(() => estadoInicial().apartados)
-  const [cierre, setCierre] = useState('')
 
   function setDato(id, valor) {
     setDatos((prev) => ({ ...prev, [id]: valor }))
@@ -37,12 +36,10 @@ export default function InformesAmianto() {
     setDatos(init.datos)
     setApertura('')
     setApartados(init.apartados)
-    setCierre('')
   }
 
   const apartadosConContenido = APARTADOS.filter((a) => apartados[a.id].trim())
-  const hayContenido =
-    apertura.trim() || cierre.trim() || apartadosConContenido.length > 0
+  const hayContenido = apertura.trim() || apartadosConContenido.length > 0
 
   return (
     <div className="analizador amianto">
@@ -110,17 +107,6 @@ export default function InformesAmianto() {
             </div>
           ))}
 
-          <h2>Cierre</h2>
-          <div className="campo">
-            <label>Párrafo de cierre</label>
-            <textarea
-              rows={3}
-              value={cierre}
-              onChange={(e) => setCierre(e.target.value)}
-              placeholder="Fórmula de cierre del informe…"
-            />
-          </div>
-
           <div className="analizador__acciones">
             <button className="btn btn--primario" onClick={imprimir}>
               🖨️ Imprimir / guardar PDF
@@ -150,7 +136,6 @@ export default function InformesAmianto() {
                 )}
                 {datos.rera && <tr><th>Inscripción RERA</th><td>{datos.rera}</td></tr>}
                 {datos.emplazamiento && <tr><th>Emplazamiento</th><td>{datos.emplazamiento}</td></tr>}
-                {datos.provincia && <tr><th>Provincia / ámbito</th><td>{datos.provincia}</td></tr>}
                 {datos.fechaEntrada && <tr><th>Fecha de entrada</th><td>{datos.fechaEntrada}</td></tr>}
                 {datos.fechaInforme && <tr><th>Fecha del informe</th><td>{datos.fechaInforme}</td></tr>}
                 {datos.actuante && <tr><th>Actuante</th><td>{datos.actuante}</td></tr>}
@@ -173,12 +158,6 @@ export default function InformesAmianto() {
                 </p>
               </div>
             ))}
-
-            {cierre.trim() && (
-              <p className="amianto__parrafo amianto__cierre" style={{ whiteSpace: 'pre-wrap' }}>
-                {cierre}
-              </p>
-            )}
 
             {(datos.lugarFecha || datos.actuante) && (
               <div className="amianto__firma">
