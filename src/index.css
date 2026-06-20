@@ -2555,24 +2555,28 @@ select.chip {
   font-weight: 600;
   color: var(--azul-500);
 }
-.amianto__item {
-  border: 1px solid var(--gris-100);
-  border-radius: var(--radio-sm, 6px);
-  padding: 12px 14px;
-  margin-bottom: 12px;
+.amianto__grupo {
+  margin-bottom: 8px;
 }
-.amianto__item-cab {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+.amianto__grupo h3 {
+  margin: 18px 0 8px;
+  color: var(--azul-700, #163a66);
+  font-size: 1rem;
+  border-bottom: 1px solid var(--gris-100);
+  padding-bottom: 4px;
 }
-.amianto__item-cab select {
-  flex-shrink: 0;
+.amianto__campos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 16px;
 }
-.amianto__item input[type='text'] {
-  margin-top: 8px;
+.campo--full {
+  grid-column: 1 / -1;
+}
+@media (max-width: 620px) {
+  .amianto__campos {
+    grid-template-columns: 1fr;
+  }
 }
 .documento__organo {
   font-size: 0.8rem;
@@ -2581,4 +2585,35 @@ select.chip {
   color: var(--gris-600, #4b5563);
   text-transform: uppercase;
   margin: 0 0 6px;
+}
+.amianto__seccion {
+  margin: 16px 0;
+}
+.amianto__seccion h3 {
+  margin: 0 0 6px;
+  color: var(--azul-700, #163a66);
+  font-size: 1.02rem;
+}
+.amianto__parrafo {
+  margin: 0 0 10px;
+  text-align: justify;
+  line-height: 1.5;
+}
+.amianto__etapa {
+  margin: 8px 0 6px;
+  font-weight: 600;
+}
+.amianto__epi {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+.amianto__epi li {
+  margin-bottom: 2px;
+}
+.amianto__cierre {
+  margin-top: 16px;
+}
+.amianto__firma {
+  margin-top: 26px;
+  white-space: pre-wrap;
 }

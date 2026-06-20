@@ -1,111 +1,48 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
+  DATOS_CAMPOS,
+  APARTADOS,
   NORMATIVA,
   DOCS_INSST,
   ARTICULOS_396,
   VALOR_LIMITE,
   CONSERVACION_AÑOS,
-  ESTADOS_VERIFICACION,
-  CONTENIDO_PLAN,
-  COMPROBACIONES,
-  PROPUESTAS,
 } from '../data/amianto.js'
 
-const DATOS_DEFECTO = {
-  organo: 'INSPECCIÓN PROVINCIAL DE TRABAJO Y SEGURIDAD SOCIAL',
-  expediente: '',
-  empresa: '',
-  cif: '',
-  rera: '',
-  emplazamiento: '',
-  material: 'noFriable',
-  fechaEntrada: '',
-  fechaInforme: new Date().toLocaleDateString('es-ES'),
-  actuante: '',
-  propuesta: 'favorable',
-  plazoSubsanacion: '',
-  observaciones: '',
-}
-
-function claseEstado(color) {
-  return `chip chip--${color}`
-}
-
-function colorDeEstado(id) {
-  return ESTADOS_VERIFICACION.find((e) => e.id === id)?.color || 'gris'
+function estadoInicial() {
+  const datos = {}
+  for (const c of DATOS_CAMPOS) datos[c.id] = ''
+  const apartados = {}
+  for (const a of APARTADOS) apartados[a.id] = ''
+  return { datos, apertura: '', apartados, cierre: '' }
 }
 
 export default function InformesAmianto() {
-  const [datos, setDatos] = useState(DATOS_DEFECTO)
-  const [items, setItems] = useState(() => {
-    const base = {}
-    for (const c of [...CONTENIDO_PLAN, ...COMPROBACIONES]) {
-      base[c.id] = { estado: 'pendiente', obs: '' }
-    }
-    return base
-  })
+  const [datos, setDatos] = useState(() => estadoInicial().datos)
+  const [apertura, setApertura] = useState('')
+  const [apartados, setApartados] = useState(() => estadoInicial().apartados)
+  const [cierre, setCierre] = useState('')
 
-  const propuestaActual = PROPUESTAS.find((p) => p.id === datos.propuesta) || PROPUESTAS[0]
-
-  const resumen = useMemo(() => {
-    const valores = Object.values(items)
-    return {
-      correcto: valores.filter((v) => v.estado === 'correcto').length,
-      subsanar: valores.filter((v) => v.estado === 'subsanar').length,
-      noconsta: valores.filter((v) => v.estado === 'noconsta').length,
-      pendiente: valores.filter((v) => v.estado === 'pendiente').length,
-    }
-  }, [items])
-
-  function actualizar(campo, valor) {
-    setDatos((d) => ({ ...d, [campo]: valor }))
+  function setDato(id, valor) {
+    setDatos((prev) => ({ ...prev, [id]: valor }))
   }
-
-  function setEstado(id, estado) {
-    setItems((prev) => ({ ...prev, [id]: { ...prev[id], estado } }))
+  function setApartado(id, valor) {
+    setApartados((prev) => ({ ...prev, [id]: valor }))
   }
-  function setObs(id, obs) {
-    setItems((prev) => ({ ...prev, [id]: { ...prev[id], obs } }))
-  }
-
   function imprimir() {
     window.print()
   }
-
-  function renderFilas(lista) {
-    return lista.map((c) => (
-      <div className="amianto__item" key={c.id}>
-        <div className="amianto__item-cab">
-          <div>
-            <strong>{c.titulo}</strong>
-            <span className="calc__base"> · {c.base}</span>
-          </div>
-          <select
-            className={claseEstado(colorDeEstado(items[c.id].estado))}
-            value={items[c.id].estado}
-            onChange={(e) => setEstado(c.id, e.target.value)}
-          >
-            {ESTADOS_VERIFICACION.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.etiqueta}
-              </option>
-            ))}
-          </select>
-        </div>
-        <p className="campo__ayuda">{c.ayuda}</p>
-        <input
-          type="text"
-          value={items[c.id].obs}
-          onChange={(e) => setObs(c.id, e.target.value)}
-          placeholder="Observación (opcional)"
-        />
-      </div>
-    ))
+  function limpiar() {
+    const init = estadoInicial()
+    setDatos(init.datos)
+    setApertura('')
+    setApartados(init.apartados)
+    setCierre('')
   }
 
-  const itemsConContenido = [...CONTENIDO_PLAN, ...COMPROBACIONES].filter(
-    (c) => items[c.id].estado !== 'pendiente' || items[c.id].obs.trim(),
-  )
+  const apartadosConContenido = APARTADOS.filter((a) => apartados[a.id].trim())
+  const hayContenido =
+    apertura.trim() || cierre.trim() || apartadosConContenido.length > 0
 
   return (
     <div className="analizador amianto">
@@ -114,127 +51,94 @@ export default function InformesAmianto() {
           <a className="analizador__volver" href="#/herramientas">
             ← Volver a herramientas
           </a>
-          <h1>Informe de la Inspección sobre el plan de trabajo con amianto</h1>
+          <h1>Informe sobre el plan de trabajo con amianto</h1>
           <p className="analizador__lema">
-            Apoyo para elaborar el <strong>informe de valoración del plan de trabajo</strong> con riesgo
-            de exposición al amianto presentado ante la autoridad laboral (arts. 11 y 12 RD 396/2006).
-            Verifica su contenido mínimo y genera una propuesta lista para imprimir.
+            Editor con la <strong>estructura oficial del art. 11.2 del RD 396/2006</strong> para redactar
+            el informe sobre el plan de trabajo con riesgo de exposición al amianto (art. 12.2). La
+            herramienta <strong>no incluye texto de informe</strong>: aporta los apartados legales y el
+            marco normativo; el contenido lo redactas tú.
           </p>
           <p className="analizador__aviso-legal">
             ⚖️ Herramienta meramente <strong>orientativa e informativa</strong>. No constituye resolución
-            administrativa ni sustituye el criterio del/de la actuante. Fuentes{' '}
+            ni informe administrativo, ni sustituye el criterio del/de la actuante. Fuentes{' '}
             <strong>exclusivamente oficiales</strong> (BOE e INSST).
           </p>
         </div>
       </header>
 
       <div className="contenedor analizador__grid">
-        {/* Formulario */}
+        {/* Editor */}
         <section className="analizador__panel no-impresion">
-          <h2>1. Datos del expediente</h2>
-          <div className="campo">
-            <label>Órgano / encabezado</label>
-            <input type="text" value={datos.organo} onChange={(e) => actualizar('organo', e.target.value)} />
-          </div>
-          <div className="campo-fila">
-            <div className="campo">
-              <label>Nº de plan de trabajo / expediente</label>
-              <input type="text" value={datos.expediente} onChange={(e) => actualizar('expediente', e.target.value)} />
-            </div>
-            <div className="campo">
-              <label>Fecha de entrada del plan</label>
-              <input type="text" value={datos.fechaEntrada} onChange={(e) => actualizar('fechaEntrada', e.target.value)} placeholder="dd/mm/aaaa" />
-            </div>
-          </div>
-          <div className="campo-fila">
-            <div className="campo">
-              <label>Empresa</label>
-              <input type="text" value={datos.empresa} onChange={(e) => actualizar('empresa', e.target.value)} />
-            </div>
-            <div className="campo">
-              <label>CIF / NIF</label>
-              <input type="text" value={datos.cif} onChange={(e) => actualizar('cif', e.target.value)} />
-            </div>
-          </div>
-          <div className="campo-fila">
-            <div className="campo">
-              <label>Nº de inscripción RERA</label>
-              <input type="text" value={datos.rera} onChange={(e) => actualizar('rera', e.target.value)} />
-            </div>
-            <div className="campo">
-              <label>Tipo de material</label>
-              <select className="chip" value={datos.material} onChange={(e) => actualizar('material', e.target.value)}>
-                <option value="noFriable">No friable (p. ej. amianto-cemento)</option>
-                <option value="friable">Friable (proyectado, calorifugado, paneles…)</option>
-                <option value="mixto">Mixto</option>
-              </select>
-            </div>
-          </div>
-          <div className="campo">
-            <label>Emplazamiento de los trabajos</label>
-            <input type="text" value={datos.emplazamiento} onChange={(e) => actualizar('emplazamiento', e.target.value)} />
-          </div>
-          <div className="campo-fila">
-            <div className="campo">
-              <label>Fecha del informe</label>
-              <input type="text" value={datos.fechaInforme} onChange={(e) => actualizar('fechaInforme', e.target.value)} />
-            </div>
-            <div className="campo">
-              <label>Inspector/a o técnico/a actuante</label>
-              <input type="text" value={datos.actuante} onChange={(e) => actualizar('actuante', e.target.value)} />
-            </div>
+          <h2>Datos del informe</h2>
+          <div className="amianto__campos">
+            {DATOS_CAMPOS.map((c) => (
+              <div className={`campo ${c.ancho === 'full' ? 'campo--full' : ''}`} key={c.id}>
+                <label>{c.label}</label>
+                <input
+                  type="text"
+                  value={datos[c.id]}
+                  onChange={(e) => setDato(c.id, e.target.value)}
+                  placeholder={c.placeholder || ''}
+                />
+              </div>
+            ))}
           </div>
 
-          <h2>2. Contenido del plan (art. 11.2 RD 396/2006)</h2>
-          {renderFilas(CONTENIDO_PLAN)}
-
-          <h2>3. Comprobaciones complementarias</h2>
-          {renderFilas(COMPROBACIONES)}
-
-          <h2>4. Propuesta</h2>
+          <h2>Encabezado</h2>
           <div className="campo">
-            <label>Conclusión / propuesta</label>
-            <select className="chip" value={datos.propuesta} onChange={(e) => actualizar('propuesta', e.target.value)}>
-              {PROPUESTAS.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.etiqueta}
-                </option>
-              ))}
-            </select>
+            <label>Párrafo de apertura</label>
+            <textarea
+              rows={4}
+              value={apertura}
+              onChange={(e) => setApertura(e.target.value)}
+              placeholder="Fórmula de apertura del informe (p. ej. cita del art. 12.2 RD 396/2006 y objeto del informe)…"
+            />
           </div>
-          {datos.propuesta === 'subsanacion' && (
-            <div className="campo">
-              <label>Plazo de subsanación</label>
-              <input type="text" value={datos.plazoSubsanacion} onChange={(e) => actualizar('plazoSubsanacion', e.target.value)} placeholder="p. ej. 10 días hábiles" />
+
+          <h2>Contenido del plan (art. 11.2 RD 396/2006)</h2>
+          {APARTADOS.map((a) => (
+            <div className="campo" key={a.id}>
+              <label>
+                {a.num}. {a.titulo} <span className="calc__base">· {a.base}</span>
+              </label>
+              <textarea
+                rows={3}
+                value={apartados[a.id]}
+                onChange={(e) => setApartado(a.id, e.target.value)}
+                placeholder="Redacta aquí el análisis de este apartado…"
+              />
             </div>
-          )}
+          ))}
+
+          <h2>Cierre</h2>
           <div className="campo">
-            <label>Observaciones / fundamentación</label>
-            <textarea rows={4} value={datos.observaciones} onChange={(e) => actualizar('observaciones', e.target.value)} placeholder="Motivación de la propuesta, deficiencias detectadas, requerimientos…" />
+            <label>Párrafo de cierre</label>
+            <textarea
+              rows={3}
+              value={cierre}
+              onChange={(e) => setCierre(e.target.value)}
+              placeholder="Fórmula de cierre del informe…"
+            />
           </div>
 
           <div className="analizador__acciones">
             <button className="btn btn--primario" onClick={imprimir}>
               🖨️ Imprimir / guardar PDF
             </button>
+            <button className="btn btn--texto" onClick={limpiar}>
+              Limpiar
+            </button>
           </div>
-
-          <p className="analizador__resumen">
-            <span className="chip chip--verde">{resumen.correcto} correctos</span>{' '}
-            <span className="chip chip--ambar">{resumen.subsanar} a subsanar</span>{' '}
-            <span className="chip chip--rojo">{resumen.noconsta} no constan</span>{' '}
-            <span className="chip chip--gris">{resumen.pendiente} pendientes</span>
-          </p>
         </section>
 
-        {/* Vista previa del informe */}
+        {/* Vista previa */}
         <section className="analizador__informe amianto__informe">
           <article className="documento">
-            <p className="documento__organo">{datos.organo}</p>
+            {datos.solicitante && <p className="documento__organo">{datos.solicitante}</p>}
             <h2 className="documento__titulo">
               Informe sobre el plan de trabajo con riesgo de exposición al amianto
             </h2>
-            <p className="amianto__subtitulo">Arts. 11 y 12 del RD 396/2006, de 31 de marzo</p>
+            <p className="amianto__subtitulo">Art. 12.2 del RD 396/2006, de 31 de marzo</p>
 
             <table className="calc__tabla">
               <tbody>
@@ -246,72 +150,59 @@ export default function InformesAmianto() {
                 )}
                 {datos.rera && <tr><th>Inscripción RERA</th><td>{datos.rera}</td></tr>}
                 {datos.emplazamiento && <tr><th>Emplazamiento</th><td>{datos.emplazamiento}</td></tr>}
-                <tr>
-                  <th>Tipo de material</th>
-                  <td>
-                    {datos.material === 'friable'
-                      ? 'Friable'
-                      : datos.material === 'mixto'
-                        ? 'Mixto'
-                        : 'No friable'}
-                  </td>
-                </tr>
+                {datos.provincia && <tr><th>Provincia / ámbito</th><td>{datos.provincia}</td></tr>}
                 {datos.fechaEntrada && <tr><th>Fecha de entrada</th><td>{datos.fechaEntrada}</td></tr>}
-                <tr><th>Fecha del informe</th><td>{datos.fechaInforme}</td></tr>
+                {datos.fechaInforme && <tr><th>Fecha del informe</th><td>{datos.fechaInforme}</td></tr>}
                 {datos.actuante && <tr><th>Actuante</th><td>{datos.actuante}</td></tr>}
               </tbody>
             </table>
 
-            <h3>Resultado de la verificación</h3>
-            {itemsConContenido.length === 0 ? (
-              <p className="amianto__vacio no-impresion">
-                Marca el estado de cada punto del cuadro para que aparezca aquí el resultado.
+            {apertura.trim() && (
+              <p className="amianto__parrafo" style={{ whiteSpace: 'pre-wrap' }}>
+                {apertura}
               </p>
-            ) : (
-              <table className="calc__tabla calc__tabla--tramos">
-                <thead>
-                  <tr>
-                    <th>Punto verificado</th>
-                    <th>Base</th>
-                    <th>Estado</th>
-                    <th>Observación</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {itemsConContenido.map((c) => {
-                    const it = items[c.id]
-                    const est = ESTADOS_VERIFICACION.find((e) => e.id === it.estado)
-                    return (
-                      <tr key={c.id}>
-                        <td>{c.titulo}</td>
-                        <td className="calc__base">{c.base}</td>
-                        <td>
-                          <span className={claseEstado(est?.color || 'gris')}>{est?.etiqueta}</span>
-                        </td>
-                        <td>{it.obs}</td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
             )}
 
-            <h3>Propuesta</h3>
-            <p>
-              <span className={claseEstado(propuestaActual.color)}>{propuestaActual.etiqueta}</span>
-              {datos.propuesta === 'subsanacion' && datos.plazoSubsanacion && (
-                <> · Plazo de subsanación: {datos.plazoSubsanacion}.</>
-              )}
-            </p>
-            {datos.observaciones.trim() && (
-              <p style={{ whiteSpace: 'pre-wrap' }}>{datos.observaciones}</p>
+            {apartadosConContenido.map((a) => (
+              <div className="amianto__seccion" key={a.id}>
+                <h3>
+                  {a.num}. {a.titulo}
+                </h3>
+                <p className="amianto__parrafo" style={{ whiteSpace: 'pre-wrap' }}>
+                  {apartados[a.id]}
+                </p>
+              </div>
+            ))}
+
+            {cierre.trim() && (
+              <p className="amianto__parrafo amianto__cierre" style={{ whiteSpace: 'pre-wrap' }}>
+                {cierre}
+              </p>
+            )}
+
+            {(datos.lugarFecha || datos.actuante) && (
+              <div className="amianto__firma">
+                {datos.lugarFecha && <p>{datos.lugarFecha}</p>}
+                {datos.actuante && (
+                  <p>
+                    <br />
+                    {datos.actuante}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {!hayContenido && (
+              <p className="amianto__vacio no-impresion">
+                Redacta el encabezado y los apartados en el editor para ver aquí el informe.
+              </p>
             )}
 
             <p className="documento__cierre">
-              Valor límite de exposición: {VALOR_LIMITE.valor} {VALOR_LIMITE.unidad} ({VALOR_LIMITE.referencia},{' '}
-              {VALOR_LIMITE.articulo}). Conservación de la documentación: mínimo {CONSERVACION_AÑOS} años
-              (art. 18 RD 396/2006). Documento orientativo basado en fuentes oficiales (BOE e INSST); no
-              constituye resolución administrativa.
+              Valor límite de exposición: {VALOR_LIMITE.valor} {VALOR_LIMITE.unidad} (
+              {VALOR_LIMITE.referencia}, {VALOR_LIMITE.articulo}). Conservación de la documentación:
+              mínimo {CONSERVACION_AÑOS} años (art. 18 RD 396/2006). Documento orientativo basado en
+              fuentes oficiales (BOE e INSST); no constituye resolución ni informe administrativo.
             </p>
           </article>
         </section>
@@ -329,7 +220,9 @@ export default function InformesAmianto() {
         <ul className="amianto__lista">
           {NORMATIVA.map((n) => (
             <li key={n.ref}>
-              <a href={n.url} target="_blank" rel="noopener noreferrer">{n.titulo}</a>{' '}
+              <a href={n.url} target="_blank" rel="noopener noreferrer">
+                {n.titulo}
+              </a>{' '}
               <span className="calc__base">({n.ref})</span>
               <br />
               {n.resumen}
@@ -341,7 +234,9 @@ export default function InformesAmianto() {
         <ul className="amianto__lista">
           {DOCS_INSST.map((d) => (
             <li key={d.titulo}>
-              <a href={d.url} target="_blank" rel="noopener noreferrer">{d.titulo}</a>
+              <a href={d.url} target="_blank" rel="noopener noreferrer">
+                {d.titulo}
+              </a>
               <br />
               {d.nota}
             </li>
