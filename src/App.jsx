@@ -19,6 +19,8 @@ import Contacto from './components/Contacto.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsappFlotante from './components/WhatsappFlotante.jsx'
 import AnalizadorConvenios from './components/AnalizadorConvenios.jsx'
+import CalculadoraDespido from './components/CalculadoraDespido.jsx'
+import PlanesAmianto from './components/PlanesAmianto.jsx'
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -35,6 +37,12 @@ export default function App() {
 
   if (ruta.startsWith('#/analizador')) {
     return <AnalizadorConvenios />
+  }
+  if (ruta.startsWith('#/despido')) {
+    return <CalculadoraDespido />
+  }
+  if (ruta.startsWith('#/amianto')) {
+    return <PlanesAmianto />
   }
 
   return (
