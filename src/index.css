@@ -2218,3 +2218,19 @@ select.chip {
   color: var(--gris-500);
   font-style: italic;
 }
+
+/* Resultado de la calculadora de despido */
+.despido__importe {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 800;
+  color: var(--azul-900);
+  margin: 0;
+}
+.despido__sub {
+  margin: 0 0 16px;
+  color: var(--gris-500);
+  font-weight: 600;
+}
+.documento__tabla th {
+  white-space: nowrap;
+}
