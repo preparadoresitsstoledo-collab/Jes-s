@@ -2,7 +2,7 @@ name: Desplegar en GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/eager-fermi-qnvsoc]
   workflow_dispatch:
 
 permissions:
