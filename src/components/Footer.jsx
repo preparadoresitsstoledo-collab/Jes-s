@@ -1,4 +1,5 @@
 import { marca } from '../data/sitio.js'
+import ContadorVisitas from './ContadorVisitas.jsx'
 
 export default function Footer() {
   const año = new Date().getFullYear()
@@ -48,6 +49,7 @@ export default function Footer() {
         <div className="footer__legal">
           © {año} {marca.nombre}. Todos los derechos reservados. · Las estadísticas mostradas
           proceden de las publicaciones oficiales del BOE.
+          <ContadorVisitas />
         </div>
       </div>
     </footer>

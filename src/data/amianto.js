@@ -1,161 +1,134 @@
-// Contenido obligatorio del PLAN DE TRABAJO CON AMIANTO y demás obligaciones,
-// conforme al Real Decreto 396/2006, de 31 de marzo, por el que se establecen
-// las disposiciones mínimas de seguridad y salud aplicables a los trabajos con
-// riesgo de exposición al amianto.
+// Base documental para la herramienta de informes de amianto.
 //
-// ⚠️ Lista de verificación orientativa para el control del plan. No sustituye
-// el criterio técnico ni el dictamen de la autoridad laboral.
+// ⚠️ SOLO FUENTES OFICIALES: Boletín Oficial del Estado (BOE) e Instituto
+// Nacional de Seguridad y Salud en el Trabajo (INSST, antes INSHT).
+//
+// Esta herramienta NO almacena ninguna plantilla de informe: aporta únicamente
+// la estructura legal de apartados (art. 11.2 RD 396/2006) y el marco normativo
+// oficial. El contenido de cada apartado lo redacta la persona usuaria.
 
-export const ESTADOS_AMIANTO = {
-  pendiente: { etiqueta: 'Sin revisar', color: 'gris' },
-  conforme: { etiqueta: 'Consta / Conforme', color: 'verde' },
-  no_consta: { etiqueta: 'No consta / Deficiencia', color: 'rojo' },
-  revisar: { etiqueta: 'Revisar', color: 'ambar' },
-  na: { etiqueta: 'No aplica', color: 'gris' },
+// Valor límite ambiental de exposición (art. 4 RD 396/2006).
+export const VALOR_LIMITE = {
+  valor: 0.1,
+  unidad: 'fibras/cm³',
+  referencia: 'media ponderada en el tiempo para un periodo de 8 horas',
+  articulo: 'Art. 4 RD 396/2006',
 }
 
-// Bloques del cuadro de verificación del plan.
-export const CHECKLIST_AMIANTO = [
+// Periodo mínimo de conservación de la documentación (art. 18 RD 396/2006).
+export const CONSERVACION_AÑOS = 40
+
+// Datos identificativos del informe (etiquetas del formulario; sin contenido
+// predefinido).
+export const DATOS_CAMPOS = [
+  { id: 'solicitante', label: 'Órgano solicitante', placeholder: 'p. ej. Dirección Provincial de…' },
+  { id: 'expediente', label: 'Nº de plan de trabajo / expediente' },
+  { id: 'empresa', label: 'Empresa autora del Plan', ancho: 'full' },
+  { id: 'cif', label: 'CIF / NIF' },
+  { id: 'rera', label: 'Nº de inscripción RERA' },
+  { id: 'emplazamiento', label: 'Emplazamiento de los trabajos', ancho: 'full' },
+  { id: 'fechaEntrada', label: 'Fecha de entrada del plan' },
+  { id: 'fechaInforme', label: 'Fecha del informe' },
+  { id: 'actuante', label: 'Inspector/a o técnico/a actuante' },
+  { id: 'lugarFecha', label: 'Lugar y fecha de firma', placeholder: 'En …, a … de … de …' },
+]
+
+// Estructura oficial del contenido del plan de trabajo (art. 11.2 RD 396/2006).
+// Solo títulos y base legal; el contenido se rellena en la herramienta.
+export const APARTADOS = [
+  { id: 'a', num: 1, titulo: 'Descripción del trabajo a realizar', base: 'Art. 11.2.a) RD 396/2006' },
+  { id: 'b', num: 2, titulo: 'Tipo de material a intervenir', base: 'Art. 11.2.b) RD 396/2006' },
+  { id: 'c', num: 3, titulo: 'Ubicación del lugar en el que se efectuarán los trabajos', base: 'Art. 11.2.c) RD 396/2006' },
+  { id: 'd', num: 4, titulo: 'Fecha de inicio y duración prevista', base: 'Art. 11.2.d) RD 396/2006' },
+  { id: 'e', num: 5, titulo: 'Relación nominal de los trabajadores implicados', base: 'Art. 11.2.e) RD 396/2006' },
+  { id: 'f', num: 6, titulo: 'Procedimientos que se aplicarán para el trabajo', base: 'Art. 11.2.f) RD 396/2006' },
   {
-    num: '1',
-    titulo: 'Datos y tramitación del plan',
-    items: [
-      {
-        id: 'rera',
-        etiqueta: 'Empresa inscrita en el RERA (Registro de Empresas con Riesgo por Amianto)',
-        claves: ['rera', 'registro de empresas con riesgo', 'inscripcion en el registro'],
-        fundamento: 'Art. 17 RD 396/2006',
-      },
-      {
-        id: 'presentacion',
-        etiqueta: 'Presentación del plan a la autoridad laboral antes del inicio de los trabajos',
-        claves: ['autoridad laboral', 'presentacion del plan', 'aprobacion del plan', 'remision a la autoridad'],
-        fundamento: 'Art. 11.1 RD 396/2006',
-      },
-      {
-        id: 'descripcion',
-        etiqueta: 'Descripción del trabajo a realizar y tipo de actividad',
-        claves: ['descripcion del trabajo', 'objeto del plan', 'tipo de actividad', 'naturaleza de los trabajos', 'retirada', 'desamiantado', 'demolicion'],
-        fundamento: 'Art. 11.2.a) RD 396/2006',
-      },
-      {
-        id: 'tipo_material',
-        etiqueta: 'Tipo y cantidad de amianto / material (friable o no friable)',
-        claves: ['friable', 'no friable', 'amianto', 'fibrocemento', 'uralita', 'cantidad', 'tipo de material'],
-        fundamento: 'Art. 11.2.b) RD 396/2006',
-      },
-      {
-        id: 'ubicacion',
-        etiqueta: 'Ubicación del lugar de trabajo',
-        claves: ['ubicacion', 'emplazamiento', 'direccion del', 'lugar de trabajo', 'situacion de la obra'],
-        fundamento: 'Art. 11.2.c) RD 396/2006',
-      },
-      {
-        id: 'fechas',
-        etiqueta: 'Fecha de inicio y duración prevista de los trabajos',
-        claves: ['fecha de inicio', 'duracion prevista', 'plazo de ejecucion', 'cronograma', 'calendario'],
-        fundamento: 'Art. 11.2.d) RD 396/2006',
-      },
-    ],
+    id: 'g',
+    num: 7,
+    titulo: 'Medidas para evitar la dispersión de fibras y limitar la exposición de los trabajadores',
+    base: 'Art. 11.2.g) RD 396/2006',
+  },
+  { id: 'h', num: 8, titulo: 'Equipos utilizados para la protección de los trabajadores', base: 'Art. 11.2.h) RD 396/2006' },
+  {
+    id: 'i',
+    num: 9,
+    titulo: 'Medidas para evitar la exposición de otras personas en el lugar o sus proximidades',
+    base: 'Art. 11.2.i) RD 396/2006',
+  },
+  { id: 'j', num: 10, titulo: 'Información a los trabajadores', base: 'Art. 11.2.j) RD 396/2006' },
+  { id: 'k', num: 11, titulo: 'Medidas para la eliminación de residuos', base: 'Art. 11.2.k) RD 396/2006' },
+  {
+    id: 'l',
+    num: 12,
+    titulo: 'Procedimiento para la evaluación y control del ambiente de trabajo',
+    base: 'Art. 11.2.l) RD 396/2006 (en relación con el art. 5)',
+  },
+  { id: 'rp', num: 13, titulo: 'Recursos preventivos de la empresa', base: 'Art. 32 bis Ley 31/1995 (LPRL)' },
+]
+
+// Normativa oficial aplicable (enlaces a texto consolidado del BOE).
+export const NORMATIVA = [
+  {
+    titulo:
+      'RD 396/2006, de 31 de marzo — disposiciones mínimas de seguridad y salud en trabajos con riesgo de exposición al amianto',
+    ref: 'BOE-A-2006-6474',
+    url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2006-6474',
+    resumen:
+      'Norma específica del amianto: ámbito, evaluación, límite de exposición, plan de trabajo (art. 11), tramitación e informe (art. 12), RERA (art. 17) y vigilancia de la salud.',
   },
   {
-    num: '2',
-    titulo: 'Trabajadores',
-    items: [
-      {
-        id: 'relacion_trabajadores',
-        etiqueta: 'Relación nominal de trabajadores y su categoría profesional',
-        claves: ['relacion nominal', 'relacion de trabajadores', 'trabajadores implicados', 'personal interviniente', 'nominal de los trabajadores'],
-        fundamento: 'Art. 11.2.e) RD 396/2006',
-      },
-      {
-        id: 'formacion',
-        etiqueta: 'Formación específica de los trabajadores sobre el riesgo de amianto',
-        claves: ['formacion', 'formados', 'capacitacion', 'informacion a los trabajadores'],
-        fundamento: 'Art. 13 RD 396/2006',
-      },
-      {
-        id: 'vigilancia_salud',
-        etiqueta: 'Aptitud médica / vigilancia de la salud',
-        claves: ['vigilancia de la salud', 'aptitud medica', 'reconocimiento medico', 'apto', 'examen de salud'],
-        fundamento: 'Art. 16 RD 396/2006',
-      },
-      {
-        id: 'registro_datos',
-        etiqueta: 'Registro de datos de exposición y su conservación (40 años)',
-        claves: ['registro de datos', 'fichas de exposicion', '40 años', 'cuarenta años', 'conservacion de los datos'],
-        fundamento: 'Art. 18 RD 396/2006',
-      },
-    ],
+    titulo: 'Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales',
+    ref: 'BOE-A-1995-24292',
+    url: 'https://www.boe.es/buscar/act.php?id=BOE-A-1995-24292',
+    resumen: 'Marco general de prevención: evaluación de riesgos, información, formación, recursos preventivos y vigilancia de la salud.',
   },
   {
-    num: '3',
-    titulo: 'Medidas preventivas y de protección',
-    items: [
-      {
-        id: 'procedimientos',
-        etiqueta: 'Procedimientos de trabajo y adecuación de equipos/medios',
-        claves: ['procedimiento de trabajo', 'metodo de trabajo', 'procedimientos a aplicar', 'tecnicas de'],
-        fundamento: 'Art. 11.2.f) RD 396/2006',
-      },
-      {
-        id: 'limitar_fibras',
-        etiqueta: 'Medidas para limitar la generación y dispersión de fibras (encapsulado, humectación, aspiración)',
-        claves: ['dispersion', 'humect', 'encapsul', 'aspiracion', 'extraccion localizada', 'sellado', 'impregnacion'],
-        fundamento: 'Art. 6 y 11.2.g) RD 396/2006',
-      },
-      {
-        id: 'epi',
-        etiqueta: 'Equipos de protección individual (mascarillas/equipos respiratorios, buzos)',
-        claves: ['epi', 'equipo de proteccion', 'mascarilla', 'proteccion respiratoria', 'buzo', 'mono desechable', 'ffp3'],
-        fundamento: 'Art. 8 RD 396/2006',
-      },
-      {
-        id: 'descontaminacion',
-        etiqueta: 'Unidad/procedimiento de descontaminación de trabajadores y equipos',
-        claves: ['descontaminacion', 'unidad de descontaminacion', 'duchas', 'esclusa', 'higiene personal'],
-        fundamento: 'Art. 7 RD 396/2006',
-      },
-      {
-        id: 'terceros',
-        etiqueta: 'Medidas para evitar la exposición de terceros y señalización de zonas',
-        claves: ['terceros', 'personas ajenas', 'señalizacion', 'balizamiento', 'zona restringida', 'acceso restringido', 'confinamiento'],
-        fundamento: 'Art. 6 y 7 RD 396/2006',
-      },
-      {
-        id: 'residuos',
-        etiqueta: 'Gestión de residuos de amianto (residuo peligroso, transporte y vertedero autorizado)',
-        claves: ['residuo', 'residuos peligrosos', 'gestor autorizado', 'vertedero', 'transporte de residuos', 'big bag', 'doble bolsa'],
-        fundamento: 'Art. 7 RD 396/2006 y normativa de residuos',
-      },
-      {
-        id: 'mediciones',
-        etiqueta: 'Evaluación/medición de la exposición (VLA: 0,1 fibras/cm³ en 8 h)',
-        claves: ['medicion', 'evaluacion de la exposicion', 'fibras', 'vla', 'valor limite', '0,1 fibras', 'muestreo ambiental'],
-        fundamento: 'Art. 3, 4 y 5 RD 396/2006',
-      },
-      {
-        id: 'recursos_preventivos',
-        etiqueta: 'Recursos preventivos presentes durante los trabajos',
-        claves: ['recurso preventivo', 'recursos preventivos', 'presencia de recursos'],
-        fundamento: 'Ley 31/1995, art. 32 bis',
-      },
-    ],
+    titulo:
+      'RD 665/1997, de 12 de mayo, sobre la protección de los trabajadores contra los riesgos relacionados con la exposición a agentes cancerígenos durante el trabajo',
+    ref: 'BOE-A-1997-11145',
+    url: 'https://www.boe.es/buscar/act.php?id=BOE-A-1997-11145',
+    resumen: 'El amianto es agente cancerígeno; este RD es de aplicación complementaria al RD 396/2006.',
   },
   {
-    num: '4',
-    titulo: 'Participación',
-    items: [
-      {
-        id: 'consulta',
-        etiqueta: 'Consulta a los representantes de los trabajadores sobre el plan',
-        claves: ['representantes de los trabajadores', 'consulta', 'delegados de prevencion', 'comite de seguridad'],
-        fundamento: 'Art. 11.5 RD 396/2006',
-      },
-    ],
+    titulo: 'RD 39/1997, de 17 de enero, Reglamento de los Servicios de Prevención',
+    ref: 'BOE-A-1997-1853',
+    url: 'https://www.boe.es/buscar/act.php?id=BOE-A-1997-1853',
+    resumen: 'Organización de la prevención y procedimiento de evaluación de riesgos.',
+  },
+  {
+    titulo:
+      'Ley 7/2022, de 8 de abril, de residuos y suelos contaminados para una economía circular (Disposición adicional 14ª: amianto)',
+    ref: 'BOE-A-2022-5809',
+    url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2022-5809',
+    resumen:
+      'Obliga a los municipios a elaborar un censo de instalaciones y emplazamientos con amianto, con un calendario que planifique su retirada.',
   },
 ]
 
-export const TODOS_AMIANTO = CHECKLIST_AMIANTO.flatMap((s) =>
-  s.items.map((it) => ({ ...it, seccion: s.num, seccionTitulo: s.titulo })),
-)
+// Documentación técnica oficial del INSST (orientativa).
+export const DOCS_INSST = [
+  {
+    titulo: 'Guía técnica para la evaluación y prevención de los riesgos relacionados con la exposición al amianto',
+    url: 'https://www.insst.es/documentacion/catalogo-de-publicaciones/guia-tecnica-para-la-evaluacion-y-prevencion-de-los-riesgos-relacionados-con-la-exposicion-al-amianto',
+    nota: 'Guía técnica del INSST que desarrolla y orienta la aplicación del RD 396/2006.',
+  },
+  {
+    titulo: 'Directrices para la retirada del amianto instalado',
+    url: 'https://www.insst.es/documentacion/material-tecnico/documentos-tecnicos/directrices-retirada-amianto-instalado-2024',
+    nota: 'Apoyo a la DA 14ª de la Ley 7/2022 (censos municipales y planificación de la retirada).',
+  },
+  {
+    titulo: 'Portal del amianto del INSST (legislación, NTP y material técnico)',
+    url: 'https://www.insst.es/materias/riesgos/riesgos-quimicos/amianto',
+    nota: 'Punto de entrada oficial a la documentación técnica del INSST sobre amianto.',
+  },
+]
+
+// Resumen de los artículos clave del RD 396/2006 (para consulta).
+export const ARTICULOS_396 = [
+  { id: 'art4', titulo: 'Art. 4 — Valor límite', texto: 'La exposición no superará el valor límite ambiental de 0,1 fibras por cm³, medido como media ponderada en el tiempo para un periodo de 8 horas.' },
+  { id: 'art11', titulo: 'Art. 11 — Planes de trabajo', texto: 'Antes de comenzar trabajos con amianto, el empresario debe elaborar un plan de trabajo con el contenido mínimo del art. 11.2.' },
+  { id: 'art12', titulo: 'Art. 12 — Tramitación del plan de trabajo', texto: 'El plan se presenta para su aprobación ante la autoridad laboral competente antes del inicio de los trabajos; el art. 12.2 prevé el informe de la Inspección de Trabajo y Seguridad Social.' },
+  { id: 'art17', titulo: 'Art. 17 — Inscripción en el RERA', texto: 'Las empresas que realicen trabajos con riesgo de amianto deben estar inscritas en el Registro de Empresas con Riesgo de Amianto (RERA).' },
+  { id: 'art18', titulo: 'Art. 18 — Registro y archivo de documentación', texto: 'Los registros de evaluación de la exposición y de vigilancia de la salud se conservan durante un mínimo de 40 años tras finalizar la exposición.' },
+]

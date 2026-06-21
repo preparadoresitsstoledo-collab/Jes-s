@@ -2219,18 +2219,409 @@ select.chip {
   font-style: italic;
 }
 
-/* Resultado de la calculadora de despido */
-.despido__importe {
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  font-weight: 800;
-  color: var(--azul-900);
+/* ───────────────────────── Calculadora de indemnizaciones ───────────────── */
+.aviso--ambar {
+  background: #fdf3e0;
+  border-left: 3px solid #d39400;
+}
+
+/* Selects del formulario a ancho completo, con aspecto de campo */
+.calc select.chip {
+  display: block;
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid var(--gris-300, #d1d5db);
+  background: var(--blanco, #fff);
+  color: inherit;
+}
+
+.calc__radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 4px 0;
+}
+.calc__radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.calc__radio input {
+  width: auto;
   margin: 0;
 }
-.despido__sub {
+
+.calc__base {
+  font-size: 0.82rem;
+  color: var(--gris-600, #4b5563);
+  margin: 4px 0;
+}
+
+.calc__informe {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+}
+.calc__placeholder {
+  color: var(--gris-500, #6b7280);
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.calc__informe-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.calc__informe-cabecera h2 {
+  margin: 0;
+}
+.calc__causa-titulo {
+  font-weight: 700;
+  color: var(--azul-500);
+  margin: 2px 0 14px;
+}
+
+.calc__cifra {
+  text-align: center;
+  background: #e8f0fa;
+  border: 1px solid #c6dcf3;
+  border-radius: var(--radio, 10px);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.calc__cifra--cero {
+  background: var(--gris-100);
+  border-color: var(--gris-300, #d1d5db);
+}
+.calc__importe {
+  display: block;
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: var(--azul-700, #163a66);
+  line-height: 1.1;
+}
+.calc__importe-sub {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--gris-600, #4b5563);
+  margin-top: 4px;
+}
+
+.calc__tabla {
+  width: 100%;
+  border-collapse: collapse;
   margin: 0 0 16px;
-  color: var(--gris-500);
+  font-size: 0.9rem;
+}
+.calc__tabla th,
+.calc__tabla td {
+  border: 1px solid var(--gris-100);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.calc__tabla th {
+  background: var(--gris-100);
+  font-weight: 600;
+  width: 55%;
+}
+.calc__tabla--tramos th {
+  width: auto;
+}
+.calc__tabla--tramos thead th {
+  background: var(--azul-500);
+  color: #fff;
+}
+.calc__tabla-total td {
+  font-weight: 700;
+  background: #f3f6fb;
+}
+
+.calc__formula {
+  background: var(--gris-100);
+  border-radius: var(--radio-sm, 6px);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  margin: 12px 0;
+}
+.calc__disclaimer {
+  font-size: 0.8rem;
+  color: var(--gris-500, #6b7280);
+  font-style: italic;
+  border-top: 1px solid var(--gris-100);
+  padding-top: 12px;
+  margin-top: 18px;
+}
+
+.calc__otras {
+  margin-top: 28px;
+}
+.calc__otras-lista {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.calc__otras-lista li {
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-radius: var(--radio-sm, 6px);
+  padding: 12px 14px;
+  font-size: 0.88rem;
+}
+
+@media print {
+  .calc,
+  .calc__informe {
+    position: static;
+  }
+}
+
+/* ───────────────────────── Portal de herramientas ───────────────────────── */
+.herramienta__cargando {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--gris-500, #6b7280);
+  font-size: 1.05rem;
+}
+
+.portal__grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  padding-top: 28px;
+  padding-bottom: 56px;
+}
+
+.portal__card {
+  display: flex;
+  flex-direction: column;
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-top: 4px solid var(--azul-500);
+  border-radius: var(--radio, 12px);
+  padding: 24px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--sombra-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.portal__card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra, 0 10px 30px rgba(0, 0, 0, 0.1));
+}
+
+.portal__icono {
+  font-size: 2rem;
+  line-height: 1;
+}
+.portal__card h2 {
+  margin: 12px 0 4px;
+  font-size: 1.25rem;
+  color: var(--azul-700, #163a66);
+}
+.portal__resumen {
+  margin: 0 0 10px;
+  font-weight: 600;
+  color: var(--azul-500);
+  font-size: 0.95rem;
+}
+.portal__descripcion {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--gris-600, #4b5563);
+  flex: 1;
+}
+.portal__etiquetas {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0 0 16px;
+}
+.portal__etiquetas li {
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--gris-100);
+  color: var(--gris-700, #374151);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.portal__abrir {
+  font-weight: 700;
+  color: var(--azul-500);
+}
+
+/* Sección de herramientas en la home */
+.home-herramientas-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  margin-top: 12px;
+}
+.home-herramienta {
+  display: flex;
+  flex-direction: column;
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-top: 4px solid var(--azul-500);
+  border-radius: var(--radio, 12px);
+  padding: 24px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--sombra-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.home-herramienta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra, 0 10px 30px rgba(0, 0, 0, 0.1));
+}
+.home-herramienta__icono {
+  font-size: 2rem;
+  line-height: 1;
+}
+.home-herramienta h3 {
+  margin: 12px 0 8px;
+  font-size: 1.2rem;
+  color: var(--azul-700, #163a66);
+}
+.home-herramienta p {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: var(--gris-600, #4b5563);
+  flex: 1;
+}
+.home-herramienta__abrir {
+  font-weight: 700;
+  color: var(--azul-500);
+}
+.home-herramientas-pie {
+  text-align: center;
+  margin-top: 28px;
+}
+
+/* ───────────────────────── Informes de amianto ──────────────────────────── */
+.amianto__subtitulo {
+  color: var(--azul-500);
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+.amianto__vacio {
+  color: var(--gris-500, #6b7280);
+  font-style: italic;
+}
+.documento__bloque {
+  margin: 16px 0;
+}
+.documento__bloque h3 {
+  margin: 0 0 6px;
+  color: var(--azul-700, #163a66);
+  font-size: 1.05rem;
+}
+.amianto__normativa {
+  margin-top: 28px;
+  padding-bottom: 56px;
+}
+.amianto__normativa h3 {
+  margin: 22px 0 8px;
+  color: var(--azul-700, #163a66);
+}
+.amianto__lista,
+.amianto__articulos {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.amianto__lista li,
+.amianto__articulos li {
+  background: var(--blanco, #fff);
+  border: 1px solid var(--gris-100);
+  border-left: 4px solid var(--azul-500);
+  border-radius: var(--radio-sm, 6px);
+  padding: 12px 14px;
+  font-size: 0.9rem;
+}
+.amianto__lista a {
+  font-weight: 600;
+  color: var(--azul-500);
+}
+.amianto__grupo {
+  margin-bottom: 8px;
+}
+.amianto__grupo h3 {
+  margin: 18px 0 8px;
+  color: var(--azul-700, #163a66);
+  font-size: 1rem;
+  border-bottom: 1px solid var(--gris-100);
+  padding-bottom: 4px;
+}
+.amianto__campos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 16px;
+}
+.campo--full {
+  grid-column: 1 / -1;
+}
+@media (max-width: 620px) {
+  .amianto__campos {
+    grid-template-columns: 1fr;
+  }
+}
+.documento__organo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--gris-600, #4b5563);
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.amianto__seccion {
+  margin: 16px 0;
+}
+.amianto__seccion h3 {
+  margin: 0 0 6px;
+  color: var(--azul-700, #163a66);
+  font-size: 1.02rem;
+}
+.amianto__parrafo {
+  margin: 0 0 10px;
+  text-align: justify;
+  line-height: 1.5;
+}
+.amianto__etapa {
+  margin: 8px 0 6px;
   font-weight: 600;
 }
-.documento__tabla th {
-  white-space: nowrap;
+.amianto__epi {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+.amianto__epi li {
+  margin-bottom: 2px;
+}
+.amianto__cierre {
+  margin-top: 16px;
+}
+.amianto__firma {
+  margin-top: 26px;
+  white-space: pre-wrap;
+}
+
+/* Contador de visitas en el pie */
+.contador-visitas {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.85;
 }

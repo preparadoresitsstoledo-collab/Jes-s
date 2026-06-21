@@ -9,9 +9,7 @@ const enlaces = [
   { href: '#metodologia', texto: 'Metodología' },
   { href: '#toledo', texto: 'Toledo' },
   { href: '#precio', texto: 'Precio' },
-  { href: '#/analizador', texto: 'Convenios' },
-  { href: '#/despido', texto: 'Indemnización despido' },
-  { href: '#/amianto', texto: 'Planes de amianto' },
+  { href: '#/herramientas', texto: 'Herramientas' },
   { href: '#contacto', texto: 'Contacto' },
 ]
 
