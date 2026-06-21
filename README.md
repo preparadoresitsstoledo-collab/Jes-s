@@ -146,6 +146,58 @@ Archivos relevantes:
 
 ---
 
+## 🧰 Portal de herramientas
+
+Todas las aplicaciones se centralizan en un **registro único** y se exponen en tres sitios
+sincronizados: el menú (**Herramientas**), una **sección en la home** y un **portal** con tarjetas
+en la ruta `#/herramientas`. Cada herramienta vuelve al portal con su enlace «Volver a herramientas».
+
+**Para añadir una nueva aplicación basta con una entrada** en `src/data/herramientas.js`:
+
+```js
+{
+  id: 'mi-app',
+  ruta: '#/mi-app',
+  nombre: 'Mi herramienta',
+  icono: '🧮',
+  resumen: 'Frase corta',
+  descripcion: 'Descripción para la tarjeta…',
+  etiquetas: ['Etiqueta'],
+  Componente: lazy(() => import('../components/MiApp.jsx')),
+}
+```
+
+El menú, la tarjeta y la ruta aparecen solos (carga diferida con `React.lazy`), sin tocar
+`App.jsx` ni `Navbar.jsx`.
+
+- `src/data/herramientas.js` — registro central de aplicaciones.
+- `src/components/PortalHerramientas.jsx` — página índice (`#/herramientas`).
+- `src/components/Herramientas.jsx` — sección de herramientas en la home.
+
+---
+
+## 🏗️ Informe sobre el plan de trabajo con amianto
+
+Editor con la **estructura oficial del art. 11.2 del RD 396/2006** para redactar el informe de la
+autoridad laboral sobre el plan de trabajo con riesgo de exposición al amianto (**art. 12.2**). Se
+accede desde el portal o en la ruta `#/amianto`.
+
+- **No incluye texto de informe**: aporta los apartados legales (solo títulos y base, del BOE) con
+  áreas de texto vacías, los datos identificativos del expediente y el encabezado redactable.
+- **Marco normativo y documentación, solo fuentes oficiales**: BOE (RD 396/2006, LPRL, RD 665/1997,
+  RD 39/1997, Ley 7/2022) e INSST (guía técnica, directrices de retirada y portal del amianto).
+- Vista previa **imprimible / PDF**.
+
+Archivos relevantes:
+
+- `src/data/amianto.js` — apartados del art. 11.2, normativa (BOE) y documentación (INSST).
+- `src/components/InformesAmianto.jsx` — interfaz del editor.
+
+> ⚖️ Herramienta **orientativa e informativa**: no constituye resolución ni informe administrativo
+> ni sustituye el criterio profesional.
+
+---
+
 ## SEO (posicionamiento en buscadores)
 
 La web está preparada para buscadores: etiquetas meta, Open Graph y Twitter Card,

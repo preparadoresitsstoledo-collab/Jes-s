@@ -97,8 +97,8 @@ export default function CalculadoraIndemnizaciones() {
     <div className="analizador calc">
       <header className="analizador__hero no-impresion">
         <div className="contenedor">
-          <a className="analizador__volver" href="#inicio">
-            ← Volver a la web
+          <a className="analizador__volver" href="#/herramientas">
+            ← Volver a herramientas
           </a>
           <h1>Cálculo de indemnizaciones por extinción del contrato</h1>
           <p className="analizador__lema">
