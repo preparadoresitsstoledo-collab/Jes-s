@@ -1,10 +1,5 @@
 import { useMemo, useState } from 'react'
-import {
-  REGIMENES,
-  OTRAS_RELACIONES,
-  TIPOS_CONTRATO,
-  buscarCausa,
-} from '../data/indemnizaciones.js'
+import { REGIMENES, TIPOS_CONTRATO, buscarCausa } from '../data/indemnizaciones.js'
 import {
   calcular,
   formatoEuros,
@@ -432,24 +427,6 @@ export default function CalculadoraIndemnizaciones() {
             </article>
           )}
         </section>
-      </div>
-
-      <div className="contenedor calc__otras no-impresion">
-        <h2>Otras relaciones laborales de carácter especial (art. 2 ET)</h2>
-        <p className="campo__ayuda">
-          Estas relaciones especiales no disponen de un módulo indemnizatorio propio en el formulario:
-          su extinción se rige por el Estatuto de los Trabajadores con especialidades o no genera
-          indemnización tasada.
-        </p>
-        <ul className="calc__otras-lista">
-          {OTRAS_RELACIONES.map((o) => (
-            <li key={o.nombre}>
-              <strong>{o.nombre}</strong> <span className="calc__base">({o.norma})</span>
-              <br />
-              {o.nota}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   )

@@ -316,36 +316,156 @@ export const REGIMENES = [
       },
     ],
   },
-]
-
-// Otras relaciones laborales especiales del art. 2 ET para las que no existe un
-// módulo indemnizatorio propio (rige el ET con especialidades) o cuya extinción
-// no genera indemnización tasada. Solo informativo.
-export const OTRAS_RELACIONES = [
   {
-    nombre: 'Penados en instituciones penitenciarias',
-    norma: 'RD 782/2001 — art. 2.1.c) ET',
-    nota: 'Relación especial sin indemnización tasada por extinción equivalente a la del régimen común.',
-  },
-  {
+    id: 'discapacidad',
     nombre: 'Personas con discapacidad en centros especiales de empleo',
-    norma: 'RD 1368/1985 — art. 2.1.g) ET',
-    nota: 'Se rige por el Estatuto de los Trabajadores con especialidades; la indemnización por despido improcedente sigue el régimen común (33/45 días).',
+    norma: 'RD 1368/1985, de 17 de julio',
+    relacionEspecial: true,
+    descripcion:
+      'Relación laboral especial del art. 2.1.g) ET. Se rige por el Estatuto de los Trabajadores con las especialidades del RD 1368/1985.',
+    causas: [
+      {
+        id: 'improcedente',
+        nombre: 'Despido improcedente',
+        genera: true,
+        modulo: 33,
+        topeMensualidades: 24,
+        transitorio: true,
+        baseLegal: 'Arts. 56.1 y DT 11ª ET (con las especialidades del RD 1368/1985)',
+        descripcion:
+          'El despido improcedente sigue el régimen común: 33/45 días de salario por año de servicio con los topes de la DT 11ª ET.',
+      },
+      {
+        id: 'objetivo',
+        nombre: 'Despido objetivo / colectivo (causas ETOP)',
+        genera: true,
+        modulo: 20,
+        topeMensualidades: 12,
+        transitorio: false,
+        baseLegal: 'Arts. 53.1.b) y 51 ET',
+        descripcion: '20 días de salario por año de servicio, con un tope de 12 mensualidades.',
+      },
+      {
+        id: 'temporal',
+        nombre: 'Fin de contrato temporal',
+        genera: true,
+        modulo: 12,
+        topeMensualidades: null,
+        transitorio: false,
+        baseLegal: 'Art. 49.1.c) ET',
+        descripcion: '12 días de salario por año de servicio.',
+      },
+      {
+        id: 'sinIndemnizacion',
+        nombre: 'Sin derecho a indemnización',
+        genera: false,
+        baseLegal: 'Arts. 54 y 49 ET',
+        descripcion:
+          'Despido disciplinario procedente, baja voluntaria o no superación del periodo de prueba.',
+      },
+    ],
   },
   {
+    id: 'estibadores',
     nombre: 'Estibadores portuarios',
-    norma: 'Art. 2.1.h) ET',
-    nota: 'Se rige por el ET con especialidades del sector; sin módulo indemnizatorio propio distinto.',
+    norma: 'Art. 2.1.h) ET (régimen específico del sector portuario)',
+    relacionEspecial: true,
+    descripcion:
+      'Relación laboral especial del art. 2.1.h) ET. La extinción se rige por el Estatuto de los Trabajadores con las especialidades del sector portuario.',
+    causas: [
+      {
+        id: 'improcedente',
+        nombre: 'Despido improcedente',
+        genera: true,
+        modulo: 33,
+        topeMensualidades: 24,
+        transitorio: true,
+        baseLegal: 'Arts. 56.1 y DT 11ª ET',
+        descripcion: '33/45 días de salario por año de servicio con los topes de la DT 11ª ET.',
+      },
+      {
+        id: 'objetivo',
+        nombre: 'Despido objetivo / colectivo (causas ETOP)',
+        genera: true,
+        modulo: 20,
+        topeMensualidades: 12,
+        transitorio: false,
+        baseLegal: 'Arts. 53.1.b) y 51 ET',
+        descripcion: '20 días de salario por año de servicio, con un tope de 12 mensualidades.',
+      },
+      {
+        id: 'sinIndemnizacion',
+        nombre: 'Sin derecho a indemnización',
+        genera: false,
+        baseLegal: 'Arts. 54 y 49 ET',
+        descripcion: 'Despido disciplinario procedente o baja voluntaria.',
+      },
+    ],
   },
   {
-    nombre: 'Residencia para la formación de especialistas en Ciencias de la Salud (MIR, etc.)',
-    norma: 'RD 1146/2006 — art. 2.1.i) ET',
-    nota: 'La extinción por finalización del programa formativo no genera indemnización específica.',
+    id: 'residentes',
+    nombre: 'Residencia para la formación de especialistas en Ciencias de la Salud (MIR, EIR…)',
+    norma: 'RD 1146/2006, de 6 de octubre',
+    relacionEspecial: true,
+    descripcion:
+      'Relación laboral especial del art. 2.1.i) ET, de carácter formativo y duración determinada, vinculada al programa de formación sanitaria especializada.',
+    causas: [
+      {
+        id: 'finFormacion',
+        nombre: 'Finalización del programa formativo',
+        genera: false,
+        baseLegal: 'Art. 7 RD 1146/2006',
+        descripcion:
+          'La extinción por finalización del periodo de residencia o del programa formativo no genera indemnización.',
+      },
+      {
+        id: 'improcedente',
+        nombre: 'Despido improcedente',
+        genera: true,
+        modulo: 33,
+        topeMensualidades: 24,
+        transitorio: true,
+        baseLegal: 'Arts. 56.1 y DT 11ª ET',
+        descripcion:
+          'El despido improcedente durante la residencia se rige por el régimen común: 33/45 días con los topes de la DT 11ª ET.',
+      },
+    ],
   },
   {
-    nombre: 'Menores sometidos a medidas de internamiento',
-    norma: 'RD 1774/2004 — art. 2.1.k) ET',
-    nota: 'Relación especial sin indemnización tasada propia.',
+    id: 'penados',
+    nombre: 'Penados en instituciones penitenciarias',
+    norma: 'RD 782/2001, de 6 de julio',
+    relacionEspecial: true,
+    descripcion:
+      'Relación laboral especial del art. 2.1.c) ET (trabajo de los internos en los talleres penitenciarios).',
+    causas: [
+      {
+        id: 'sinIndemnizacion',
+        nombre: 'Extinción de la relación laboral penitenciaria',
+        genera: false,
+        baseLegal: 'Art. 10 RD 782/2001',
+        descripcion:
+          'Las causas de extinción propias de esta relación (excarcelación, traslado, razones de tratamiento o de orden y seguridad, etc.) no generan indemnización tasada.',
+      },
+    ],
+  },
+  {
+    id: 'menores',
+    nombre: 'Menores sometidos a la ejecución de medidas de internamiento',
+    norma: 'RD 1774/2004, de 30 de julio',
+    relacionEspecial: true,
+    descripcion:
+      'Relación laboral especial del art. 2.1.k) ET, para la actividad laboral de los menores internados en centros.',
+    causas: [
+      {
+        id: 'sinIndemnizacion',
+        nombre: 'Extinción conforme a su normativa específica',
+        genera: false,
+        baseLegal: 'RD 1774/2004 y normativa de protección del menor',
+        descripcion:
+          'Relación especial regida por su normativa propia; su extinción no contempla una indemnización tasada equivalente a la del régimen común.',
+      },
+    ],
   },
 ]
 
