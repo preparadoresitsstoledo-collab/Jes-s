@@ -2617,3 +2617,11 @@ select.chip {
   margin-top: 26px;
   white-space: pre-wrap;
 }
+
+/* Contador de visitas en el pie */
+.contador-visitas {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
