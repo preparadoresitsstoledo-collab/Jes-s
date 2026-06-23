@@ -1505,6 +1505,164 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   margin: 0 auto;
 }
 
+/* ---------- Herramientas: simulador de visita ---------- */
+.simulador__barra {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-radius: 999px;
+  padding: 12px 22px;
+  box-shadow: var(--sombra-sm);
+  max-width: 560px;
+  margin: 0 auto 22px;
+  font-size: 0.95rem;
+  color: var(--gris-700);
+}
+
+.simulador__barra strong {
+  color: var(--azul-900);
+}
+
+.simulador__marcador strong {
+  color: var(--verde);
+}
+
+.simulador__barra .btn {
+  padding: 8px 18px;
+  font-size: 0.9rem;
+}
+
+.simulador__final {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--azul-900);
+  margin: 0 0 24px;
+}
+
+.infracciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.infraccion {
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-top: 4px solid var(--gris-300);
+  border-radius: var(--radio);
+  padding: 22px;
+  box-shadow: var(--sombra-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.infraccion--grave {
+  border-top-color: #e0892a;
+}
+
+.infraccion--muy-grave {
+  border-top-color: #c0392b;
+}
+
+.infraccion__materia {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--acento);
+  margin-bottom: 6px;
+}
+
+.infraccion h3 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.infraccion__desc {
+  color: var(--gris-700);
+  font-size: 0.92rem;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.infraccion__opciones {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-opcion {
+  flex: 1;
+  padding: 11px 10px;
+  border-radius: var(--radio-sm);
+  border: 2px solid var(--azul-500);
+  background: var(--blanco);
+  color: var(--azul-700);
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-opcion:hover {
+  background: var(--azul-500);
+  color: #fff;
+}
+
+.infraccion__resultado {
+  border-top: 1px dashed var(--gris-300);
+  padding-top: 14px;
+}
+
+.infraccion__veredicto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--gris-900);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.pill-gravedad {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.pill-gravedad--grave {
+  background: #fdf0dd;
+  color: #9a5b00;
+}
+
+.pill-gravedad--muy-grave {
+  background: #fdecec;
+  color: #b3261e;
+}
+
+.infraccion__ref {
+  font-weight: 700;
+  color: var(--azul-700);
+  font-size: 0.95rem;
+}
+
+.infraccion__sancion {
+  font-size: 0.92rem;
+  color: var(--gris-700);
+  margin-top: 4px;
+}
+
+.infraccion__sancion strong {
+  color: var(--azul-900);
+}
+
 /* ---------- Metodología ---------- */
 .metodologia-grid {
   display: grid;
