@@ -1456,6 +1456,55 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   margin-top: 4px;
 }
 
+/* ---------- Cronograma 2026 ---------- */
+.cronograma {
+  list-style: none;
+  margin: 0 auto 32px;
+  padding: 0 0 0 8px;
+  max-width: 720px;
+}
+
+.cronograma__hito {
+  position: relative;
+  padding: 0 0 26px 32px;
+  border-left: 2px solid var(--gris-300);
+}
+
+.cronograma__hito:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.cronograma__punto {
+  position: absolute;
+  left: -9px;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--acento);
+  border: 3px solid var(--blanco);
+  box-shadow: 0 0 0 2px var(--acento);
+}
+
+.cronograma__fecha {
+  display: block;
+  font-weight: 800;
+  color: var(--azul-900);
+  font-size: 1.02rem;
+}
+
+.cronograma__contenido p {
+  margin: 4px 0 0;
+  color: var(--gris-700);
+  font-size: 0.95rem;
+}
+
+.cronograma__descarga {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
 /* ---------- Metodología ---------- */
 .metodologia-grid {
   display: grid;

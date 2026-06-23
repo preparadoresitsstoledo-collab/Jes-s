@@ -6,6 +6,7 @@ import Profesion from './components/Profesion.jsx'
 import Resultados from './components/Resultados.jsx'
 import Estadisticas from './components/Estadisticas.jsx'
 import Proceso from './components/Proceso.jsx'
+import Cronograma from './components/Cronograma.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
@@ -33,6 +34,7 @@ export default function App() {
         <Resultados />
         <Estadisticas />
         <Proceso />
+        <Cronograma />
         <Metodologia />
         <Toledo />
         <Pasos />
