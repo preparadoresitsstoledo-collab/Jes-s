@@ -21,13 +21,50 @@ export default function Herramientas() {
   return (
     <section className="seccion seccion--alt" id="herramientas">
       <div className="contenedor">
-        <span className="etiqueta-seccion">Herramienta de estudio</span>
-        <h2 className="seccion__titulo">Simulador de visita de inspección</h2>
+        <span className="etiqueta-seccion">Herramientas</span>
+        <h2 className="seccion__titulo">Herramientas para inspectores y opositores</h2>
         <p className="seccion__subtitulo">
-          Estás de visita en una empresa. En cada hallazgo, decide si la infracción es{' '}
-          <strong>grave</strong> o <strong>muy grave</strong>: se te revelará el artículo y la
-          sanción correspondiente.
+          Recursos prácticos gratuitos: calcula indemnizaciones, revisa convenios, prepara informes
+          de amianto y pon a prueba tu criterio sancionador.
         </p>
+
+        <div className="hub-herramientas">
+          <a className="hub-card" href="#/despido">
+            <span className="hub-card__icono" aria-hidden="true">🧮</span>
+            <strong>Calculadora de indemnización</strong>
+            <span className="hub-card__desc">
+              Por despido y extinción del contrato, con su artículo y cálculo.
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
+          <a className="hub-card" href="#/analizador">
+            <span className="hub-card__icono" aria-hidden="true">📑</span>
+            <strong>Analizador de convenios</strong>
+            <span className="hub-card__desc">
+              Revisa la legalidad de cláusulas de un convenio colectivo.
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
+          <a className="hub-card" href="#/amianto">
+            <span className="hub-card__icono" aria-hidden="true">🦺</span>
+            <strong>Planes de amianto</strong>
+            <span className="hub-card__desc">
+              Apartados del informe del plan de trabajo (RD 396/2006).
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
+        </div>
+
+        <div className="hub-juego">
+          <span className="etiqueta-seccion">Juego de repaso</span>
+          <h3 className="seccion__titulo" style={{ fontSize: '1.5rem' }}>
+            Simulador de visita de inspección
+          </h3>
+          <p className="seccion__subtitulo" style={{ marginBottom: '28px' }}>
+            En cada hallazgo, decide si la infracción es <strong>grave</strong> o{' '}
+            <strong>muy grave</strong>: se te revelará el artículo y la sanción correspondiente.
+          </p>
+        </div>
 
         <div className="simulador__barra">
           <span>

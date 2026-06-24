@@ -1,3 +1,4 @@
+import { lazy, Suspense, useEffect, useState } from 'react'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Ventajas from './components/Ventajas.jsx'
@@ -21,7 +22,60 @@ import Contacto from './components/Contacto.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsappFlotante from './components/WhatsappFlotante.jsx'
 
+// Herramientas pesadas: se cargan solo al abrir su ruta (no lastran la web).
+const CalculadoraDespido = lazy(() => import('./components/CalculadoraDespido.jsx'))
+const PlanesAmianto = lazy(() => import('./components/PlanesAmianto.jsx'))
+const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.jsx'))
+
+function useRutaHash() {
+  const [ruta, setRuta] = useState(() => window.location.hash)
+  useEffect(() => {
+    const onHash = () => setRuta(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  return ruta
+}
+
+function Cargando() {
+  return (
+    <div className="analizador">
+      <div className="analizador__hero">
+        <p>Cargando herramienta…</p>
+        <a className="analizador__volver" href="#inicio">
+          ← Volver a la web
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
+  const ruta = useRutaHash()
+
+  // Herramientas como páginas propias (carga diferida)
+  if (ruta.startsWith('#/analizador')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <AnalizadorConvenios />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/despido')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <CalculadoraDespido />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/amianto')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <PlanesAmianto />
+      </Suspense>
+    )
+  }
+
   return (
     <>
       <a className="skip-link" href="#contenido">
