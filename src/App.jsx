@@ -2,6 +2,7 @@ import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Ventajas from './components/Ventajas.jsx'
 import Preparador from './components/Preparador.jsx'
+import MiCamino from './components/MiCamino.jsx'
 import Profesion from './components/Profesion.jsx'
 import Resultados from './components/Resultados.jsx'
 import Estadisticas from './components/Estadisticas.jsx'
@@ -31,6 +32,7 @@ export default function App() {
         <Hero />
         <Ventajas />
         <Preparador />
+        <MiCamino />
         <Profesion />
         <Resultados />
         <Estadisticas />
