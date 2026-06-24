@@ -109,9 +109,9 @@ export const infracciones = [
     ref: 'Art. 37.1 LISOS',
     materia: 'Extranjería',
     titulo: 'Trabajo de extranjeros (LISOS)',
-    descripcion: 'Infracciones graves en materia de trabajo de personas extranjeras (LISOS).',
-    calificacion: 'grave',
-    sancion: '751 € – 7.500 €',
+    descripcion: 'Infracciones en materia de trabajo de personas extranjeras (LISOS).',
+    calificacion: 'muy-grave',
+    sancion: '7.501 € – 225.018 €',
   },
   {
     ref: 'Art. 54.1.d LOEX',
