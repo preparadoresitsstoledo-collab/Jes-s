@@ -870,6 +870,18 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   max-width: 620px;
 }
 
+.camino__escasez {
+  display: inline-block;
+  background: rgba(201, 162, 39, 0.22);
+  border: 1px solid var(--acento);
+  color: var(--acento-claro);
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 999px;
+  margin: 0 auto 22px;
+  font-size: 0.95rem;
+}
+
 .camino__acciones {
   display: flex;
   gap: 14px;

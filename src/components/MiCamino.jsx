@@ -25,6 +25,7 @@ export default function MiCamino() {
         <div className="camino__cierre">
           <h3>{camino.cierreTitulo}</h3>
           <p>{camino.cierreTexto}</p>
+          {camino.cierreNota && <p className="camino__escasez">⏳ {camino.cierreNota}</p>}
           <div className="camino__acciones">
             <a className="btn btn--primario" href="#contacto">
               Reserva tu plaza en el grupo
