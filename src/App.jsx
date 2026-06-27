@@ -10,6 +10,7 @@ import Estadisticas from './components/Estadisticas.jsx'
 import Proceso from './components/Proceso.jsx'
 import Cronograma from './components/Cronograma.jsx'
 import Herramientas from './components/Herramientas.jsx'
+import Graduacion from './components/Graduacion.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
@@ -93,6 +94,7 @@ export default function App() {
         <Proceso />
         <Cronograma />
         <Herramientas />
+        <Graduacion />
         <Metodologia />
         <Toledo />
         <Pasos />
