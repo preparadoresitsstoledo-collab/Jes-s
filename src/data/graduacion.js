@@ -185,7 +185,7 @@ export const jurisprudencia = [
     ],
   },
   {
-    titulo: 'STS 1241/2024, de 13 de noviembre (PRL) — ECLI:ES:TS:2024:5487',
+    titulo: 'Doctrina del TS sobre graduación en PRL',
     referencia: 'Tribunal Supremo, Sala 3ª (contencioso-administrativo)',
     resumen:
       'La gravedad de los daños producidos o que hubieran podido producirse (art. 39.3.c) NO está ' +
@@ -198,8 +198,8 @@ export const jurisprudencia = [
     ],
   },
   {
-    titulo: 'STS de 3 de abril de 2025 (rec. 94/2023) — impago masivo de salarios',
-    referencia: 'Tribunal Supremo, Sala 4ª (social)',
+    titulo: 'Doctrina del TS sobre el impago masivo de salarios',
+    referencia: 'Tribunal Supremo (orden social)',
     resumen:
       'El número de trabajadores afectados por el impago de salarios es un criterio de GRADUACIÓN ' +
       '(art. 39.2), no un elemento del tipo: con muchos afectados procede agravar el grado de la ' +
