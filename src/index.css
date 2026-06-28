@@ -1761,6 +1761,88 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   }
 }
 
+/* ---------- Jurisprudencia y criterios técnicos ---------- */
+.jurisprudencia {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--gris-200);
+}
+
+.jurisprudencia__titulo {
+  font-size: 1.35rem;
+  margin: 0 0 12px;
+  color: var(--azul-900, #0f2c4a);
+}
+
+.jurisprudencia__intro {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--gris-700);
+  max-width: 880px;
+  margin: 0 0 28px;
+}
+
+.jurisprudencia__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.juris-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-left: 4px solid var(--azul-500);
+  border-radius: var(--radio);
+  padding: 20px 22px;
+  box-shadow: 0 1px 3px rgba(15, 44, 74, 0.05);
+}
+
+.juris-card__titulo {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--azul-900, #0f2c4a);
+  line-height: 1.35;
+}
+
+.juris-card__ref {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--azul-500);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.juris-card__resumen {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--gris-700);
+  margin: 4px 0 6px;
+}
+
+.juris-card__enlaces {
+  list-style: none;
+  margin: auto 0 0;
+  padding: 10px 0 0;
+  border-top: 1px dashed var(--gris-300);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.juris-card__enlaces a {
+  font-size: 0.85rem;
+  color: var(--azul-500);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.juris-card__enlaces a:hover {
+  text-decoration: underline;
+}
+
 /* ---------- Hub de herramientas ---------- */
 .hub-herramientas {
   display: grid;

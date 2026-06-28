@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { casosGraduacion, marcoGraduacion, GRADOS } from '../data/graduacion.js'
+import {
+  casosGraduacion,
+  marcoGraduacion,
+  GRADOS,
+  jurisprudencia,
+  criterioTecnicoGraduacion,
+} from '../data/graduacion.js'
 
 export default function Graduacion() {
   const [respuestas, setRespuestas] = useState({}) // index -> 'minimo'|'medio'|'maximo'
@@ -122,9 +128,35 @@ export default function Graduacion() {
           })}
         </div>
 
+        <div className="jurisprudencia">
+          <h3 className="jurisprudencia__titulo">📚 Jurisprudencia y criterios técnicos</h3>
+          <p className="jurisprudencia__intro">{criterioTecnicoGraduacion}</p>
+
+          <div className="jurisprudencia__grid">
+            {jurisprudencia.map((j, i) => (
+              <article className="juris-card" key={i}>
+                <h4 className="juris-card__titulo">{j.titulo}</h4>
+                <div className="juris-card__ref">{j.referencia}</div>
+                <p className="juris-card__resumen">{j.resumen}</p>
+                <ul className="juris-card__enlaces">
+                  {j.enlaces.map((e, k) => (
+                    <li key={k}>
+                      <a href={e.url} target="_blank" rel="noopener noreferrer">
+                        {e.texto} ↗
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+
         <p className="fuente-nota">
-          Datos orientativos conforme al art. 39 LISOS (RDLeg 5/2000). La graduación corresponde al
-          criterio del/de la actuante en cada caso concreto.
+          Datos orientativos conforme al art. 39 TRLISOS (RDLeg 5/2000). La graduación corresponde al
+          criterio del/de la actuante en cada caso concreto. Las referencias jurisprudenciales están
+          contrastadas en varias fuentes; conviene verificar el texto íntegro de cada resolución
+          (CENDOJ) antes de citarla en un acta.
         </p>
       </div>
     </section>
