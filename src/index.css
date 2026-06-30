@@ -1868,46 +1868,6 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   text-decoration: underline;
 }
 
-/* ---------- Página de vídeos ---------- */
-.videos-pagina {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 32px 20px 64px;
-}
-
-.video-item {
-  margin-bottom: 40px;
-}
-
-.video-item__titulo {
-  font-size: 1.3rem;
-  margin: 0 0 4px;
-  color: var(--azul-900, #0f2c4a);
-}
-
-.video-item__fuente {
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--azul-500);
-  margin-bottom: 12px;
-}
-
-.video-item__player {
-  width: 100%;
-  border-radius: var(--radio);
-  background: #000;
-  box-shadow: 0 4px 18px rgba(15, 44, 74, 0.15);
-  display: block;
-}
-
-.video-item__desc {
-  font-size: 0.92rem;
-  color: var(--gris-700);
-  margin: 12px 0 0;
-}
-
 /* ---------- Hub de herramientas ---------- */
 .hub-herramientas {
   display: grid;

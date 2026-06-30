@@ -27,7 +27,6 @@ import WhatsappFlotante from './components/WhatsappFlotante.jsx'
 const CalculadoraDespido = lazy(() => import('./components/CalculadoraDespido.jsx'))
 const PlanesAmianto = lazy(() => import('./components/PlanesAmianto.jsx'))
 const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.jsx'))
-const Videos = lazy(() => import('./components/Videos.jsx'))
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -74,13 +73,6 @@ export default function App() {
     return (
       <Suspense fallback={<Cargando />}>
         <PlanesAmianto />
-      </Suspense>
-    )
-  }
-  if (ruta.startsWith('#/videos')) {
-    return (
-      <Suspense fallback={<Cargando />}>
-        <Videos />
       </Suspense>
     )
   }

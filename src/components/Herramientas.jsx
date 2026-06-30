@@ -53,14 +53,6 @@ export default function Herramientas() {
             </span>
             <span className="hub-card__cta">Abrir herramienta →</span>
           </a>
-          <a className="hub-card" href="#/videos">
-            <span className="hub-card__icono" aria-hidden="true">🎬</span>
-            <strong>Vídeos del preparador</strong>
-            <span className="hub-card__desc">
-              Apariciones en medios sobre la Inspección de Trabajo. Se abren aparte.
-            </span>
-            <span className="hub-card__cta">Abrir sección →</span>
-          </a>
         </div>
 
         <div className="hub-juego">
