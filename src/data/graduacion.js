@@ -1,34 +1,50 @@
 /**
  * ============================================================================
- *  GRADUACIÓN DE LA SANCIÓN — juego de estudio (art. 39 LISOS).
+ *  GRADUACIÓN DE LA SANCIÓN — juego de estudio (arts. 39 y 40 LISOS/TRLISOS).
  * ============================================================================
  *  ⚠️  DATOS ORIENTATIVOS. La graduación es un juicio del/de la actuante:
  *      revisa y ajusta el grado, los criterios y las explicaciones.
  *
- *  Reglas clave que recoge el juego:
- *   - Cada infracción se sanciona en grado MÍNIMO / MEDIO / MÁXIMO (art. 39.1).
- *   - Criterios generales de graduación: art. 39.2.
- *   - Prevención de Riesgos Laborales: criterios PROPIOS del art. 39.3.
- *   - Cotización / deuda: el grado se fija sobre todo por la CUANTÍA.
- *   - Falta de alta / compatibilización con varios trabajadores: la sanción se
- *     INCREMENTA en un porcentaje (varios afectados).
- *   - Intencionalidad y negligencia: si ya están en el tipo infractor, NO se
- *     vuelven a computar para graduar (art. 39.5, prohibición de doble cómputo).
+ *  Estructura correcta (revisada conforme a los arts. 39 y 40 vigentes):
+ *   1. Primero se CALIFICA (leve / grave / muy grave). Dentro de la
+ *      calificación, la sanción se impone en grado MÍNIMO, MEDIO o MÁXIMO
+ *      (art. 39.1).
+ *   2. El GRADO de UNA infracción se elige por los criterios del art. 39.2
+ *      (negligencia/intencionalidad si no integran el tipo, fraude o
+ *      connivencia, incumplimiento de requerimientos previos, cifra de
+ *      negocio, nº de afectados, perjuicio, cantidad defraudada).
+ *   3. PRL: criterios PROPIOS del art. 39.3 (no se usan los del 39.2).
+ *   4. No confundir GRADUACIÓN con Nº DE INFRACCIONES:
+ *        · Contratación temporal en fraude (art. 7.2) → UNA infracción por
+ *          cada CONTRATO afectado.
+ *        · Falta de alta/afiliación (art. 22.2) → UNA infracción por cada
+ *          TRABAJADOR.
+ *      Si en una misma actuación se detectan varias, cada sanción (ya
+ *      graduada por el 39.2) se INCREMENTA en un porcentaje según el número
+ *      de afectados (art. 39.2, último párrafo). El número NO sube por sí
+ *      solo el grado de una única sanción.
+ *   5. CUOTAS / recaudación (art. 22.3 grave; art. 23.1.b muy grave): la
+ *      multa es un PORCENTAJE del importe no ingresado (art. 40.1). El
+ *      importe es la BASE del porcentaje; el GRADO lo fijan los criterios
+ *      del art. 39.2 (intencionalidad, fraude, ocultación…), no el importe.
+ *   6. No doble cómputo + motivación: lo que ya integra el tipo no vuelve a
+ *      graduar (art. 39.5); el acta y la resolución deben explicitar los
+ *      criterios; si no concurre ninguno → grado mínimo en su tramo inferior.
  * ============================================================================
  */
 
 export const marcoGraduacion = {
   grados:
-    'Calificada la infracción (leve, grave o muy grave), la sanción se impone en uno de tres grados: mínimo, medio o máximo (art. 39.1 LISOS).',
+    'Calificada la infracción (leve, grave o muy grave), la sanción se impone en uno de tres grados: mínimo, medio o máximo (art. 39.1 LISOS). El grado de UNA infracción se elige por los criterios del art. 39.2 (o del 39.3 en PRL).',
   noDobleComputo:
     'Los criterios que ya forman parte de la descripción del tipo infractor (entre ellos, la intencionalidad y la negligencia cuando integran el tipo) no pueden volver a usarse para graduar: no se computan dos veces (art. 39.5 LISOS). Además, el acta y la resolución deben explicitar los criterios de graduación aplicados; si no concurre ninguno, la sanción se impone en grado mínimo, en su tramo inferior.',
   criteriosGenerales: [
-    'Número de trabajadores o beneficiarios afectados',
-    'Perjuicio causado',
-    'Cantidad defraudada',
-    'Cifra de negocios de la empresa',
+    'Negligencia o intencionalidad del sujeto infractor (si no integran ya el tipo)',
     'Fraude o connivencia',
     'Incumplimiento de advertencias previas y requerimientos de la Inspección',
+    'Cifra de negocios de la empresa',
+    'Número de trabajadores o beneficiarios afectados',
+    'Perjuicio causado y cantidad defraudada',
   ],
   criteriosPRL: [
     'Peligrosidad de las actividades',
@@ -38,6 +54,24 @@ export const marcoGraduacion = {
     'Medidas de protección individual o colectiva adoptadas e instrucciones impartidas',
     'Incumplimiento de advertencias o requerimientos previos',
   ],
+  // Reglas que NO son "graduación por número", sino nº de infracciones / base de cálculo.
+  reglasEspeciales: [
+    {
+      titulo: 'Una infracción por unidad',
+      texto:
+        'La contratación temporal en fraude (art. 7.2) es una infracción por cada CONTRATO; la falta de alta (art. 22.2) es una infracción por cada TRABAJADOR. No es una sanción única que «sube de grado» por haber más afectados.',
+    },
+    {
+      titulo: 'Incremento porcentual por varios afectados',
+      texto:
+        'Si en una misma actuación se detectan varias de esas infracciones, cada sanción —ya graduada por el 39.2— se incrementa en un porcentaje creciente según el número de afectados (art. 39.2, último párrafo).',
+    },
+    {
+      titulo: 'Cuotas: porcentaje sobre la deuda (art. 40.1)',
+      texto:
+        'En impago de cuotas (art. 22.3 grave; art. 23.1.b muy grave) la multa es un porcentaje del importe no ingresado. El importe es la BASE; el GRADO (mínimo/medio/máximo) lo fijan los criterios del art. 39.2, no la cuantía en sí.',
+    },
+  ],
 }
 
 const grado = { minimo: 'Mínimo', medio: 'Medio', maximo: 'Máximo' }
@@ -45,108 +79,123 @@ export const GRADOS = grado
 
 export const casosGraduacion = [
   {
-    materia: 'Relaciones laborales',
+    materia: 'Relaciones laborales · contratación',
     descripcion:
-      'Pequeña empresa con 2 trabajadores con contrato temporal en fraude de ley (art. 7.2, grave). Es la primera actuación, sin requerimientos previos y con escaso perjuicio.',
+      'Empresa con un contrato temporal celebrado en fraude de ley (art. 7.2, grave). Primera actuación, sin requerimientos previos incumplidos, sin fraude ni connivencia acreditados y con escaso perjuicio.',
     grado: 'minimo',
-    peculiaridad: null,
+    peculiaridad: 'El art. 7.2 genera UNA infracción por cada CONTRATO; aquí graduamos una de ellas',
     criterios: [
-      'Pocos trabajadores afectados (2)',
-      'Perjuicio causado limitado',
-      'Sin incumplimiento de requerimientos previos',
+      'No consta fraude ni connivencia (más allá del propio tipo)',
+      'Sin requerimientos previos incumplidos',
+      'Perjuicio escaso',
     ],
     explicacion:
-      'Graduación general (art. 39.2): pocos afectados y escaso perjuicio empujan al grado mínimo.',
+      'Al no concurrir ninguna circunstancia agravante del art. 39.2, la sanción se impone en grado mínimo en su tramo inferior (art. 39.5). El número de contratos no sube el grado: determina cuántas infracciones hay.',
   },
   {
-    materia: 'Relaciones laborales',
+    materia: 'Relaciones laborales · registro de jornada',
     descripcion:
-      'Impago reiterado de salarios a 25 trabajadores durante varios meses (art. 8.1, muy grave), con grave perjuicio económico.',
+      'Empresa que incumple la obligación de registro de jornada (art. 7.5, grave). Ya se le había advertido en una actuación anterior y no corrigió, pero sin fraude ni perjuicio económico relevante.',
+    grado: 'medio',
+    peculiaridad: null,
+    criterios: ['Incumplimiento de un requerimiento/advertencia previo', 'Sin fraude ni perjuicio grave añadido'],
+    explicacion:
+      'Concurre una sola circunstancia agravante clara del art. 39.2 (desatender la advertencia previa), sin otras que lleven al máximo → grado medio.',
+  },
+  {
+    materia: 'Relaciones laborales · salarios',
+    descripcion:
+      'Impago reiterado de salarios durante varios meses (art. 8.1, muy grave), con connivencia para ocultarlo y una advertencia previa de la Inspección desatendida. Grave perjuicio a la plantilla.',
     grado: 'maximo',
     peculiaridad: null,
-    criterios: ['Elevado número de trabajadores afectados (25)', 'Grave perjuicio causado'],
+    criterios: [
+      'Fraude o connivencia',
+      'Incumplimiento de requerimiento previo',
+      'Grave perjuicio causado',
+      'Número de trabajadores afectados',
+    ],
     explicacion:
-      'Graduación general (art. 39.2): muchos afectados y perjuicio grave llevan al grado máximo.',
+      'El impago es UNA infracción graduada por el art. 39.2: aquí concurren varias agravantes (fraude, requerimiento desatendido, perjuicio grave) → grado máximo. El número de afectados sí es criterio válido del 39.2 en este tipo.',
   },
   {
     materia: 'Prevención de riesgos (PRL)',
     descripcion:
-      'Obra con trabajos en altura sin protección colectiva ni EPIs, 4 trabajadores expuestos a caída, y existía un requerimiento previo incumplido.',
+      'Obra con trabajos en altura sin protección colectiva ni EPIs, varios trabajadores expuestos a caída, con un requerimiento previo incumplido (art. 12.16, grave).',
     grado: 'maximo',
     peculiaridad: 'PRL → se gradúa por el art. 39.3 (criterios propios)',
     criterios: [
       'Peligrosidad de la actividad (trabajo en altura)',
       'Gravedad de los daños que podrían producirse',
-      'Nº de trabajadores afectados',
+      'Número de trabajadores afectados',
       'Ausencia de medidas de protección',
       'Incumplimiento de requerimiento previo',
     ],
     explicacion:
-      'En PRL NO se aplican los criterios del 39.2, sino los específicos del art. 39.3. Aquí casi todos agravan → grado máximo.',
+      'En PRL no se aplican los criterios del 39.2, sino los específicos del art. 39.3. La gravedad de los daños que podrían producirse no integra el tipo, por lo que puede agravar (doctrina del TS) → grado máximo.',
   },
   {
     materia: 'Prevención de riesgos (PRL)',
     descripcion:
-      'Falta de formación en PRL a un único trabajador de oficina, riesgo bajo, sin daños y sin antecedentes.',
+      'Falta de formación preventiva a un único trabajador de oficina, actividad de riesgo bajo, sin daños y sin antecedentes (art. 12, grave).',
     grado: 'minimo',
     peculiaridad: 'PRL → se gradúa por el art. 39.3 (criterios propios)',
     criterios: [
       'Baja peligrosidad de la actividad',
-      'Sin daños producidos',
-      'Un solo trabajador afectado',
+      'Sin daños producidos ni potenciales relevantes',
+      'Un solo trabajador afectado, sin antecedentes',
     ],
     explicacion:
-      'Criterios del art. 39.3: baja peligrosidad y ausencia de daños empujan al grado mínimo.',
+      'Criterios del art. 39.3: baja peligrosidad y ausencia de daños, sin agravantes → grado mínimo en su tramo inferior (art. 39.5).',
   },
   {
-    materia: 'Seguridad Social · cotización',
+    materia: 'Seguridad Social · cuotas',
     descripcion:
-      'Diferencias de cotización por importe reducido, regularizadas, sin ánimo defraudatorio (art. 22.3, grave).',
+      'Falta de ingreso de cuotas en plazo (art. 22.3, grave) que la empresa regulariza tras el requerimiento, sin ocultación ni fraude. La deuda es elevada.',
     grado: 'minimo',
-    peculiaridad: 'Deuda → el grado se fija sobre todo por la CUANTÍA',
-    criterios: ['Cuantía no ingresada reducida'],
+    peculiaridad: 'Cuotas → la multa es un % del importe (art. 40.1); el GRADO lo marca el 39.2',
+    criterios: ['Ausencia de fraude u ocultación', 'Conducta no obstructiva (regulariza)'],
     explicacion:
-      'En cotización/recaudación el grado se determina principalmente por la cuantía no ingresada: importe bajo → grado mínimo.',
+      'Aunque la deuda sea alta, el importe es solo la BASE del porcentaje (art. 40.1). Como no concurren agravantes del art. 39.2, el grado es mínimo → multa del 50–65 % de lo no ingresado.',
   },
   {
-    materia: 'Seguridad Social · cotización',
+    materia: 'Seguridad Social · cuotas',
     descripcion:
-      'Falta de ingreso de cuotas por una cuantía muy elevada durante un periodo prolongado (art. 22.3, grave).',
+      'Impago de cuotas (art. 22.3, grave) con ocultación deliberada de trabajadores y datos a la Inspección para eludir el pago; descubierto en la actuación y sin regularizar.',
     grado: 'maximo',
-    peculiaridad: 'Deuda → el grado se fija sobre todo por la CUANTÍA',
-    criterios: ['Cuantía no ingresada muy elevada'],
+    peculiaridad: 'Cuotas → la multa es un % del importe (art. 40.1); el GRADO lo marca el 39.2',
+    criterios: ['Fraude y ocultación', 'Conducta obstructiva', 'Intencionalidad no integrada en el tipo'],
     explicacion:
-      'A mayor cuantía no ingresada, mayor grado: importe muy elevado → grado máximo.',
+      'El grado lo determina la concurrencia de fraude/ocultación (art. 39.2), no la cuantía. Con esas agravantes → grado máximo → multa del 80,01–100 % de lo no ingresado (art. 40.1).',
   },
   {
-    materia: 'Seguridad Social · altas',
+    materia: 'Seguridad Social · alta',
     descripcion:
-      'Un único trabajador sin alta, detectado y regularizado de inmediato, sin perjuicio para prestaciones.',
+      'Un único trabajador sin alta (art. 22.2, grave), detectado y regularizado de inmediato, sin perjuicio para prestaciones y sin antecedentes.',
     grado: 'minimo',
-    peculiaridad: null,
-    criterios: ['Un solo trabajador afectado', 'Regularización inmediata, sin perjuicio'],
+    peculiaridad: 'Falta de alta → UNA infracción por cada TRABAJADOR (art. 22.2)',
+    criterios: ['Sin fraude acreditado', 'Regularización inmediata, sin perjuicio', 'Sin requerimientos previos'],
     explicacion:
-      'Falta de alta (art. 22.2, grave) con un único afectado y sin perjuicio → grado mínimo.',
+      'Se gradúa la infracción de ESE trabajador. Sin agravantes del art. 39.2 → grado mínimo. El nº de afectados no entra aquí porque cada falta de alta es una infracción propia.',
   },
   {
-    materia: 'Seguridad Social · altas',
+    materia: 'Seguridad Social · alta',
     descripcion:
-      'En la visita se encuentran 5 trabajadores prestando servicios sin estar dados de alta.',
+      'En la visita se localizan 4 trabajadores sin alta, ocultados a la Inspección mediante datos falseados. ¿Cómo se gradúa cada una de esas infracciones?',
     grado: 'maximo',
-    peculiaridad: 'Varios trabajadores → la sanción se incrementa en un porcentaje',
-    criterios: ['Elevado número de trabajadores sin alta (5)'],
+    peculiaridad: 'Son 4 infracciones (una por trabajador) + incremento porcentual por varios afectados',
+    criterios: ['Fraude y ocultación (art. 39.2)', 'Conducta obstructiva'],
     explicacion:
-      'Cada trabajador sin alta es una infracción independiente; además, con varios afectados la sanción se incrementa porcentualmente → grado máximo.',
+      'No es una sanción que sube de grado por ser 4: son 4 infracciones (art. 22.2), cada una graduada por el 39.2. Aquí el fraude/ocultación lleva cada una al grado máximo, y además cada sanción se incrementa en un porcentaje por el número de afectados (art. 39.2, último párrafo).',
   },
   {
     materia: 'Seguridad Social · prestaciones',
     descripcion:
-      'Empresa que da ocupación a varios perceptores de prestaciones incompatibles con el trabajo (art. 23.1.a, muy grave).',
+      'Empresa que da ocupación a un perceptor de prestación incompatible, en connivencia con él para defraudar a la Seguridad Social (art. 23.1.a, muy grave).',
     grado: 'maximo',
-    peculiaridad: 'Varios beneficiarios → la sanción se incrementa en un porcentaje',
-    criterios: ['Varios beneficiarios implicados', 'Perjuicio a la caja de la Seguridad Social'],
+    peculiaridad: 'Si fueran varios beneficiarios: una infracción por cada uno + incremento porcentual',
+    criterios: ['Fraude o connivencia', 'Perjuicio a la caja de la Seguridad Social', 'Intencionalidad no integrada en el tipo'],
     explicacion:
-      'Compatibilización indebida con varios beneficiarios: además del grado máximo, opera el incremento porcentual por número de afectados.',
+      'El grado lo determina la connivencia para defraudar (art. 39.2), no el número. Con varios beneficiarios, además, habría una infracción por cada uno y el correspondiente incremento porcentual.',
   },
 ]
 

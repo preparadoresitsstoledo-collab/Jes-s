@@ -16,7 +16,6 @@ import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
 import Precios from './components/Precios.jsx'
 import Testimonios from './components/Testimonios.jsx'
-import AccesoVideos from './components/AccesoVideos.jsx'
 import Actualidad from './components/Actualidad.jsx'
 import Faq from './components/Faq.jsx'
 import CtaFinal from './components/CtaFinal.jsx'
@@ -109,7 +108,6 @@ export default function App() {
         <Pasos />
         <Precios />
         <Testimonios />
-        <AccesoVideos />
         <Actualidad />
         <Faq />
         <CtaFinal />

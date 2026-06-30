@@ -54,11 +54,16 @@ export default function Graduacion() {
                 </ul>
               </div>
             </div>
-            <p className="marco-legal__nota">
-              Recuerda: en cotización/deuda el grado depende sobre todo de la <strong>cuantía</strong>,
-              y con <strong>varios trabajadores</strong> sin alta o compatibilizando la sanción se
-              incrementa en un porcentaje.
-            </p>
+            <div className="marco-legal__reglas">
+              <h4>No confundas «graduar» con «cuántas infracciones hay»</h4>
+              <ul>
+                {marcoGraduacion.reglasEspeciales.map((r, i) => (
+                  <li key={i}>
+                    <strong>{r.titulo}:</strong> {r.texto}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </details>
 
