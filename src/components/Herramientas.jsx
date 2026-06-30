@@ -53,6 +53,14 @@ export default function Herramientas() {
             </span>
             <span className="hub-card__cta">Abrir herramienta →</span>
           </a>
+          <a className="hub-card" href="#/graduacion">
+            <span className="hub-card__icono" aria-hidden="true">⚖️</span>
+            <strong>Graduación de la sanción</strong>
+            <span className="hub-card__desc">
+              Juego de estudio: fija el grado (mín./medio/máx.) según los arts. 39-40 LISOS.
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
         </div>
 
         <div className="hub-juego">

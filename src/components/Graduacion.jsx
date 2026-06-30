@@ -23,6 +23,9 @@ export default function Graduacion() {
   return (
     <section className="seccion" id="graduacion">
       <div className="contenedor">
+        <a className="analizador__volver" href="#herramientas">
+          ← Volver a la web
+        </a>
         <span className="etiqueta-seccion">Juego de estudio</span>
         <h2 className="seccion__titulo">Graduación de la sanción</h2>
         <p className="seccion__subtitulo">

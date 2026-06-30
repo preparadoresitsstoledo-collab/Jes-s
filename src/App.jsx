@@ -10,7 +10,6 @@ import Estadisticas from './components/Estadisticas.jsx'
 import Proceso from './components/Proceso.jsx'
 import Cronograma from './components/Cronograma.jsx'
 import Herramientas from './components/Herramientas.jsx'
-import Graduacion from './components/Graduacion.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
@@ -27,6 +26,7 @@ import WhatsappFlotante from './components/WhatsappFlotante.jsx'
 const CalculadoraDespido = lazy(() => import('./components/CalculadoraDespido.jsx'))
 const PlanesAmianto = lazy(() => import('./components/PlanesAmianto.jsx'))
 const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.jsx'))
+const Graduacion = lazy(() => import('./components/Graduacion.jsx'))
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -76,6 +76,13 @@ export default function App() {
       </Suspense>
     )
   }
+  if (ruta.startsWith('#/graduacion')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Graduacion />
+      </Suspense>
+    )
+  }
 
   return (
     <>
@@ -94,7 +101,6 @@ export default function App() {
         <Proceso />
         <Cronograma />
         <Herramientas />
-        <Graduacion />
         <Metodologia />
         <Toledo />
         <Pasos />
