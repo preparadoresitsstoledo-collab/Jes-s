@@ -16,6 +16,7 @@ import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
 import Precios from './components/Precios.jsx'
 import Testimonios from './components/Testimonios.jsx'
+import AccesoVideos from './components/AccesoVideos.jsx'
 import Actualidad from './components/Actualidad.jsx'
 import Faq from './components/Faq.jsx'
 import CtaFinal from './components/CtaFinal.jsx'
@@ -27,6 +28,7 @@ import WhatsappFlotante from './components/WhatsappFlotante.jsx'
 const CalculadoraDespido = lazy(() => import('./components/CalculadoraDespido.jsx'))
 const PlanesAmianto = lazy(() => import('./components/PlanesAmianto.jsx'))
 const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.jsx'))
+const Videos = lazy(() => import('./components/Videos.jsx'))
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -76,6 +78,13 @@ export default function App() {
       </Suspense>
     )
   }
+  if (ruta.startsWith('#/videos')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Videos />
+      </Suspense>
+    )
+  }
 
   return (
     <>
@@ -100,6 +109,7 @@ export default function App() {
         <Pasos />
         <Precios />
         <Testimonios />
+        <AccesoVideos />
         <Actualidad />
         <Faq />
         <CtaFinal />
