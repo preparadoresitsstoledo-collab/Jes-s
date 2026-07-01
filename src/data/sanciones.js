@@ -30,7 +30,7 @@ export const marcoSanciones = {
   altas:
     'La falta de afiliación/alta (art. 22.2 LISOS, grave) es UNA infracción por cada trabajador. Cada una se sanciona en grado mínimo por 3.750 € (art. 40.1.e), y ese importe se incrementa según el número de trabajadores detectados en la misma actuación: +20 % (2), +30 % (3), +40 % (4) y +50 % (5 o más). La cuantía del art. 22.2 no puede exceder de 12.000 € por infracción.',
   prontoPago:
-    'Pronto pago (RD 688/2021): si la sanción es exclusivamente pecuniaria, el sujeto responsable puede pagar la multa propuesta antes de la resolución, renunciando a alegaciones y recursos; ello supone el reconocimiento de responsabilidad y una REDUCCIÓN DEL 40 % del importe de la sanción. Ojo: reduce la MULTA, no la deuda de cuotas — el acta de liquidación se abona íntegra.',
+    'Pronto pago (RD 688/2021): si la sanción es exclusivamente pecuniaria, el sujeto responsable puede pagar la multa propuesta antes de la resolución, renunciando a alegaciones y recursos; ello supone el reconocimiento de responsabilidad y una REDUCCIÓN DEL 40 % del importe de la sanción. Ojo: reduce la MULTA, no la deuda de cuotas — el acta de liquidación se abona íntegra. Este pronto pago es del orden social (lo recauda la TGSS); NO aplica a las sanciones de extranjería, que resuelve la Subdelegación del Gobierno (en Cataluña, la Generalitat) y recauda Hacienda (AEAT).',
 }
 
 export const casosSanciones = [
@@ -191,7 +191,7 @@ export const casosSanciones = [
       'Art. 55.1.c) LOEX y art. 254.4.c) RD 557/2011: grado mínimo 10.001 € por trabajador. Se gradúa solo por los criterios del art. 55.3 y 4 LOEX (culpabilidad, daño/riesgo, capacidad económica); NO se aplican las agravantes de la TRLISOS.',
     cuantia: `${eur(10001)} por cada trabajador (grado mínimo), MÁS el incremento del art. 48 de la Ley 62/2003: se añade la cuantía de las cuotas de Seguridad Social y conceptos de recaudación conjunta que hubieran correspondido desde el inicio de la prestación de servicios del trabajador extranjero.`,
     prontoPago:
-      'El pronto pago del orden social (RD 688/2021) no opera igual en el procedimiento sancionador de extranjería (RD 557/2011): revísalo antes de aplicarlo.',
+      'Distinta administración: la sanción de extranjería la resuelve la SUBDELEGACIÓN DEL GOBIERNO (en Cataluña, la Generalitat) y la RECAUDA HACIENDA (AEAT), no la TGSS. Por eso el pronto pago del orden social (RD 688/2021) NO opera aquí como en las sanciones de Seguridad Social.',
     nota: 'Clave: sin residencia NI trabajo → LOEX (54.1.d). El incremento del art. 48 Ley 62/2003 (cuotas de SS) opera en todos los supuestos de ocupación de extranjeros.',
   },
   {
@@ -210,7 +210,8 @@ export const casosSanciones = [
     calificacion: 'MUY GRAVE — art. 37.1 LISOS (TRLISOS), al tener residencia pero faltar la autorización de trabajo.',
     tipificacion: 'Art. 40.1.c) LISOS: grado mínimo 7.501 € (desde 1.10.2021; antes 6.251 €).',
     cuantia: `${eur(7501)} por cada trabajador (grado mínimo), MÁS el incremento del art. 48 de la Ley 62/2003: se añade la cuantía de las cuotas de Seguridad Social y conceptos de recaudación conjunta que hubieran correspondido desde el inicio de la prestación de servicios.`,
-    prontoPago: `Con pronto pago (−40 %): ${eur(7501)} → ${eur(pp(7501))} por trabajador (la reducción se aplica sobre la sanción; el incremento del art. 48 sigue su régimen).`,
+    prontoPago:
+      'Aunque el tipo esté en la TRLISOS, es una sanción de extranjería: la resuelve la SUBDELEGACIÓN DEL GOBIERNO (en Cataluña, la Generalitat) y la RECAUDA HACIENDA (AEAT), no la TGSS. Por eso no se le aplica el pronto pago del orden social (RD 688/2021) como a las sanciones de Seguridad Social.',
     nota: 'Clave: con residencia pero sin permiso de trabajo → art. 37.1 LISOS (no LOEX 54.1.d). El incremento del art. 48 Ley 62/2003 opera en todos los supuestos de ocupación de extranjeros.',
   },
   {
