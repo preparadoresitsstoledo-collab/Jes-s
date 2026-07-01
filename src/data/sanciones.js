@@ -133,6 +133,87 @@ export const casosSanciones = [
     nota: 'No presentar los documentos convierte el impago (grave, art. 22.3) en muy grave (art. 23.1.b).',
   },
   {
+    materia: 'Seguridad Social · deducciones fraudulentas (IT)',
+    supuesto:
+      'Empresa que NO abona al trabajador la prestación de incapacidad temporal en pago delegado (colaboración obligatoria) pero SÍ se deduce/compensa esas cuantías en los documentos de cotización (RLC y RNT), a sabiendas de que no las ha pagado.',
+    pregunta: '¿Cómo se califica esta conducta?',
+    opciones: [
+      { k: 'a', t: 'Grave (art. 22.4): mero impago de la IT' },
+      { k: 'b', t: 'Muy grave (art. 23.1.f): impago + compensación fraudulenta en RLC/RNT' },
+      { k: 'c', t: 'Leve' },
+    ],
+    correcta: 'b',
+    precepto:
+      'Art. 20.1 y 2 de la Orden de 25/11/1966 (colaboración) en relación con los arts. 102.1.b), 102.2 y 142.1 LGSS, y RD 2064/1995 y RD 1415/2004.',
+    calificacion:
+      'MUY GRAVE — art. 23.1.f) LISOS. Requiere ánimo fraudulento (dolo) al compensar en los RLC/RNT una IT no abonada.',
+    tipificacion:
+      'Art. 40.1.d).1 LISOS: multa = % del importe no ingresado (mín. 50–65 %, medio 65,01–80 %, máx. 80,01–100 %), en acta COORDINADA con el acta de liquidación de las deducciones indebidas.',
+    cuantia: `Ej.: 8.000 € compensados indebidamente → grado mínimo → entre ${eur(4000)} (50 %) y ${eur(5200)} (65 %), más el acta de liquidación por los 8.000 €.`,
+    prontoPago: `Con pronto pago (−40 %) sobre, p. ej., una multa del 60 % (${eur(4800)}): ${eur(pp(4800))}. La liquidación de las deducciones se abona íntegra.`,
+    nota: 'Sin ánimo fraudulento acreditado, la conducta sería grave (art. 22.3); el mero impago de la IT, sin compensarlo, es grave (art. 22.4).',
+  },
+  {
+    materia: 'Seguridad Social · prestaciones (desempleo)',
+    supuesto:
+      'Empresa que da ocupación a un perceptor de la prestación por desempleo, incompatible con el trabajo por cuenta ajena, sin haberle dado de alta con carácter previo.',
+    pregunta: '¿Qué sanción corresponde por cada trabajador?',
+    opciones: [
+      { k: 'a', t: '3.750 € (como una falta de alta ordinaria)' },
+      { k: 'b', t: '12.001 € por trabajador (grado mínimo, muy grave)' },
+      { k: 'c', t: '70 €' },
+    ],
+    correcta: 'b',
+    precepto:
+      'Arts. 139.1 y 140.1 en relación con el art. 268 y ss. LGSS (desempleo) y RD 84/1996 (altas). Una infracción por cada trabajador (art. 23.2 LISOS).',
+    calificacion: 'MUY GRAVE — art. 23.1.a) LISOS.',
+    tipificacion:
+      'Art. 40.1.e).2 LISOS: grado mínimo 12.001 € por trabajador, incrementable por nº de afectados (2→+20 %, 3→+30 %, 4→+40 %, 5+→+50 %).',
+    cuantia: `1 beneficiario → ${eur(12001)}. Con varios, cada sanción se incrementa (p. ej., 4 → +40 % → ${eur(16801)} c/u).`,
+    prontoPago: `Con pronto pago (−40 %): ${eur(12001)} → ${eur(pp(12001))} por trabajador (salvo que proceda sanción accesoria, art. 46 LISOS, que excluye el carácter pecuniario).`,
+    nota: 'La cuantía del art. 23.1.a) no puede exceder de 225.018 € por infracción.',
+  },
+  {
+    materia: 'Extranjería · sin residencia ni trabajo',
+    supuesto:
+      'Empresa que ocupa a un trabajador extranjero que carece de autorización de residencia Y de trabajo (situación irregular).',
+    pregunta: '¿Qué régimen y cuantía se aplican?',
+    opciones: [
+      { k: 'a', t: 'Muy grave art. 37.1 LISOS → 7.501 €' },
+      { k: 'b', t: 'Muy grave art. 54.1.d) LOEX → 10.001 € por trabajador' },
+      { k: 'c', t: 'Leve → 50 €' },
+    ],
+    correcta: 'b',
+    precepto:
+      'Art. 36.1 y 4 de la LO 4/2000 (LOEX) y arts. 63.1 y 64.1 del RD 557/2011. Una infracción por cada trabajador extranjero.',
+    calificacion: 'MUY GRAVE — art. 54.1.d) LO 4/2000 (LOEX), no la LISOS.',
+    tipificacion:
+      'Art. 55.1.c) LOEX y art. 254.4.c) RD 557/2011: grado mínimo 10.001 € por trabajador. Se gradúa solo por los criterios del art. 55.3 y 4 LOEX (culpabilidad, daño/riesgo, capacidad económica); NO se aplican las agravantes de la TRLISOS.',
+    cuantia: `${eur(10001)} por cada trabajador (grado mínimo), MÁS el incremento del art. 48 de la Ley 62/2003: se añade la cuantía de las cuotas de Seguridad Social y conceptos de recaudación conjunta que hubieran correspondido desde el inicio de la prestación de servicios del trabajador extranjero.`,
+    prontoPago:
+      'El pronto pago del orden social (RD 688/2021) no opera igual en el procedimiento sancionador de extranjería (RD 557/2011): revísalo antes de aplicarlo.',
+    nota: 'Clave: sin residencia NI trabajo → LOEX (54.1.d). El incremento del art. 48 Ley 62/2003 (cuotas de SS) opera en todos los supuestos de ocupación de extranjeros.',
+  },
+  {
+    materia: 'Extranjería · con residencia, sin permiso de trabajo',
+    supuesto:
+      'Empresa que ocupa a un trabajador extranjero que SÍ tiene autorización de residencia válida, pero carece de autorización de trabajo.',
+    pregunta: '¿Qué precepto y cuantía se aplican?',
+    opciones: [
+      { k: 'a', t: 'Art. 54.1.d) LOEX → 10.001 €' },
+      { k: 'b', t: 'Art. 37.1 LISOS → 7.501 € (grado mínimo)' },
+      { k: 'c', t: 'Leve → 50 €' },
+    ],
+    correcta: 'b',
+    precepto:
+      'Art. 36.1 y 4 de la LO 4/2000 y arts. 63.1 y 64.1 del RD 557/2011. Una infracción por cada trabajador extranjero.',
+    calificacion: 'MUY GRAVE — art. 37.1 LISOS (TRLISOS), al tener residencia pero faltar la autorización de trabajo.',
+    tipificacion: 'Art. 40.1.c) LISOS: grado mínimo 7.501 € (desde 1.10.2021; antes 6.251 €).',
+    cuantia: `${eur(7501)} por cada trabajador (grado mínimo), MÁS el incremento del art. 48 de la Ley 62/2003: se añade la cuantía de las cuotas de Seguridad Social y conceptos de recaudación conjunta que hubieran correspondido desde el inicio de la prestación de servicios.`,
+    prontoPago: `Con pronto pago (−40 %): ${eur(7501)} → ${eur(pp(7501))} por trabajador (la reducción se aplica sobre la sanción; el incremento del art. 48 sigue su régimen).`,
+    nota: 'Clave: con residencia pero sin permiso de trabajo → art. 37.1 LISOS (no LOEX 54.1.d). El incremento del art. 48 Ley 62/2003 opera en todos los supuestos de ocupación de extranjeros.',
+  },
+  {
     materia: 'Relaciones laborales · contratación',
     supuesto:
       'Empresa que celebra 3 contratos temporales en fraude de ley (art. 7.2 LISOS). Fuera del manual de Seguridad Social: régimen sancionador de relaciones laborales.',
