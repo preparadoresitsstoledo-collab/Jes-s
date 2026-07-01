@@ -27,6 +27,7 @@ const CalculadoraDespido = lazy(() => import('./components/CalculadoraDespido.js
 const PlanesAmianto = lazy(() => import('./components/PlanesAmianto.jsx'))
 const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.jsx'))
 const Graduacion = lazy(() => import('./components/Graduacion.jsx'))
+const Sanciones = lazy(() => import('./components/Sanciones.jsx'))
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -80,6 +81,13 @@ export default function App() {
     return (
       <Suspense fallback={<Cargando />}>
         <Graduacion />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/sanciones')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Sanciones />
       </Suspense>
     )
   }

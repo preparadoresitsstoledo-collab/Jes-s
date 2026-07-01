@@ -61,6 +61,14 @@ export default function Herramientas() {
             </span>
             <span className="hub-card__cta">Abrir herramienta →</span>
           </a>
+          <a className="hub-card" href="#/sanciones">
+            <span className="hub-card__icono" aria-hidden="true">💶</span>
+            <strong>Sanciones y cuantías</strong>
+            <span className="hub-card__desc">
+              Calcula la multa (altas, cotización, diferencias) y el efecto del pronto pago.
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
         </div>
 
         <div className="hub-juego">

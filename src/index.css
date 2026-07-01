@@ -1780,6 +1780,35 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   padding-top: 10px;
 }
 
+/* ---------- Sanciones y cuantías ---------- */
+.san__pregunta {
+  font-weight: 700;
+  color: var(--azul-900, #0f2c4a);
+  margin: 4px 0 12px;
+}
+
+.san__ficha {
+  margin: 0 0 4px;
+  display: grid;
+  gap: 2px 0;
+}
+
+.san__ficha dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--azul-500);
+  margin-top: 8px;
+}
+
+.san__ficha dd {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--gris-700);
+}
+
 @media (max-width: 560px) {
   .marco-legal__cols {
     grid-template-columns: 1fr;
