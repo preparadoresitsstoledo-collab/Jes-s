@@ -115,10 +115,9 @@ export default function Obstruccion() {
         </div>
 
         <p className="fuente-nota">
-          Elaborado a partir de la «Guía sobre actas de infracción por obstrucción a la labor
-          inspectora» (OEITSS), las Consultas de 27/06/2019 y 23/04/2007, los Criterios Técnicos
-          1/1997, 17/1998 y 45/2006, la Ley 23/2015 y los arts. 39, 40 y 50 TRLISOS. Datos
-          orientativos: verifica el precepto y la cuantía vigentes en cada acta.
+          Elaborado conforme a los arts. 39, 40 y 50 del TRLISOS (RDLeg 5/2000) y a los arts. 13,
+          14, 16 y 18 de la Ley 23/2015. Datos orientativos: verifica el precepto y la cuantía
+          vigentes en cada acta.
         </p>
       </div>
     </section>

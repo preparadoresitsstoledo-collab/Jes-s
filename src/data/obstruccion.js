@@ -3,14 +3,7 @@
  *  OBSTRUCCIÓN A LA LABOR INSPECTORA — juego de casos prácticos.
  * ============================================================================
  *  Art. 50 TRLISOS (calificación) en relación con el art. 40 (cuantía) y el
- *  art. 39 (graduación). Fuentes:
- *   · «Guía sobre actas de infracción por obstrucción a la labor inspectora»,
- *      Subdirección General de Relaciones Institucionales y Asistencia Técnica
- *      (OEITSS).
- *   · Consulta OEITSS de 27/06/2019 (autoridad competente; escala 40.1.f).
- *   · Consulta DGITSS de 23/04/2007 (deber de colaboración art. 18).
- *   · Criterios Técnicos 1/1997, 17/1998 y 45/2006.
- *   · Ley 23/2015 (arts. 13, 14, 16 y 18) y arts. 39, 40 y 50 TRLISOS.
+ *  art. 39 (graduación), y con la Ley 23/2015 (arts. 13, 14, 16 y 18).
  *
  *  ⚠️  DATOS ORIENTATIVOS. Revísalos: cada acta debe verificar el precepto y
  *      la cuantía vigentes y las circunstancias del caso concreto.
@@ -67,8 +60,8 @@ export const casosObstruccion = [
     tipo: 'Art. 50.2 TRLISOS — cláusula general de obstrucción (GRAVE).',
     preceptos: 'Arts. 13, 14 y 18.1 de la Ley 23/2015; concordantes arts. 7 y 8 del RD 138/2000.',
     cuantia: `Escala normal — art. 40.1.b): GRAVE ${eur(751)}–${eur(7500)} (mín. 751–1.500, medio 1.501–3.750, máx. 3.751–7.500).`,
-    graduacion: 'Art. 39.2. Requiere dolo o culpa; el requerimiento debe ser escrito, notificado en forma y con plazo razonable (Guía OEITSS).',
-    nota: 'Si el plazo fue irrazonablemente corto o no se acreditó la urgencia, puede decaer el tipo (Guía OEITSS).',
+    graduacion: 'Art. 39.2. Requiere dolo o culpa; el requerimiento debe ser escrito, notificado en forma y con plazo razonable.',
+    nota: 'Si el plazo fue irrazonablemente corto o no se acreditó la urgencia, puede decaer el tipo.',
   },
   {
     materia: 'No identificar a trabajadores',
@@ -102,7 +95,7 @@ export const casosObstruccion = [
     preceptos: 'Arts. 13, 14 y 18.1 de la Ley 23/2015, en conexión con los arts. 22.2 y 23.1.a) LISOS.',
     cuantia: 'Escala AGRAVADA — art. 40.1.f): reservada a la obstrucción de actuaciones dirigidas a comprobar el alta (arts. 22.2/23.1.a). Cuantías superiores a la escala normal; competencia ESTATAL (Seguridad Social). Verifica los importes vigentes del 40.1.f).',
     graduacion: 'Art. 39.2 (nº de afectados como graduación, cifra de negocio, perjuicio a la Seguridad Social…).',
-    nota: 'El 40.1.f) SOLO opera si la actuación obstruida iba dirigida al alta. Si la materia era autonómica (p. ej., jornada), se aplica la escala normal del 40.1.c) (Consulta OEITSS 27/06/2019).',
+    nota: 'El 40.1.f) SOLO opera si la actuación obstruida iba dirigida al alta. Si la materia era autonómica (p. ej., jornada), se aplica la escala normal del 40.1.c).',
   },
   {
     materia: 'Coacción y violencia',
@@ -119,7 +112,7 @@ export const casosObstruccion = [
     preceptos: 'Arts. 13, 14 y 18 de la Ley 23/2015.',
     cuantia: `Cada una por la escala normal — art. 40.1.c): MUY GRAVE ${eur(7501)}–${eur(225018)}.`,
     graduacion: 'Art. 39.2 y 3, para cada una de las infracciones.',
-    nota: 'Son dos conductas distintas (obstrucción + atentado a la integridad del funcionario): se sancionan por separado (STSJ Castilla-La Mancha 1535/2018). Si la coacción/violencia ya se depuró penalmente, no cabe sanción administrativa por identidad de sujeto, hecho y fundamento (art. 3.1 LISOS; non bis in idem).',
+    nota: 'Son dos conductas distintas (obstrucción + atentado a la integridad del funcionario): se sancionan por separado. Si la coacción/violencia ya se depuró penalmente, no cabe sanción administrativa por identidad de sujeto, hecho y fundamento (art. 3.1 LISOS; non bis in idem).',
   },
   {
     materia: 'Reiteración',
