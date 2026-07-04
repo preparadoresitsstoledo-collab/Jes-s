@@ -132,3 +132,90 @@ export const casosObstruccion = [
     nota: 'Reiteración = dos o más obstrucciones graves con resoluciones firmes en vía administrativa (no sujeta al plazo de 365 días de la reincidencia). Si la persistencia se da dentro de una MISMA actuación, no hay reiteración: sigue siendo grave (50.2), agravable por el art. 39.2.',
   },
 ]
+
+/**
+ * ============================================================================
+ *  CRITERIO TÉCNICO Y JURISPRUDENCIA — obstrucción a la labor inspectora.
+ *  Referencias contrastadas en varias fuentes. Conviene verificar el texto
+ *  íntegro de cada resolución (CENDOJ) antes de citarla en un acta.
+ * ============================================================================
+ */
+export const criterioTecnicoObstruccion =
+  'La obstrucción sanciona el incumplimiento del deber de colaboración del art. 18 de la Ley ' +
+  '23/2015 y requiere dolo o culpa. La calificación (art. 50) y la cuantía (art. 40) deben ' +
+  'motivarse: el acta ha de explicitar los criterios de graduación del art. 39 aplicados, y si no ' +
+  'concurre ninguno la sanción se impone en el grado mínimo en su tramo inferior. El número de ' +
+  'trabajadores no identificados es solo un criterio de graduación, no una infracción por ' +
+  'trabajador. Existen dos escalas de multa (la normal del art. 40.1.a-c y la agravada del ' +
+  '40.1.f, reservada a la obstrucción de la comprobación del alta). La coacción, amenaza o ' +
+  'violencia integra una infracción autónoma (art. 50.4.b) que se sanciona por separado, sin ' +
+  'perjuicio del non bis in idem cuando los hechos se hayan depurado ya en la vía penal.'
+
+export const jurisprudenciaObstruccion = [
+  {
+    titulo: 'Art. 50 TRLISOS — calificación de la obstrucción',
+    referencia: 'RDLeg 5/2000 (TRLISOS), art. 50',
+    resumen:
+      'Define la obstrucción como leve (50.3), grave (50.2, cláusula general) y muy grave (50.4: ' +
+      'impedir entrada/identificar, coacción o violencia, reiteración, incumplir el art. 18.2 o no ' +
+      'entregar la información en soporte informático).',
+    enlaces: [
+      { texto: 'BOE — texto consolidado', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
+      { texto: 'Iberley — art. 50 LISOS', url: 'https://www.iberley.es/legislacion/articulo-50-ley-sobre-infracciones-sanciones-orden-social-lisos' },
+      { texto: 'SuperContable — obstrucción a la ITSS', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/Infracciones_por_obstruccion_a_la_labor_inspectora.html' },
+    ],
+  },
+  {
+    titulo: 'Art. 40 TRLISOS — las dos escalas de multa',
+    referencia: 'RDLeg 5/2000 (TRLISOS), art. 40.1 letras a-c y f',
+    resumen:
+      'Escala normal (40.1.a leve 70–750 €, 40.1.b grave 751–7.500 €, 40.1.c muy grave 7.501–' +
+      '225.018 €) y escala agravada (40.1.f) cuando la actuación obstruida iba dirigida a comprobar ' +
+      'el alta de los trabajadores (arts. 22.2 y 23.1.a).',
+    enlaces: [
+      { texto: 'Iberley — art. 40 LISOS', url: 'https://www.iberley.es/legislacion/articulo-40-ley-sobre-infracciones-sanciones-orden-social-lisos' },
+      { texto: 'BOE — texto consolidado', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
+      { texto: 'SuperContable — obstrucción a la ITSS', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/Infracciones_por_obstruccion_a_la_labor_inspectora.html' },
+    ],
+  },
+  {
+    titulo: 'STS 436/2025, de 20 de mayo — sanción máxima por no identificar',
+    referencia: 'Tribunal Supremo (contencioso-administrativo)',
+    resumen:
+      'Confirma la sanción máxima de 225.018 € (muy grave, art. 50.4.a) a una empresa agrícola: 22 ' +
+      'personas huyeron sin identificarse y no se facilitó su identificación. El número de ' +
+      'afectados, la intencionalidad/fraude y el perjuicio operan como criterios de graduación ' +
+      '(art. 39.2) hasta el grado máximo.',
+    enlaces: [
+      { texto: 'SuperContable — STS 436/2025', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/STS_436-2025.Confirma_sancion_por_infraccion_muy_.html' },
+      { texto: 'Iberley — sanción de 225.018 €', url: 'https://www.iberley.es/noticias/sancion-225-018-euros-obstruccion-labor-inspectora-sector-agricola-34934' },
+      { texto: 'CENDOJ — buscador de jurisprudencia (TS)', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
+    ],
+  },
+  {
+    titulo: 'Coacción o violencia: infracción autónoma (50.4.a + 50.4.b)',
+    referencia: 'Doctrina de suplicación (TSJ) y art. 3.1 LISOS',
+    resumen:
+      'Impedir la entrada (50.4.a) y coaccionar, amenazar o ejercer violencia sobre el actuante ' +
+      '(50.4.b) son dos conductas distintas que se sancionan por separado. Si la coacción/violencia ' +
+      'ya se depuró penalmente, no cabe sanción administrativa (non bis in idem, art. 3.1 LISOS).',
+    enlaces: [
+      { texto: 'Iberley — jurisprudencia sobre obstrucción', url: 'https://www.iberley.es/jurisprudencia/obstruccion-labor-inspectora' },
+      { texto: 'SuperContable — jurisprudencia sobre obstrucción', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/Jurisprudencia_sobre_obstruccion_a_la_Inspeccion_de_.html' },
+      { texto: 'CENDOJ — buscador de jurisprudencia', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
+    ],
+  },
+  {
+    titulo: 'Criterios Técnicos de la ITSS sobre obstrucción',
+    referencia: 'CT 1/1997 (actas de obstrucción) y CT 45/2006 (graduación)',
+    resumen:
+      'El CT 1/1997 fija los criterios interpretativos sobre las actas de infracción por ' +
+      'obstrucción; el CT 45/2006 orienta sobre las circunstancias de graduación en dichas actas ' +
+      '(motivación específica de cada criterio del art. 39).',
+    enlaces: [
+      { texto: 'MITES — criterios técnicos de la ITSS', url: 'https://www.mites.gob.es/itss/web/atencion_al_ciudadano/crit_tecnicos/index.html' },
+      { texto: 'OEITSS — criterios técnicos', url: 'https://oeitss.gob.es/informacion-y-normativa/documentacion/criterios-tecnicos' },
+      { texto: 'Relación de criterios técnicos (auditores sociolaborales)', url: 'https://www.auditoressociolaborales.com/documentacion_criterios_tecnicos.php' },
+    ],
+  },
+]

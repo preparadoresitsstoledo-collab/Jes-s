@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { casosObstruccion, marcoObstruccion } from '../data/obstruccion.js'
+import {
+  casosObstruccion,
+  marcoObstruccion,
+  jurisprudenciaObstruccion,
+  criterioTecnicoObstruccion,
+} from '../data/obstruccion.js'
 
 export default function Obstruccion() {
   const [respuestas, setRespuestas] = useState({}) // index -> clave elegida
@@ -114,10 +119,34 @@ export default function Obstruccion() {
           })}
         </div>
 
+        <div className="jurisprudencia">
+          <h3 className="jurisprudencia__titulo">📚 Criterio técnico y jurisprudencia</h3>
+          <p className="jurisprudencia__intro">{criterioTecnicoObstruccion}</p>
+
+          <div className="jurisprudencia__grid">
+            {jurisprudenciaObstruccion.map((j, i) => (
+              <article className="juris-card" key={i}>
+                <h4 className="juris-card__titulo">{j.titulo}</h4>
+                <div className="juris-card__ref">{j.referencia}</div>
+                <p className="juris-card__resumen">{j.resumen}</p>
+                <ul className="juris-card__enlaces">
+                  {j.enlaces.map((e, k) => (
+                    <li key={k}>
+                      <a href={e.url} target="_blank" rel="noopener noreferrer">
+                        {e.texto} ↗
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+
         <p className="fuente-nota">
           Elaborado conforme a los arts. 39, 40 y 50 del TRLISOS (RDLeg 5/2000) y a los arts. 13,
-          14, 16 y 18 de la Ley 23/2015. Datos orientativos: verifica el precepto y la cuantía
-          vigentes en cada acta.
+          14, 16 y 18 de la Ley 23/2015. Referencias contrastadas en varias fuentes; conviene
+          verificar el texto íntegro de cada resolución (CENDOJ) antes de citarla en un acta.
         </p>
       </div>
     </section>
