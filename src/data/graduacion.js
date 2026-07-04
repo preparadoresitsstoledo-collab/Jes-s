@@ -234,8 +234,8 @@ export const jurisprudencia = [
     ],
   },
   {
-    titulo: 'Doctrina del TS sobre graduación en PRL',
-    referencia: 'Tribunal Supremo, Sala 3ª (contencioso-administrativo)',
+    titulo: 'STS 1241/2024, de 13 de noviembre — graduación en PRL',
+    referencia: 'Tribunal Supremo, Sala 3ª (contencioso-administrativo) · ECLI:ES:TS:2024:5487',
     resumen:
       'La gravedad de los daños producidos o que hubieran podido producirse (art. 39.3.c) NO está ' +
       'incorporada al tipo del art. 12.16.b LISOS, por lo que SÍ puede operar como criterio de ' +
@@ -247,8 +247,8 @@ export const jurisprudencia = [
     ],
   },
   {
-    titulo: 'Doctrina del TS sobre el impago masivo de salarios',
-    referencia: 'Tribunal Supremo (orden social)',
+    titulo: 'STS 282/2025, de 3 de abril — impago masivo de salarios',
+    referencia: 'Tribunal Supremo, Sala 4ª (social)',
     resumen:
       'El número de trabajadores afectados por el impago de salarios es un criterio de GRADUACIÓN ' +
       '(art. 39.2), no un elemento del tipo: con muchos afectados procede agravar el grado de la ' +
@@ -273,7 +273,7 @@ export const jurisprudencia = [
     ],
   },
   {
-    titulo: 'Criterio Técnico 84/2010 de la DGITSS — reincidencia',
+    titulo: 'Criterio Técnico 84/2010, de 28 de junio (DGITSS) — reincidencia',
     referencia: 'Dirección General de la Inspección de Trabajo y Seguridad Social',
     resumen:
       'Fija el criterio para apreciar la reincidencia (art. 41 LISOS) en las actas de infracción, ' +
