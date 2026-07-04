@@ -69,6 +69,14 @@ export default function Herramientas() {
             </span>
             <span className="hub-card__cta">Abrir herramienta →</span>
           </a>
+          <a className="hub-card" href="#/obstruccion">
+            <span className="hub-card__icono" aria-hidden="true">🚧</span>
+            <strong>Obstrucción a la inspección</strong>
+            <span className="hub-card__desc">
+              Casos prácticos: tipo, precepto y cuantía (art. 50 en relación con el 40 y 39).
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
         </div>
 
         <div className="hub-juego">
