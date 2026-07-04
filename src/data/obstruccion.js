@@ -16,12 +16,12 @@ export const marcoObstruccion = {
   concepto:
     'La obstrucción sanciona el incumplimiento del deber de colaboración del art. 18 de la Ley 23/2015 (no el deber institucional del art. 16, que no es sancionable). Se citan además, como preceptos relacionados, los arts. 13 y 14 (facultades de los actuantes). Requiere dolo o culpa (también culpa in vigilando del empresario).',
   calificacion: [
-    'LEVE (art. 50.3): mero retraso en obligaciones de información, comunicación o comparecencia (salvo que se requieran en visita y deban obrar en el centro).',
-    'GRAVE (art. 50.2, cláusula general): acciones u omisiones que perturben, retrasen o impidan las funciones inspectoras, salvo que sean leves o muy graves.',
+    'LEVE (art. 50.3): mero retraso, es decir, comparecer o cumplir después / en otro día. La incomparecencia total a una citación hecha en forma NO es leve: es grave.',
+    'GRAVE (art. 50.2, cláusula general): acciones u omisiones que perturben, retrasen o impidan las funciones inspectoras, salvo que sean leves o muy graves. Incluye no comparecer a una citación en forma.',
     'MUY GRAVE (art. 50.4): a) impedir entrada/permanencia o negarse a identificar a quien esté trabajando en el centro; b) coacción, amenaza o violencia, y la reiteración de obstrucciones graves; c) incumplir el art. 18.2; d) no entregar en soporte informático la información requerida.',
   ],
   escalas:
-    'El art. 40 prevé DOS escalas: (1) la NORMAL — art. 40.1.a) leve 70–750 €, 40.1.b) grave 751–7.500 €, 40.1.c) muy grave 7.501–225.018 €; y (2) la AGRAVADA — art. 40.1.f) — solo cuando la actuación obstruida iba dirigida a comprobar el ALTA de los trabajadores (posibles infracciones de los arts. 22.2 y 23.1.a).',
+    'El art. 40 prevé DOS escalas: (1) la NORMAL — art. 40.1.a) leve 70–750 €, 40.1.b) grave 751–7.500 €, 40.1.c) muy grave 7.501–225.018 €; y (2) la AGRAVADA — art. 40.1.f) — cuando la actuación obstruida iba dirigida a comprobar el ALTA de los trabajadores (arts. 22.2 y 23.1.a). En la práctica, todo control de empleo se realiza dentro de la Seguridad Social —identificar a quien trabaja implica comprobar su alta—, por lo que la obstrucción a esos controles (p. ej., no identificar) se sanciona por la escala agravada del 40.1.f).',
   graduacion:
     'La sanción se gradúa por el art. 39.2 (negligencia/intencionalidad cualificadas, fraude, requerimientos previos, cifra de negocio, nº de trabajadores afectados, perjuicio). El número de trabajadores es SOLO criterio de graduación: en obstrucción NO hay una infracción por cada trabajador. Una sola agravante → grado mínimo; sin ninguna → grado mínimo en su tramo inferior (art. 39.5-6).',
   competencia:
@@ -30,21 +30,38 @@ export const marcoObstruccion = {
 
 export const casosObstruccion = [
   {
-    materia: 'Comparecencia',
+    materia: 'Comparecencia con retraso',
     relato:
-      'La Inspección cita por escrito a la empresa, mediante correo con acuse de recibo, para comparecer en las oficinas un día concreto y aportar unas nóminas que no tienen por qué estar en el centro de trabajo. La empresa no comparece ni justifica su ausencia.',
-    pregunta: '¿Cómo se califica esta conducta?',
+      'La empresa, citada en forma (con acuse de recibo) para comparecer un día concreto en las oficinas de la Inspección, no acude ese día, pero se presenta más tarde / otro día y aporta lo requerido.',
+    pregunta: '¿Cómo se califica?',
     opciones: [
       { k: 'leve', t: 'Leve' },
       { k: 'grave', t: 'Grave' },
       { k: 'muygrave', t: 'Muy grave' },
     ],
     correcta: 'leve',
-    tipo: 'Art. 50.3.a) TRLISOS — mero retraso/incomparecencia (LEVE).',
+    tipo: 'Art. 50.3.a) TRLISOS — mero retraso en el cumplimiento (LEVE).',
     preceptos: 'Art. 18.1 de la Ley 23/2015 (deber de colaborar), en relación con los arts. 13 y 14.',
     cuantia: `Escala normal — art. 40.1.a): LEVE ${eur(70)}–${eur(750)} (mín. 70–150, medio 151–370, máx. 371–750).`,
     graduacion: 'Se gradúa por el art. 39.2 (cifra de negocio, etc.).',
-    nota: 'Solo es sancionable si la citación se hizo debidamente (acuse de recibo) y fijaba día concreto. Si el documento debía obrar en el centro y se requirió en visita, sería GRAVE (art. 50.2).',
+    nota: 'El mero retraso es solo comparecer después o en otro día. Si NO comparece en absoluto, ya no es leve: es obstrucción GRAVE (art. 50.2).',
+  },
+  {
+    materia: 'Incomparecencia',
+    relato:
+      'La empresa es citada en forma (con acuse de recibo) para comparecer un día concreto en las oficinas de la Inspección y NO comparece: ni acude ese día, ni justifica su ausencia, ni se presenta después.',
+    pregunta: '¿Cómo se califica?',
+    opciones: [
+      { k: 'leve', t: 'Leve' },
+      { k: 'grave', t: 'Grave' },
+      { k: 'muygrave', t: 'Muy grave' },
+    ],
+    correcta: 'grave',
+    tipo: 'Art. 50.2 TRLISOS — cláusula general de obstrucción (GRAVE).',
+    preceptos: 'Art. 18.1 de la Ley 23/2015, en relación con los arts. 13 y 14.',
+    cuantia: `Escala normal — art. 40.1.b): GRAVE ${eur(751)}–${eur(7500)} (mín. 751–1.500, medio 1.501–3.750, máx. 3.751–7.500).`,
+    graduacion: 'Art. 39.2 (cifra de negocio, nº de trabajadores, perjuicio…).',
+    nota: 'No acudir a una citación hecha en forma es obstrucción GRAVE (50.2). Solo sería leve si se tratase de un mero retraso (comparecer después o en otro día). Requiere que la citación se hiciera debidamente (acuse de recibo, día concreto).',
   },
   {
     materia: 'Documentación en visita',
@@ -64,43 +81,28 @@ export const casosObstruccion = [
     nota: 'Si el plazo fue irrazonablemente corto o no se acreditó la urgencia, puede decaer el tipo.',
   },
   {
-    materia: 'No identificar a trabajadores',
+    materia: 'No identificar en control de empleo',
     relato:
-      'En una visita, el actuante observa a varias personas trabajando. El empresario se niega a identificarlas y a dar razón de su presencia. La actuación iba dirigida al control de jornada (materia autonómica), no a comprobar el alta.',
-    pregunta: '¿Calificación y cómo influye el número de personas?',
+      'En una visita cuyo origen era verificar los contratos temporales, el actuante observa a varias personas trabajando y el empresario se niega a identificarlas y a dar razón de su presencia.',
+    pregunta: '¿Qué calificación y qué escala de sanción?',
     opciones: [
       { k: 'a', t: 'Grave; una infracción por cada trabajador' },
-      { k: 'b', t: 'Muy grave; el nº de personas es solo criterio de graduación' },
+      { k: 'b', t: 'Muy grave (50.4.a); escala AGRAVADA del art. 40.1.f)' },
       { k: 'c', t: 'Leve' },
     ],
     correcta: 'b',
     tipo: 'Art. 50.4.a) TRLISOS — negativa a identificar a quien está trabajando en el centro (MUY GRAVE).',
-    preceptos: 'Arts. 13, 14 y 18.1 de la Ley 23/2015.',
-    cuantia: `Escala normal — art. 40.1.c): MUY GRAVE ${eur(7501)}–${eur(225018)} (grado mínimo 7.501–30.000).`,
-    graduacion: 'Es UNA sola infracción. El número de personas no identificadas es solo criterio de graduación (art. 39.2), NO una infracción por trabajador (a diferencia de la falta de alta).',
-    nota: 'La obligación de identificar recae sobre cualquiera que esté trabajando en el centro, exista o no relación laboral, y siempre que su presencia se constate al tiempo de la visita.',
-  },
-  {
-    materia: 'Obstrucción a la comprobación del alta',
-    relato:
-      'Misma negativa a identificar, pero ahora la visita iba dirigida a comprobar el ALTA en la Seguridad Social de los trabajadores (posibles infracciones de los arts. 22.2 y 23.1.a LISOS). El empresario impide identificar a quienes están trabajando.',
-    pregunta: '¿Qué escala de sanción se aplica?',
-    opciones: [
-      { k: 'a', t: 'Escala normal — art. 40.1.c)' },
-      { k: 'b', t: 'Escala AGRAVADA — art. 40.1.f)' },
-      { k: 'c', t: 'No es sancionable' },
-    ],
-    correcta: 'b',
-    tipo: 'Art. 50.4.a) TRLISOS (MUY GRAVE), obstrucción a la comprobación del alta.',
     preceptos: 'Arts. 13, 14 y 18.1 de la Ley 23/2015, en conexión con los arts. 22.2 y 23.1.a) LISOS.',
-    cuantia: 'Escala AGRAVADA — art. 40.1.f): reservada a la obstrucción de actuaciones dirigidas a comprobar el alta (arts. 22.2/23.1.a). Cuantías superiores a la escala normal; competencia ESTATAL (Seguridad Social). Verifica los importes vigentes del 40.1.f).',
-    graduacion: 'Art. 39.2 (nº de afectados como graduación, cifra de negocio, perjuicio a la Seguridad Social…).',
-    nota: 'El 40.1.f) SOLO opera si la actuación obstruida iba dirigida al alta. Si la materia era autonómica (p. ej., jornada), se aplica la escala normal del 40.1.c).',
+    cuantia:
+      'Escala AGRAVADA — art. 40.1.f): todo control de empleo se realiza dentro de la Seguridad Social (identificar a quien trabaja implica comprobar su alta), por lo que la no identificación se sanciona por la escala agravada del 40.1.f), más alta que la normal. Verifica los importes vigentes.',
+    graduacion:
+      'Es UNA sola infracción. El número de personas no identificadas es solo criterio de graduación (art. 39.2), NO una infracción por trabajador (a diferencia de la falta de alta).',
+    nota: 'Aunque el origen de la visita sea el control de contratos, el control de empleo conlleva la comprobación del alta en la Seguridad Social → art. 40.1.f). Por esta vía, la STS 436/2025 confirmó 225.018 € por no identificar a 22 trabajadores. La obligación de identificar recae sobre cualquiera que esté trabajando, exista o no relación laboral.',
   },
   {
     materia: 'Coacción y violencia',
     relato:
-      'El empresario impide físicamente la entrada del actuante al centro y, además, le amenaza y profiere coacciones para que se marche.',
+      'Durante una visita en materia de prevención de riesgos laborales, el empresario impide físicamente la entrada del actuante al centro y, además, le amenaza y profiere coacciones para que se marche.',
     pregunta: '¿Cuántas infracciones hay y cómo se sancionan?',
     opciones: [
       { k: 'a', t: 'Una sola infracción muy grave' },
@@ -110,9 +112,9 @@ export const casosObstruccion = [
     correcta: 'b',
     tipo: 'Art. 50.4.a) (impedir la entrada) y art. 50.4.b) (coacción/amenaza): DOS infracciones muy graves.',
     preceptos: 'Arts. 13, 14 y 18 de la Ley 23/2015.',
-    cuantia: `Cada una por la escala normal — art. 40.1.c): MUY GRAVE ${eur(7501)}–${eur(225018)}.`,
+    cuantia: `Cada una por la escala normal — art. 40.1.c): MUY GRAVE ${eur(7501)}–${eur(225018)} (al ser una actuación de PRL, no de comprobación de alta).`,
     graduacion: 'Art. 39.2 y 3, para cada una de las infracciones.',
-    nota: 'Son dos conductas distintas (obstrucción + atentado a la integridad del funcionario): se sancionan por separado. Si la coacción/violencia ya se depuró penalmente, no cabe sanción administrativa por identidad de sujeto, hecho y fundamento (art. 3.1 LISOS; non bis in idem).',
+    nota: 'Son dos conductas distintas (obstrucción + atentado a la integridad del funcionario): se sancionan por separado. Si la actuación obstruida fuera un control de empleo, se aplicaría la escala agravada del 40.1.f). Y si la coacción/violencia ya se depuró penalmente, no cabe sanción administrativa por identidad de sujeto, hecho y fundamento (art. 3.1 LISOS; non bis in idem).',
   },
   {
     materia: 'Reiteración',
