@@ -162,9 +162,7 @@ export const jurisprudenciaObstruccion = [
       'impedir entrada/identificar, coacción o violencia, reiteración, incumplir el art. 18.2 o no ' +
       'entregar la información en soporte informático).',
     enlaces: [
-      { texto: 'BOE — texto consolidado', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
-      { texto: 'Iberley — art. 50 LISOS', url: 'https://www.iberley.es/legislacion/articulo-50-ley-sobre-infracciones-sanciones-orden-social-lisos' },
-      { texto: 'SuperContable — obstrucción a la ITSS', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/Infracciones_por_obstruccion_a_la_labor_inspectora.html' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -175,9 +173,7 @@ export const jurisprudenciaObstruccion = [
       '225.018 €) y escala agravada (40.1.f) cuando la actuación obstruida iba dirigida a comprobar ' +
       'el alta de los trabajadores (arts. 22.2 y 23.1.a).',
     enlaces: [
-      { texto: 'Iberley — art. 40 LISOS', url: 'https://www.iberley.es/legislacion/articulo-40-ley-sobre-infracciones-sanciones-orden-social-lisos' },
-      { texto: 'BOE — texto consolidado', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
-      { texto: 'SuperContable — obstrucción a la ITSS', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/Infracciones_por_obstruccion_a_la_labor_inspectora.html' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -189,9 +185,8 @@ export const jurisprudenciaObstruccion = [
       'afectados, la intencionalidad/fraude y el perjuicio operan como criterios de graduación ' +
       '(art. 39.2) hasta el grado máximo.',
     enlaces: [
-      { texto: 'SuperContable — STS 436/2025', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/STS_436-2025.Confirma_sancion_por_infraccion_muy_.html' },
-      { texto: 'Iberley — sanción de 225.018 €', url: 'https://www.iberley.es/noticias/sancion-225-018-euros-obstruccion-labor-inspectora-sector-agricola-34934' },
       { texto: 'CENDOJ — buscador de jurisprudencia (TS)', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -202,9 +197,8 @@ export const jurisprudenciaObstruccion = [
       '(50.4.b) son dos conductas distintas que se sancionan por separado. Si la coacción/violencia ' +
       'ya se depuró penalmente, no cabe sanción administrativa (non bis in idem, art. 3.1 LISOS).',
     enlaces: [
-      { texto: 'Iberley — jurisprudencia sobre obstrucción', url: 'https://www.iberley.es/jurisprudencia/obstruccion-labor-inspectora' },
-      { texto: 'SuperContable — jurisprudencia sobre obstrucción', url: 'https://www.supercontable.com/informacion/inspeccion_laboral/Jurisprudencia_sobre_obstruccion_a_la_Inspeccion_de_.html' },
       { texto: 'CENDOJ — buscador de jurisprudencia', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -217,7 +211,6 @@ export const jurisprudenciaObstruccion = [
     enlaces: [
       { texto: 'MITES — criterios técnicos de la ITSS', url: 'https://www.mites.gob.es/itss/web/atencion_al_ciudadano/crit_tecnicos/index.html' },
       { texto: 'OEITSS — criterios técnicos', url: 'https://oeitss.gob.es/informacion-y-normativa/documentacion/criterios-tecnicos' },
-      { texto: 'Relación de criterios técnicos (auditores sociolaborales)', url: 'https://www.auditoressociolaborales.com/documentacion_criterios_tecnicos.php' },
     ],
   },
 ]

@@ -228,9 +228,7 @@ export const jurisprudencia = [
       'específicos de PRL (39.3), las reglas de cuantía/recaudación (39.4) y la prohibición de ' +
       'doble cómputo con el deber de motivar la graduación (39.5).',
     enlaces: [
-      { texto: 'BOE — texto consolidado', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
-      { texto: 'Iberley — art. 39 LISOS', url: 'https://www.iberley.es/legislacion/articulo-39-ley-sobre-infracciones-sanciones-orden-social-lisos' },
-      { texto: 'SuperContable — graduación de sanciones', url: 'https://www.supercontable.com/informacion/laboral/Articulo_39._Lisos._Criterios_de_graduacion_de_las_sanciones..html' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -241,9 +239,8 @@ export const jurisprudencia = [
       'incorporada al tipo del art. 12.16.b LISOS, por lo que SÍ puede operar como criterio de ' +
       'agravación al graduar la sanción: no hay doble cómputo. Clarifica los límites del art. 39.5.',
     enlaces: [
-      { texto: 'Iberley — el TS aclara la graduación en PRL', url: 'https://www.iberley.es/noticias/el-ts-aclara-graduacion-las-sanciones-infraccion-grave-materia-prl-34182' },
-      { texto: 'Cuatrecasas — agravante de daños graves', url: 'https://www.cuatrecasas.com/es/spain/laboral/art/agravante-danos-graves-infracciones-laborales-sentencia-supremo' },
       { texto: 'CENDOJ — buscador de jurisprudencia (TS)', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -254,9 +251,8 @@ export const jurisprudencia = [
       '(art. 39.2), no un elemento del tipo: con muchos afectados procede agravar el grado de la ' +
       'sanción muy grave del art. 8.1 LISOS, sin incurrir en doble valoración.',
     enlaces: [
-      { texto: 'Garrido Abogados — análisis de la sentencia', url: 'https://garrido.es/infraccion-derivada-del-impago-masivo-de-salarios-sentencia-tribunal-supremo/' },
-      { texto: 'Iberley — número de afectados como criterio', url: 'https://www.iberley.es/legislacion/articulo-39-ley-sobre-infracciones-sanciones-orden-social-lisos' },
       { texto: 'CENDOJ — buscador de jurisprudencia (TS)', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
+      { texto: 'BOE — TRLISOS (texto consolidado)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2000-15060' },
     ],
   },
   {
@@ -267,9 +263,8 @@ export const jurisprudencia = [
       'motiva la graduación o esta resulta desproporcionada. La falta de explicitación de los ' +
       'criterios del art. 39 conduce a aplicar el grado mínimo.',
     enlaces: [
-      { texto: 'delajusticia.com (R. Bosch) — proporcionalidad sancionadora', url: 'https://www.delajusticia.com/' },
-      { texto: 'Ley 40/2015, art. 29 (BOE)', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-10566&tn=1&p=20151002#a29' },
-      { texto: 'gobiernolocal.org — potestad sancionadora', url: 'https://www.gobiernolocal.org/' },
+      { texto: 'BOE — Ley 40/2015, art. 29', url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2015-10566&p=20151002#a29' },
+      { texto: 'CENDOJ — buscador de jurisprudencia', url: 'https://www.poderjudicial.es/search/indexAN.jsp' },
     ],
   },
   {
@@ -280,9 +275,8 @@ export const jurisprudencia = [
       'factor que agrava la graduación. Es el documento técnico de referencia que aplican los ' +
       'actuantes y un ejemplo de "criterio técnico de graduación".',
     enlaces: [
-      { texto: 'laboral-social — CT sobre reincidencia', url: 'https://www.laboral-social.com/criterio-tecnico-inspeccion-trabajo-aplicacion-reincidencia-actas-infraccion.html' },
       { texto: 'MITES — criterios técnicos de la ITSS', url: 'https://www.mites.gob.es/itss/web/atencion_al_ciudadano/crit_tecnicos/index.html' },
-      { texto: 'SuperContable — criterios técnicos DGITSS', url: 'https://www.supercontable.com/' },
+      { texto: 'OEITSS — criterios técnicos', url: 'https://oeitss.gob.es/informacion-y-normativa/documentacion/criterios-tecnicos' },
     ],
   },
 ]
