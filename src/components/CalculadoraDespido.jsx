@@ -1,27 +1,37 @@
 import { useState } from 'react'
-import { calcularIndemnizacion, RELACIONES } from '../lib/indemnizacion.js'
+import { calcularIndemnizacion, getRelacion, RELACIONES, UNIDADES } from '../lib/indemnizacion.js'
 
 const eur = (n) =>
   n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
+const num = (n, d = 1) =>
+  (n || 0).toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: d })
+
+function antiguedadTexto(a) {
+  if (!a) return '—'
+  const p = []
+  if (a.años) p.push(`${a.años} ${a.años === 1 ? 'año' : 'años'}`)
+  if (a.meses) p.push(`${a.meses} ${a.meses === 1 ? 'mes' : 'meses'}`)
+  if (a.dias) p.push(`${a.dias} ${a.dias === 1 ? 'día' : 'días'}`)
+  return p.join(', ') || '0 días'
+}
 
 export default function CalculadoraDespido() {
   const [datos, setDatos] = useState({
     inicio: '',
     fin: new Date().toISOString().slice(0, 10),
-    salarioMensual: '',
-    pagas: 14,
+    salario: '',
+    unidad: 'mensual',
     relacion: 'comun',
-    tipo: 'improcedente',
+    causa: 'improcedente',
   })
   const [resultado, setResultado] = useState(null)
 
   const set = (campo, valor) => setDatos((d) => ({ ...d, [campo]: valor }))
-
-  // Al cambiar la relación laboral, se ajusta la lista de modalidades de extinción.
   const cambiarRelacion = (rel) =>
-    setDatos((d) => ({ ...d, relacion: rel, tipo: RELACIONES[rel].tipos[0].k }))
+    setDatos((d) => ({ ...d, relacion: rel, causa: getRelacion(rel).causas[0].id }))
 
-  const tiposDisponibles = RELACIONES[datos.relacion].tipos
+  const relacionSel = getRelacion(datos.relacion)
+  const causaSel = relacionSel.causas.find((c) => c.id === datos.causa) || relacionSel.causas[0]
 
   function calcular() {
     setResultado(calcularIndemnizacion(datos))
@@ -34,15 +44,14 @@ export default function CalculadoraDespido() {
           <a className="analizador__volver" href="#inicio">← Volver a la web</a>
           <h1>Calculadora de indemnización por extinción del contrato</h1>
           <p className="analizador__lema">
-            Estima la indemnización según la relación laboral, la modalidad de extinción y la
-            antigüedad: régimen común del Estatuto de los Trabajadores (con el transitorio 45/33 días
-            de 2012) y las <strong>relaciones laborales de carácter especial</strong> (alta dirección,
-            hogar, deportistas, artistas, representantes de comercio y otras del art. 2 ET).
+            Elige la relación laboral y la causa de extinción: régimen común del Estatuto de los
+            Trabajadores y las <strong>relaciones laborales de carácter especial</strong> (alta
+            dirección, hogar, deportistas, artistas, representantes, abogados, MIR, CEE…), con salario
+            diario, mensual o anual.
           </p>
           <p className="analizador__aviso-legal">
-            ⚖️ Cálculo orientativo. No sustituye el asesoramiento jurídico: hay indemnizaciones
-            pactadas o fijadas judicialmente, salarios variables, topes por convenio y peculiaridades
-            de cada régimen especial que pueden alterar el resultado.
+            ⚖️ Cálculo orientativo. No sustituye el asesoramiento jurídico: prevalecen los pactos, el
+            convenio y las cuantías fijadas judicialmente.
           </p>
         </div>
       </header>
@@ -50,50 +59,56 @@ export default function CalculadoraDespido() {
       <div className="contenedor analizador__grid">
         <section className="analizador__panel no-impresion">
           <h2>Datos</h2>
+
+          <div className="campo">
+            <label>Relación laboral</label>
+            <select value={datos.relacion} onChange={(e) => cambiarRelacion(e.target.value)}>
+              {RELACIONES.map((r) => (
+                <option key={r.id} value={r.id}>{r.nombre}</option>
+              ))}
+            </select>
+          </div>
+          <div className="campo">
+            <label>Causa de extinción</label>
+            <select value={datos.causa} onChange={(e) => set('causa', e.target.value)}>
+              {relacionSel.causas.map((c) => (
+                <option key={c.id} value={c.id}>{c.nombre}</option>
+              ))}
+            </select>
+            <p className="campo__ayuda">{causaSel.baseLegal}</p>
+          </div>
+
           <div className="campo-fila">
             <div className="campo">
               <label>Fecha de inicio (alta)</label>
               <input type="date" value={datos.inicio} onChange={(e) => set('inicio', e.target.value)} />
             </div>
             <div className="campo">
-              <label>Fecha del despido</label>
+              <label>Fecha de la extinción</label>
               <input type="date" value={datos.fin} onChange={(e) => set('fin', e.target.value)} />
             </div>
           </div>
           <div className="campo-fila">
             <div className="campo">
-              <label>Salario bruto mensual (€)</label>
+              <label>Salario bruto (€)</label>
               <input
                 type="number"
-                value={datos.salarioMensual}
-                onChange={(e) => set('salarioMensual', e.target.value)}
+                value={datos.salario}
+                onChange={(e) => set('salario', e.target.value)}
                 placeholder="Ej. 1800"
               />
             </div>
             <div className="campo">
-              <label>Nº de pagas al año</label>
-              <input type="number" value={datos.pagas} onChange={(e) => set('pagas', e.target.value)} />
+              <label>Unidad del salario</label>
+              <select value={datos.unidad} onChange={(e) => set('unidad', e.target.value)}>
+                {UNIDADES.map((u) => (
+                  <option key={u.k} value={u.k}>{u.label}</option>
+                ))}
+              </select>
             </div>
           </div>
-          <div className="campo">
-            <label>Relación laboral</label>
-            <select value={datos.relacion} onChange={(e) => cambiarRelacion(e.target.value)}>
-              {Object.entries(RELACIONES).map(([k, r]) => (
-                <option key={k} value={k}>{r.nombre}</option>
-              ))}
-            </select>
-          </div>
-          <div className="campo">
-            <label>Modalidad de extinción</label>
-            <select value={datos.tipo} onChange={(e) => set('tipo', e.target.value)}>
-              {tiposDisponibles.map((t) => (
-                <option key={t.k} value={t.k}>{t.label}</option>
-              ))}
-            </select>
-          </div>
           <p className="campo__ayuda">
-            Indica el salario <strong>bruto mensual</strong> con prorrata de pagas si las cobras aparte; el
-            salario diario regulador se calcula como salario anual ÷ 365.
+            El salario diario regulador se obtiene según la unidad elegida (mensual × 12 ÷ 365; anual ÷ 365).
           </p>
           <div className="analizador__acciones">
             <button className="btn btn--primario" onClick={calcular}>Calcular indemnización</button>
@@ -122,26 +137,39 @@ export default function CalculadoraDespido() {
             {resultado?.ok && (
               <>
                 <p className="despido__importe">{eur(resultado.importe)}</p>
-                <p className="despido__sub">
-                  {resultado.diasIndemnizacion.toFixed(0)} días de salario ·{' '}
-                  {(resultado.diasIndemnizacion / 30).toFixed(1)} mensualidades
-                </p>
+                {resultado.genera ? (
+                  <p className="despido__sub">
+                    {num(resultado.diasIndemnizacion, 0)} días de salario ·{' '}
+                    {num(resultado.diasIndemnizacion / 30, 1)} mensualidades
+                  </p>
+                ) : (
+                  <p className="despido__sub">Esta causa de extinción no genera indemnización tasada.</p>
+                )}
 
                 <table className="documento__tabla">
                   <tbody>
                     <tr>
-                      <th>Antigüedad</th>
-                      <td>
-                        {resultado.antiguedad.años} años, {resultado.antiguedad.meses} meses y{' '}
-                        {resultado.antiguedad.dias} días
-                      </td>
+                      <th>Relación / causa</th>
+                      <td>{resultado.relacion.nombre} · {resultado.causa.nombre}</td>
                     </tr>
                     <tr>
-                      <th>Salario diario regulador</th>
+                      <th>Base legal</th>
+                      <td>{resultado.causa.baseLegal}</td>
+                    </tr>
+                    <tr>
+                      <th>Antigüedad</th>
+                      <td>{antiguedadTexto(resultado.antiguedad)}</td>
+                    </tr>
+                    <tr>
+                      <th>Salario diario</th>
                       <td>{eur(resultado.salarioDiario)}</td>
                     </tr>
                     <tr>
-                      <th>Salario anual bruto</th>
+                      <th>Salario mensual</th>
+                      <td>{eur(resultado.salarioMensual)}</td>
+                    </tr>
+                    <tr>
+                      <th>Salario anual</th>
                       <td>{eur(resultado.salarioAnual)}</td>
                     </tr>
                     {resultado.topeAplicado && (
@@ -168,7 +196,7 @@ export default function CalculadoraDespido() {
                         {resultado.desglose.map((d, i) => (
                           <tr key={i}>
                             <td>{d.etiqueta}</td>
-                            <td>{d.dias.toFixed(1)}</td>
+                            <td>{num(d.dias, 1)}</td>
                             <td>{eur(d.dias * resultado.salarioDiario)}</td>
                           </tr>
                         ))}
@@ -177,7 +205,10 @@ export default function CalculadoraDespido() {
                   </>
                 )}
 
-                <p className="documento__obs" style={{ paddingLeft: 0 }}>{resultado.nota}</p>
+                <p className="documento__obs" style={{ paddingLeft: 0 }}>{resultado.causa.descripcion}</p>
+                {resultado.causa.nota && (
+                  <p className="documento__obs" style={{ paddingLeft: 0 }}>⚑ {resultado.causa.nota}</p>
+                )}
               </>
             )}
           </article>
