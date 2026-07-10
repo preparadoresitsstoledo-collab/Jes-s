@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { calcularIndemnizacion } from '../lib/indemnizacion.js'
+import { calcularIndemnizacion, RELACIONES } from '../lib/indemnizacion.js'
 
 const eur = (n) =>
   n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
@@ -10,11 +10,18 @@ export default function CalculadoraDespido() {
     fin: new Date().toISOString().slice(0, 10),
     salarioMensual: '',
     pagas: 14,
+    relacion: 'comun',
     tipo: 'improcedente',
   })
   const [resultado, setResultado] = useState(null)
 
   const set = (campo, valor) => setDatos((d) => ({ ...d, [campo]: valor }))
+
+  // Al cambiar la relación laboral, se ajusta la lista de modalidades de extinción.
+  const cambiarRelacion = (rel) =>
+    setDatos((d) => ({ ...d, relacion: rel, tipo: RELACIONES[rel].tipos[0].k }))
+
+  const tiposDisponibles = RELACIONES[datos.relacion].tipos
 
   function calcular() {
     setResultado(calcularIndemnizacion(datos))
@@ -25,14 +32,17 @@ export default function CalculadoraDespido() {
       <header className="analizador__hero no-impresion">
         <div className="contenedor">
           <a className="analizador__volver" href="#inicio">← Volver a la web</a>
-          <h1>Calculadora de indemnización por despido</h1>
+          <h1>Calculadora de indemnización por extinción del contrato</h1>
           <p className="analizador__lema">
-            Estima la indemnización según el tipo de despido y la antigüedad, conforme al Estatuto de
-            los Trabajadores (incluido el régimen transitorio 45/33 días de la reforma de 2012).
+            Estima la indemnización según la relación laboral, la modalidad de extinción y la
+            antigüedad: régimen común del Estatuto de los Trabajadores (con el transitorio 45/33 días
+            de 2012) y las <strong>relaciones laborales de carácter especial</strong> (alta dirección,
+            hogar, deportistas, artistas, representantes de comercio y otras del art. 2 ET).
           </p>
           <p className="analizador__aviso-legal">
-            ⚖️ Cálculo orientativo. No sustituye el asesoramiento jurídico: hay supuestos especiales
-            (salarios variables, jornada reducida, topes por convenio, etc.) que pueden alterar el resultado.
+            ⚖️ Cálculo orientativo. No sustituye el asesoramiento jurídico: hay indemnizaciones
+            pactadas o fijadas judicialmente, salarios variables, topes por convenio y peculiaridades
+            de cada régimen especial que pueden alterar el resultado.
           </p>
         </div>
       </header>
@@ -66,11 +76,19 @@ export default function CalculadoraDespido() {
             </div>
           </div>
           <div className="campo">
-            <label>Tipo de despido</label>
+            <label>Relación laboral</label>
+            <select value={datos.relacion} onChange={(e) => cambiarRelacion(e.target.value)}>
+              {Object.entries(RELACIONES).map(([k, r]) => (
+                <option key={k} value={k}>{r.nombre}</option>
+              ))}
+            </select>
+          </div>
+          <div className="campo">
+            <label>Modalidad de extinción</label>
             <select value={datos.tipo} onChange={(e) => set('tipo', e.target.value)}>
-              <option value="improcedente">Improcedente (33/45 días por año)</option>
-              <option value="objetivo">Objetivo o colectivo (20 días por año)</option>
-              <option value="procedente">Procedente / disciplinario (sin indemnización)</option>
+              {tiposDisponibles.map((t) => (
+                <option key={t.k} value={t.k}>{t.label}</option>
+              ))}
             </select>
           </div>
           <p className="campo__ayuda">
