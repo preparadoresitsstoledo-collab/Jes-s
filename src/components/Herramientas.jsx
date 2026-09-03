@@ -77,6 +77,14 @@ export default function Herramientas() {
             </span>
             <span className="hub-card__cta">Abrir herramienta →</span>
           </a>
+          <a className="hub-card" href="#/denuncia">
+            <span className="hub-card__icono" aria-hidden="true">📝</span>
+            <strong>Asistente de denuncia</strong>
+            <span className="hub-card__desc">
+              Redacta tu denuncia ante la Inspección de Trabajo paso a paso, aunque no seas jurista.
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
         </div>
 
         <div className="hub-juego">

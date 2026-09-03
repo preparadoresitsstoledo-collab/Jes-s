@@ -29,6 +29,7 @@ const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.
 const Graduacion = lazy(() => import('./components/Graduacion.jsx'))
 const Sanciones = lazy(() => import('./components/Sanciones.jsx'))
 const Obstruccion = lazy(() => import('./components/Obstruccion.jsx'))
+const Denuncia = lazy(() => import('./components/Denuncia.jsx'))
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -96,6 +97,13 @@ export default function App() {
     return (
       <Suspense fallback={<Cargando />}>
         <Obstruccion />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/denuncia')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Denuncia />
       </Suspense>
     )
   }

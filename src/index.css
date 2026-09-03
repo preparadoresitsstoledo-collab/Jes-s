@@ -1809,6 +1809,81 @@ table.convocatorias tbody tr.fila-destacada td:first-child {
   color: var(--gris-700);
 }
 
+/* ---------- Asistente de denuncia ---------- */
+.denuncia__hechos {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.denuncia__hecho {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--gris-200, #e2e8f0);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.denuncia__hecho:hover {
+  border-color: var(--azul-500);
+}
+
+.denuncia__hecho--on {
+  border-color: var(--azul-500);
+  background: #eff5fb;
+}
+
+.denuncia__hecho input {
+  margin-top: 3px;
+}
+
+.denuncia__hecho span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.denuncia__hecho em {
+  font-style: normal;
+  font-size: 0.78rem;
+  color: var(--azul-500);
+}
+
+.denuncia__escrito {
+  white-space: pre-wrap;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--gris-800, #1f2937);
+  margin: 0;
+}
+
+.denuncia__enlaces {
+  margin-top: 20px;
+  padding: 16px 18px;
+  background: #fff8ec;
+  border: 1px solid #f0dcae;
+  border-radius: 10px;
+}
+
+.denuncia__enlaces h4 {
+  margin: 0 0 6px;
+  color: #9a5b00;
+}
+
+.denuncia__enlaces ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.denuncia__enlaces a {
+  color: var(--azul-500);
+  font-weight: 500;
+}
+
 @media (max-width: 560px) {
   .marco-legal__cols {
     grid-template-columns: 1fr;
