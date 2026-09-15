@@ -39,6 +39,17 @@ export const HERRAMIENTAS = [
     etiquetas: ['Amianto', 'RD 396/2006', 'INSST'],
     Componente: lazy(() => import('../components/InformesAmianto.jsx')),
   },
+  {
+    id: 'diplomas',
+    ruta: '#/diplomas',
+    nombre: 'Descarga de diplomas',
+    icono: '🎓',
+    resumen: 'Diplomas de asistencia a cursos y jornadas',
+    descripcion:
+      'Los asistentes a los cursos y jornadas introducen su código personal y descargan su diploma de asistencia en PDF. Los datos se guardan cifrados: solo el código de cada asistente permite leerlos.',
+    etiquetas: ['Formación', 'Diplomas', 'PDF'],
+    Componente: lazy(() => import('../components/Diplomas.jsx')),
+  },
 ]
 
 // Devuelve la herramienta cuya ruta coincide con el hash actual (o null).

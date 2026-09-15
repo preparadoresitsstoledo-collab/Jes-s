@@ -176,6 +176,56 @@ El menú, la tarjeta y la ruta aparecen solos (carga diferida con `React.lazy`),
 
 ---
 
+## 🎓 Descarga de diplomas
+
+Plataforma para que los **asistentes a cursos y jornadas** descarguen su **diploma de asistencia en
+PDF**. Se accede desde el portal de herramientas o en la ruta `#/diplomas`. Como la web es estática
+(GitHub Pages, sin servidor), funciona así:
+
+- Cada asistente recibe un **código personal** (p. ej. `ATDH-NQS6-PSMR`). Lo introduce en `#/diplomas`
+  (o abre el enlace directo `#/diplomas?codigo=ATDH-NQS6-PSMR`), ve la vista previa y descarga el PDF.
+- Los datos de los diplomas viven en `src/data/diplomas.json`, pero **cifrados** (PBKDF2 + AES-256-GCM)
+  con el código de cada asistente. El archivo público no revela ni nombres ni cursos: sin el código no
+  se puede leer nada. El PDF se genera en el navegador (jsPDF) con el logo de la web.
+- Los códigos **no se guardan en ningún sitio**: se generan una vez, se envían a cada asistente y solo
+  quedan en el CSV confidencial que obtienes al generarlos (está en `.gitignore`).
+
+### Cómo emitir los diplomas de un curso
+
+**Opción A — desde el navegador** (`#/diplomas/generar`): rellena los datos del curso, pega la lista
+de asistentes (uno por línea, `Nombre y apellidos` o `Nombre y apellidos;DNI`) y pulsa *Generar*.
+Descarga el **CSV de códigos** (para enviarlos) y el **`diplomas.json` completo**, que debes guardar
+como `src/data/diplomas.json` y subir al repositorio. Al hacer push a `main` la web se vuelve a
+publicar y los diplomas quedan disponibles.
+
+**Opción B — desde la terminal**:
+
+```bash
+npm run diplomas -- --asistentes asistentes.csv \
+  --curso "Jornada sobre prevención de riesgos laborales" --fecha 2026-10-01 --horas 5 \
+  --lugar Toledo --modalidad Presencial --organizador "Preparación ITSS Toledo" \
+  --formador "Jesús María Prieto Valbuena" --cargo "Inspector de Trabajo y Seguridad Social" \
+  --firma "Toledo, 1 de octubre de 2026"
+```
+
+Añade los registros cifrados a `src/data/diplomas.json` y escribe `diplomas-codigos-<fecha>.csv` con
+los códigos. Añade `--simular` para verlo sin escribir nada y `--help` para todas las opciones.
+
+Archivos relevantes:
+
+- `src/lib/diplomasCrypto.js` — cifrado/descifrado y generación de códigos (Web Crypto, navegador y Node).
+- `src/lib/diplomaPdf.js` — diseño del diploma en PDF (A4 apaisado).
+- `src/lib/diplomaPreview.js` — vista previa del PDF como imagen (pdf.js).
+- `src/components/Diplomas.jsx` — descarga pública y generador del preparador.
+- `scripts/diplomas.mjs` — generador por línea de comandos.
+- `src/data/diplomas.json` — diplomas publicados (cifrados).
+
+> 🔐 Los códigos tienen 12 caracteres aleatorios (unos 60 bits) y la clave se deriva con 210.000
+> iteraciones de PBKDF2, de modo que no es viable adivinarlos a partir del archivo público. Aun así,
+> el archivo contiene datos personales cifrados: no incluyas en los diplomas más datos de los necesarios.
+
+---
+
 ## 🏗️ Informe sobre el plan de trabajo con amianto
 
 Editor con la **estructura oficial del art. 11.2 del RD 396/2006** para redactar el informe de la
