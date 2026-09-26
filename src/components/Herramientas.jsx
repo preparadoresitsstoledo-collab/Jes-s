@@ -85,6 +85,14 @@ export default function Herramientas() {
             </span>
             <span className="hub-card__cta">Abrir herramienta →</span>
           </a>
+          <a className="hub-card" href="test-proporcionalidad.html">
+            <span className="hub-card__icono" aria-hidden="true">⚖️</span>
+            <strong>Test de proporcionalidad (control laboral)</strong>
+            <span className="hub-card__desc">
+              Evalúa cámaras, biometría, GPS, IA… con el triple juicio y las garantías (RGPD, IA, RD 723/2026).
+            </span>
+            <span className="hub-card__cta">Abrir herramienta →</span>
+          </a>
         </div>
 
         <div className="hub-juego">
