@@ -2625,3 +2625,248 @@ select.chip {
   font-weight: 600;
   opacity: 0.85;
 }
+
+/* ───────────────────────── Analizador de tacógrafo ───────────────────────── */
+.tacografo__cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+  margin-top: 28px;
+}
+.tacografo__cuerpo > * {
+  min-width: 0;
+}
+.tacografo__lista td:first-child {
+  word-break: break-all;
+}
+.tacografo__zona {
+  border: 2px dashed var(--gris-300);
+  border-radius: var(--radio);
+  padding: 22px;
+  text-align: center;
+  background: var(--gris-50);
+  transition: border-color 0.15s, background 0.15s;
+}
+.tacografo__zona .analizador__acciones {
+  justify-content: center;
+}
+.tacografo__zona--activa {
+  border-color: var(--azul-500);
+  background: #eef4ff;
+}
+.tacografo__estado {
+  margin: 10px 0 0;
+  font-weight: 600;
+  color: var(--azul-500);
+}
+.tacografo__lista {
+  margin-top: 16px;
+}
+.tacografo__tabla-scroll {
+  overflow-x: auto;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.tacografo__tabla-scroll .calc__tabla th {
+  position: sticky;
+  top: 0;
+}
+.tacografo__fila-error td {
+  background: #fdecec;
+}
+.tacografo__select {
+  width: 100%;
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-sm);
+  background: var(--blanco);
+}
+.tacografo__conductor {
+  background: var(--gris-100);
+  border-radius: var(--radio-sm);
+  padding: 10px 12px;
+  font-size: 0.92rem;
+}
+.tacografo__parametros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0 16px;
+}
+.tacografo__subtitulo {
+  font-size: 1rem;
+  margin: 18px 0 10px;
+  color: var(--azul-900);
+}
+.tacografo__metodos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.tacografo__metodo {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.tacografo__metodo span {
+  display: grid;
+  gap: 4px;
+}
+.tacografo__metodo small {
+  color: var(--gris-500);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+.tacografo__metodo--activo {
+  border-color: var(--azul-500);
+  background: #eef4ff;
+}
+.tacografo__casilla {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 6px 0;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+.tacografo__analizar {
+  justify-content: center;
+}
+.tacografo__analizar .btn {
+  min-width: 220px;
+}
+.tacografo__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.tacografo__kpi {
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-sm);
+  padding: 12px;
+  display: grid;
+  gap: 4px;
+}
+.tacografo__kpi span {
+  font-size: 0.8rem;
+  color: var(--gris-500);
+}
+.tacografo__kpi strong {
+  font-size: 1.25rem;
+  color: var(--azul-900);
+}
+.tacografo__kpi--destacado {
+  background: #fff7e6;
+  border-color: #f0c36d;
+}
+.tacografo__numeros td {
+  text-align: right;
+  white-space: nowrap;
+}
+.tacografo__numeros td:first-child {
+  text-align: left;
+}
+.tacografo__celda-activa {
+  font-weight: 700;
+  background: #fff7e6;
+}
+.tacografo__detalle {
+  margin: 12px 0;
+}
+.tacografo__detalle summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--azul-900);
+  margin-bottom: 10px;
+}
+.tacografo__grafico {
+  margin: 18px 0;
+}
+.tacografo__grafico-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.tacografo__grafico-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.tacografo__grafico-nav .tacografo__select {
+  width: auto;
+}
+.tacografo__leyenda {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 0;
+  margin: 6px 0 10px;
+  font-size: 0.82rem;
+}
+.tacografo__leyenda i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--gris-300);
+  vertical-align: -1px;
+  margin-right: 4px;
+}
+.tacografo__dias {
+  display: grid;
+  gap: 3px;
+}
+.tacografo__dia {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) 150px;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.8rem;
+}
+.tacografo__dia svg {
+  width: 100%;
+  height: 18px;
+  background: var(--blanco);
+  border: 1px solid var(--gris-100);
+  border-radius: 2px;
+}
+.tacografo__dia--incidencia .tacografo__dia-fecha {
+  color: #b91c1c;
+  font-weight: 700;
+}
+.tacografo__dia-fecha {
+  white-space: nowrap;
+}
+.tacografo__dia-totales {
+  white-space: nowrap;
+}
+.tacografo__extra {
+  color: #b91c1c;
+}
+.tacografo__escala {
+  position: relative;
+  height: 14px;
+}
+.tacografo__escala em {
+  position: absolute;
+  transform: translateX(-50%);
+  font-style: normal;
+  color: var(--gris-500);
+  font-size: 0.72rem;
+}
+@media (max-width: 640px) {
+  .tacografo__dia {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .tacografo__dia-totales,
+  .tacografo__dia--horas > span:last-child {
+    display: none;
+  }
+}

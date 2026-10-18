@@ -29,6 +29,17 @@ export const HERRAMIENTAS = [
     Componente: lazy(() => import('../components/AnalizadorConvenios.jsx')),
   },
   {
+    id: 'tacografo',
+    ruta: '#/tacografo',
+    nombre: 'Analizador de tacógrafo',
+    icono: '🚚',
+    resumen: 'Horas extraordinarias y descansos desde la tarjeta del conductor',
+    descripcion:
+      'Lee a la vez todas las descargas de la tarjeta de conductor (.DDD/.TGD, 1.ª y 2.ª generación), incluso de varios años, y calcula día a día conducción, trabajo, disponibilidad, descansos y horas extraordinarias conforme al Reglamento 561/2006, el RD 1561/1995, el ET y el convenio. Exporta un Excel con resúmenes y la base para el acta de liquidación.',
+    etiquetas: ['Tacógrafo', 'Transporte', 'Horas extra', 'Acta de liquidación'],
+    Componente: lazy(() => import('../components/AnalizadorTacografo.jsx')),
+  },
+  {
     id: 'amianto',
     ruta: '#/amianto',
     nombre: 'Informes de amianto',

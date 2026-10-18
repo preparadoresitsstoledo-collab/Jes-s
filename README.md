@@ -198,6 +198,80 @@ Archivos relevantes:
 
 ---
 
+## 🚚 Analizador de tacógrafo (tarjeta de conductor)
+
+Lee **a la vez todas las descargas de la tarjeta del conductor** (archivos C: `.DDD`, `.TGD`,
+`.C1B`…, 1.ª y 2.ª generación), aunque sean decenas de archivos y abarquen varios años. Une las
+descargas y elimina los días repetidos entre ellas. Después calcula día a día los tiempos y las horas
+extraordinarias. Se accede desde el portal o en la ruta `#/tacografo`. Los archivos **se procesan
+solo en el navegador**: no se envían a ningún servidor.
+
+Cómo se usa:
+
+1. Arrastra los archivos o selecciona una carpeta completa. Se agrupan por conductor (nº de tarjeta).
+   Los archivos de vehículo (V) y los ajenos se descartan.
+2. Elige el conductor y el periodo (todo, último año o últimos 4 años).
+3. Revisa los **parámetros del convenio**: jornada anual, precio de la hora extraordinaria de cada
+   año, método de cómputo de las horas extra y criterios. Se recuerdan en el navegador.
+4. Pulsa **Analizar** para ver el resumen, el gráfico de actividades de cada mes y las incidencias.
+   Pulsa **Descargar Excel** para obtener el libro completo.
+
+Qué comprueba:
+
+- **Reglamento (CE) 561/2006:**
+  - Conducción diaria: 9/10 h y máximo 2 ampliaciones por semana.
+  - Conducción semanal (56 h) y bisemanal (90 h).
+  - Pausas tras 4 h 30 min (45 min o 15 + 30).
+  - Descanso diario en 24 h: normal, reducido y fraccionado 3 + 9. En conducción en equipo, 9 h en 30 h.
+  - Máximo 3 descansos diarios reducidos.
+  - Descanso semanal: plazo de 6 periodos de 24 h, reducidos consecutivos y compensación.
+- **RD 1561/1995:**
+  - Tiempo de presencia (máximo 20 h/semana de promedio mensual).
+  - Art. 10 bis: 48 h de promedio por cuatrimestre y 60 h semanales.
+  - Pausas cada 6 h de trabajo (30/45 min).
+  - Límite de 10 h en jornadas con trabajo nocturno.
+- **Estatuto de los Trabajadores:**
+  - Jornada diaria y semanal (art. 34).
+  - Descanso entre jornadas (art. 34.3).
+  - Límite de 80 horas extraordinarias/año (art. 35.2).
+- **Horas extraordinarias** con cuatro métodos: mensual prorrateado, semanal, diario y anual. El
+  elegido alimenta la hoja de liquidación.
+
+El **Excel** contiene estas hojas:
+
+- **Resumen:** datos del conductor y del expediente, totales por año, comparación de métodos de
+  horas extra, incidencias y criterios aplicados.
+- **Liquidación HE:** una fila por mes. Los precios y el tipo de cotización son editables y las
+  fórmulas recalculan los importes; incluye un resumen anual.
+- **Años, Meses, Cuatrimestres y Semanas.**
+- **Detalle diario:** inicio, fin, amplitud, conducción, otros trabajos, disponibilidad, descanso,
+  trabajo efectivo, exceso diario, nocturnidad, km, vehículos e incidencias.
+- **Jornadas:** cada jornada con su descanso y tipo.
+- **Incidencias:** fecha, norma, artículo, valor, límite y diferencia.
+- **Actividades:** todos los tramos.
+- **Vehículos y archivos.**
+
+Archivos relevantes:
+
+- `src/lib/tacografo/ddd.js` — lector de archivos de tarjeta (Reglamento (UE) 2016/799, anexo IC).
+- `src/lib/tacografo/analisis.js` — motor de análisis normativo y de horas extraordinarias.
+- `src/lib/tacografo/excel.js` — generación del Excel (ExcelJS, se carga solo al descargar).
+- `src/data/tacografo.js` — **parámetros por defecto** (jornada anual del convenio, límites, etc.).
+- `src/components/AnalizadorTacografo.jsx` — interfaz.
+- Pruebas: `npm run test:tacografo`. Usan archivos de tarjeta sintéticos generados por
+  `src/lib/tacografo/__tests__/generador.js`.
+
+> ⚠️ La **jornada anual** (1.800 h por defecto) y los **precios de la hora extraordinaria** deben
+> comprobarse en el texto vigente del Convenio de Transporte de Mercancías por Carretera de Toledo
+> (BOP de Toledo núm. 64, de 4/4/2024, y revisiones salariales). La franja nocturna por defecto
+> (22:00–06:00, art. 36 ET) y el descanso entre jornadas (12 h) son configurables.
+>
+> ⚖️ Herramienta **orientativa**. Las horas del tacógrafo (UTC) se convierten a hora peninsular. Los
+> días sin registro y las entradas manuales deben contrastarse con otras pruebas. Las infracciones
+> del R. 561/2006 son competencia de la Inspección de Transporte (LOTT).
+
+---
+
 ## SEO (posicionamiento en buscadores)
 
 La web está preparada para buscadores: etiquetas meta, Open Graph y Twitter Card,

@@ -7,9 +7,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:tacografo": "node --test src/lib/tacografo/__tests__/tacografo.test.js"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
     "mammoth": "^1.12.0",
     "pdfjs-dist": "^6.0.227",
     "react": "^18.3.1",
