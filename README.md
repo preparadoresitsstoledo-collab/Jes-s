@@ -240,6 +240,15 @@ líneas de nómina.
 Pruebas: `npm run test:dietas`.
 
 
+### 🔒 Privacidad de los datos
+
+Las dos herramientas muestran al principio el aviso «Tus datos son solo tuyos»: los archivos y datos se
+procesan solo en el navegador de quien las usa, no se envían a ningún servidor ni se guardan en la web, y nadie
+(ni el titular de la web ni terceros) tiene acceso a ellos. El botón **«Borrar todo y salir»** elimina de la
+pestaña todos los datos y resultados (y, en el analizador de tacógrafo, los parámetros recordados) y vuelve a
+Herramientas. Si se intenta cerrar o recargar la pestaña con datos cargados, el navegador pide confirmación.
+Componente común: `src/components/PrivacidadDatos.jsx`.
+
 ## Publicar en Axarnet (preparadoritsstoledo.es)
 
 La web pública está alojada en Axarnet. Para actualizarla:

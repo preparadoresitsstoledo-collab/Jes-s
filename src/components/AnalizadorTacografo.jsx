@@ -4,6 +4,7 @@ import { agruparPorConductor } from '../lib/tacografo/conductores.js'
 import { analizar, heSegunMetodo, resumenInfracciones } from '../lib/tacografo/analisis.js'
 import { fechaES, hhmm, sumarDias, inicioDia, diaSemana, MESES, MIN } from '../lib/tacografo/tiempo.js'
 import { CONFIG_POR_DEFECTO, METODOS_HE, DATOS_EXPEDIENTE } from '../data/tacografo.js'
+import { AvisoPrivacidad, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
 
 const CLAVE_CFG = 'tacografo:config'
 const EXTENSIONES = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
@@ -102,6 +103,20 @@ export default function AnalizadorTacografo() {
     setErrorAnalisis('')
   }
 
+  const hayDatos = lecturas.length > 0 || errores.length > 0 || Object.values(expediente).some(Boolean)
+  useAvisoAlSalir(hayDatos)
+
+  function borrarTodo() {
+    limpiar()
+    setExpediente({})
+    try {
+      localStorage.removeItem(CLAVE_CFG)
+    } catch {
+      /* sin almacenamiento disponible */
+    }
+    setCfgEstado({ ...CONFIG_POR_DEFECTO })
+  }
+
   function periodoRapido(anios) {
     if (!conductor) return
     if (!anios) {
@@ -184,7 +199,8 @@ export default function AnalizadorTacografo() {
             <strong>Estatuto de los Trabajadores</strong> y el convenio, con exportación a Excel.
           </p>
           <p className="analizador__aviso-legal">
-            🔒 Los archivos se procesan <strong>solo en tu navegador</strong>: no se envían a ningún servidor. ⚖️
+            🔒 Los archivos se procesan <strong>solo en tu navegador</strong>: no se envían a ningún servidor y nadie,
+            ni el titular de esta web, tiene acceso a ellos. ⚖️
             Resultado <strong>orientativo</strong>: revisa los parámetros del convenio y contrasta los datos con el resto
             de pruebas del expediente.
           </p>
@@ -192,6 +208,8 @@ export default function AnalizadorTacografo() {
       </header>
 
       <div className="contenedor tacografo__cuerpo">
+        <AvisoPrivacidad hayDatos={hayDatos} onBorrar={() => borrarYSalir(borrarTodo, hayDatos)} />
+
         {/* 1. Archivos */}
         <section className="analizador__panel">
           <h2>1. Archivos de la tarjeta de conductor</h2>

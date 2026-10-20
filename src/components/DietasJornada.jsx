@@ -26,6 +26,7 @@ import {
 import { generarBloques, bloquesATexto, bloquesAHtml } from '../lib/dietasJornada/informe.js'
 import { fechaES } from '../lib/tacografo/tiempo.js'
 import { CONVENIOS } from '../data/conveniosTransporte.js'
+import { AvisoPrivacidad, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
 
 const EXTENSIONES_TAC = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
 
@@ -271,6 +272,26 @@ export default function DietasJornada() {
     setImportesDeclarados(d.importesDeclarados || '')
     setAbierto(null)
   }
+  const hayDatos =
+    trabajadores.some(
+      (t) =>
+        t.tacografo ||
+        t.dietas.length ||
+        t.vacaciones.length ||
+        t.dni ||
+        Object.keys(t.anios).length ||
+        !/^Trabajador \d+$/.test(t.nombre),
+    ) ||
+    Object.values(expediente).some(Boolean) ||
+    Boolean(alegaciones || importesDeclarados || textoDietas)
+  useAvisoAlSalir(hayDatos)
+
+  function borrarTodo() {
+    cargar({ trabajadores: [nuevoTrabajador({ nombre: 'Trabajador 1' })] })
+    setMensajes([])
+    setTextoDietas('')
+  }
+
   function nuevoExpediente() {
     if (!window.confirm('¿Empezar un expediente nuevo? Se borrarán los datos no guardados.')) return
     cargar({ trabajadores: [nuevoTrabajador({ nombre: 'Trabajador 1' })] })
@@ -328,13 +349,15 @@ export default function DietasJornada() {
           </p>
           <p className="analizador__aviso-legal">
             🔒 Todo se procesa <strong>solo en tu navegador</strong>: no se envía nada a ningún servidor ni se guarda en
-            la web. Usa «Guardar expediente» para conservarlo en tu equipo. ⚖️ Resultado <strong>orientativo</strong>:
+            la web, y nadie, ni el titular de esta web, tiene acceso a los datos. Usa «Guardar expediente» para conservarlo en tu equipo. ⚖️ Resultado <strong>orientativo</strong>:
             revisa los parámetros del convenio y el texto antes de usarlo.
           </p>
         </div>
       </header>
 
       <div className="contenedor tacografo__cuerpo">
+        <AvisoPrivacidad hayDatos={hayDatos} onBorrar={() => borrarYSalir(borrarTodo, hayDatos)} />
+
         {/* Barra de expediente */}
         <section className="analizador__panel">
           <div className="analizador__acciones dietas__barra">
