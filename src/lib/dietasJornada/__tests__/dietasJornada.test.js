@@ -182,3 +182,24 @@ test('valoración salarial y de cotización', async () => {
   assert.equal(f2.horasHE, 80)
   assert.equal(f2.importeHE, 1200)
 })
+
+test('tablas del convenio de Toledo: hora ordinaria (art. 31) y extra (+25 %)', async () => {
+  const { precioHoraConvenio } = await import('../../../data/conveniosTransporte.js')
+  const { preciosHora } = await import('../calculo.js')
+  // Conductor/a 2025: 39,50 €/día × 30 = 1.185 € × 15 / 1.800 = 9,875 → 9,88 €; extra 12,34 €
+  let p = precioHoraConvenio('toledo', '2025', { categoria: 'Conductor/a' })
+  assert.equal(p.ordinaria, 9.88)
+  assert.equal(p.extra, 12.34)
+  // Con 2 bienios y plus de transporte: (1.185 + 2 × 48,43 + 71,02) × 15 / 1.800
+  p = precioHoraConvenio('toledo', '2025', { categoria: 'Conductor/a', bienios: 2, plusTransporte: true })
+  assert.equal(p.ordinaria, Math.round(((1185 + 96.86 + 71.02) * 15 / 1800) * 100) / 100)
+  // Categoría mensual (Auxiliar 2024): 1.121,96 × 15 / 1.800
+  assert.equal(precioHoraConvenio('toledo', '2024', { categoria: 'Auxiliar' }).ordinaria, 9.35)
+  // 2022 no está en las tablas del convenio 2024-2026
+  assert.equal(precioHoraConvenio('toledo', '2022', {}), null)
+  // El precio escrito a mano prevalece
+  const c = { ...cfg, convenio: 'toledo', plusTransporteEnHora: false, preciosHE: { 2024: 20 } }
+  assert.equal(preciosHora({}, '2024', c).precioHE, 20)
+  assert.equal(preciosHora({}, '2025', c).precioHE, 12.34)
+  assert.equal(preciosHora({}, '2025', c).origenPrecio, 'convenio')
+})

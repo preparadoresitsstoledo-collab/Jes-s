@@ -21,9 +21,11 @@ import {
   normalizarConfig,
   valoracion,
   tiposDelAnio,
+  preciosHora,
 } from '../lib/dietasJornada/calculo.js'
 import { generarBloques, bloquesATexto, bloquesAHtml } from '../lib/dietasJornada/informe.js'
 import { fechaES } from '../lib/tacografo/tiempo.js'
+import { CONVENIOS } from '../data/conveniosTransporte.js'
 
 const EXTENSIONES_TAC = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
 
@@ -60,7 +62,7 @@ function expedienteEjemplo() {
       actividad: 'transporte de mercancías por carretera a nivel nacional e internacional, actuando al mismo tiempo como operadora de transportes',
       convenio: 'el convenio colectivo de transporte de mercancías por carretera de aplicación',
     },
-    cfg: { ...CONFIG_POR_DEFECTO, desde: '2022-01-01', hasta: '2025-10-31' },
+    cfg: { ...CONFIG_POR_DEFECTO, desde: '2022-01-01', hasta: '2025-10-31', convenio: 'toledo', categoria: 'Conductor/a', dietasSalario: 'exceso' },
     comprobaciones: ['sinJustificantes', 'partesTrabajo', 'dietasMensuales', 'variacionPrecios', 'dietasEnVacaciones', 'sinHE'],
     importesDeclarados:
       'entre 15 y 30 euros/día en el caso de dietas sin pernocta y entre 50 y 53 euros/día en el caso de dietas con pernocta en territorio nacional',
@@ -118,6 +120,11 @@ export default function DietasJornada() {
 
   const setCfg = (c) => setCfgEstado((p) => ({ ...p, ...c }))
   const cfgN = normalizarConfig(cfg)
+  const conv = CONVENIOS[cfg.convenio] || null
+  const sugerido = (anio, k) => {
+    const v = preciosHora({}, anio, { ...cfg, preciosHE: {}, preciosOrdinaria: {} })[k]
+    return v ? String(v).replace('.', ',') : ''
+  }
   const periodoValido = cfg.desde && cfg.hasta && cfg.desde <= cfg.hasta
 
   const resumen = useMemo(() => (periodoValido ? resumenExpediente(trabajadores, cfg) : null), [trabajadores, cfg, periodoValido])
@@ -439,11 +446,58 @@ export default function DietasJornada() {
           {periodoValido && (
             <>
               <h3 className="tacografo__subtitulo">Tablas salariales del convenio (para valorar las diferencias)</h3>
-              <p className="campo__ayuda">
-                Introduce, para cada año, el precio de la hora extraordinaria y el de la hora ordinaria de la categoría
-                del trabajador según las tablas del convenio aplicable (BOP). La hora ordinaria valora el exceso de
-                tiempo de presencia.
-              </p>
+              <div className="tacografo__parametros">
+                <div className="campo">
+                  <label htmlFor="conv">Convenio con tablas incorporadas</label>
+                  <select
+                    id="conv"
+                    className="tacografo__select"
+                    value={cfg.convenio}
+                    onChange={(e) => {
+                      const c = CONVENIOS[e.target.value]
+                      setCfg(c ? { convenio: c.id, jornadaAnual: c.jornadaAnual, categoria: cfg.categoria || c.categoriaPorDefecto } : { convenio: '' })
+                    }}
+                  >
+                    <option value="">Ninguno (introducir precios a mano)</option>
+                    {Object.values(CONVENIOS).map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {conv && (
+                  <div className="campo">
+                    <label htmlFor="cat">Categoría por defecto</label>
+                    <select id="cat" className="tacografo__select" value={cfg.categoria || conv.categoriaPorDefecto} onChange={(e) => setCfg({ categoria: e.target.value })}>
+                      {Object.keys(conv.categorias).map((k) => (
+                        <option key={k}>{k}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+              {conv && (
+                <>
+                  <label className="tacografo__casilla">
+                    <input type="checkbox" checked={cfg.plusTransporteEnHora} onChange={(e) => setCfg({ plusTransporteEnHora: e.target.checked })} />
+                    <span>Incluir el plus de transporte en la hora ordinaria (complemento personal, art. 32.b)</span>
+                  </label>
+                  <p className="campo__ayuda">
+                    {conv.fuente} Hora ordinaria = (salario base + complementos personales y de puesto + antigüedad) ×
+                    15 / 1.800 (art. 31); hora extra = ordinaria + 25 % (art. 35.b). Los conductores tienen salario
+                    diario (× 30). La categoría y la antigüedad de cada trabajador se indican en su ficha. Si escribes
+                    un precio en la tabla, prevalece sobre el del convenio.
+                  </p>
+                </>
+              )}
+              {!conv && (
+                <p className="campo__ayuda">
+                  Introduce, para cada año, el precio de la hora extraordinaria y el de la hora ordinaria de la
+                  categoría del trabajador según las tablas del convenio aplicable (BOP). La hora ordinaria valora el
+                  exceso de tiempo de presencia.
+                </p>
+              )}
               <div className="tacografo__tabla-scroll">
                 <table className="calc__tabla dietas__tabla-anios">
                   <thead>
@@ -461,6 +515,7 @@ export default function DietasJornada() {
                           <input
                             inputMode="decimal"
                             aria-label={`Precio hora extraordinaria ${a}`}
+                            placeholder={sugerido(a, 'precioHE')}
                             value={cfg.preciosHE?.[a] ?? ''}
                             onChange={(e) => setCfg({ preciosHE: { ...cfg.preciosHE, [a]: e.target.value } })}
                           />
@@ -469,6 +524,7 @@ export default function DietasJornada() {
                           <input
                             inputMode="decimal"
                             aria-label={`Precio hora ordinaria ${a}`}
+                            placeholder={sugerido(a, 'precioOrd')}
                             value={cfg.preciosOrdinaria?.[a] ?? ''}
                             onChange={(e) => setCfg({ preciosOrdinaria: { ...cfg.preciosOrdinaria, [a]: e.target.value } })}
                           />
@@ -587,6 +643,7 @@ export default function DietasJornada() {
               key={t.id}
               t={t}
               cfg={cfg}
+              conv={conv}
               periodoValido={periodoValido}
               abierto={abierto === t.id || trabajadores.length === 1}
               onToggle={() => setAbierto(abierto === t.id ? null : t.id)}
@@ -773,9 +830,15 @@ export default function DietasJornada() {
                           <td>
                             {x.anio} <small>({x.metodo === 'horas' ? 'por horas' : 'por días'})</small>
                           </td>
-                          <td>{fmt(x.horasHE, 2)}</td>
+                          <td>
+                            {fmt(x.horasHE, 2)}
+                            {x.precioHE ? <small> × {fmt(x.precioHE, 2)} €</small> : null}
+                          </td>
                           <td>{fmt(x.importeHE, 2)} €</td>
-                          <td>{fmt(x.horasOrd, 2)}</td>
+                          <td>
+                            {fmt(x.horasOrd, 2)}
+                            {x.precioOrd && x.horasOrd ? <small> × {fmt(x.precioOrd, 2)} €</small> : null}
+                          </td>
                           <td>{fmt(x.importeOrd, 2)} €</td>
                           <td>{fmt(x.dietas, 2)} €</td>
                           <td className={x.totalSalarial > 0 ? 'dietas__exceso' : ''}>{fmt(x.totalSalarial, 2)} €</td>
@@ -932,7 +995,7 @@ function Kpi({ titulo, valor, alerta }) {
   )
 }
 
-function Trabajador({ t, cfg, periodoValido, abierto, onToggle, onCambio, onAnio, onQuitar }) {
+function Trabajador({ t, cfg, conv, periodoValido, abierto, onToggle, onCambio, onAnio, onQuitar }) {
   const cuadrante = periodoValido ? cuadranteTrabajador({ ...t, anios: {} }, cfg) : { filas: [] }
   const calc = Object.fromEntries(cuadrante.filas.map((f) => [f.anio, f]))
   const anios = cuadrante.filas.map((f) => f.anio)
@@ -966,6 +1029,26 @@ function Trabajador({ t, cfg, periodoValido, abierto, onToggle, onCambio, onAnio
               <label>DNI/NIE (opcional)</label>
               <input value={t.dni} onChange={(e) => onCambio({ dni: e.target.value })} />
             </div>
+            {conv && (
+              <>
+                <div className="campo">
+                  <label>Categoría (convenio)</label>
+                  <select className="tacografo__select" value={t.categoria || cfg.categoria || conv.categoriaPorDefecto} onChange={(e) => onCambio({ categoria: e.target.value })}>
+                    {Object.keys(conv.categorias).map((k) => (
+                      <option key={k}>{k}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="campo">
+                  <label>Antigüedad: bienios (0-2)</label>
+                  <input inputMode="numeric" value={t.bienios} onChange={(e) => onCambio({ bienios: e.target.value })} />
+                </div>
+                <div className="campo">
+                  <label>Antigüedad: quinquenios (0-3)</label>
+                  <input inputMode="numeric" value={t.quinquenios} onChange={(e) => onCambio({ quinquenios: e.target.value })} />
+                </div>
+              </>
+            )}
             <div className="campo">
               <label>Alta (si es posterior al inicio)</label>
               <input type="date" value={t.alta} onChange={(e) => onCambio({ alta: e.target.value })} />

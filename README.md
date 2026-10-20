@@ -306,6 +306,13 @@ navegador: no se envía ni se guarda nada en la web (el expediente se guarda com
   cuotas de empresa y trabajador por conceptos (CC, MEI, desempleo, FOGASA, FP, AT/EP y cotización adicional
   por horas extra) con tipos editables por año. No aplica topes de bases ni cotización de solidaridad.
 
+- **Convenio de Toledo incorporado** (`src/data/conveniosTransporte.js`): tablas del Anexo I de transporte
+  de mercancías (BOP de Toledo núm. 64, de 4/4/2024; 2023 definitiva, 2024-2026 provisionales), antigüedad,
+  plus de transporte y dietas. Precio de la hora según el art. 31 ((salario base + complementos personales y de
+  puesto + antigüedad) × 15 / 1.800; conductores: salario diario × 30) y hora extra + 25 % (art. 35.b), por
+  categoría y antigüedad de cada trabajador. Un precio escrito a mano prevalece. Para añadir otro convenio
+  basta con una nueva entrada en `CONVENIOS`.
+
 **Salidas:** hechos comprobados redactados con la estructura del requerimiento (copiar, Word, imprimir/PDF) y
 Excel con el cuadrante por días, el cálculo por horas, la liquidación de diferencias y cuotas (con fórmulas editables), el análisis de dietas y las
 líneas de nómina.

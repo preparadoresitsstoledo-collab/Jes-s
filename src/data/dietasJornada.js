@@ -13,6 +13,9 @@ export const CONFIG_POR_DEFECTO = {
   prorrateo: 'meses', // 'meses' | 'dias'
   redondeo: 'proximo', // 'proximo' | 'superior' | 'inferior' | 'ninguno'
   criterioDias: 'maximo', // 'maximo' | 'dietas' | 'tacografo'
+  convenio: '', // id de CONVENIOS (conveniosTransporte.js) para calcular el precio de la hora
+  categoria: '', // categoría por defecto de los trabajadores
+  plusTransporteEnHora: true, // incluir el plus de transporte (complemento personal, art. 32.b) en la hora ordinaria
   preciosHE: {}, // { '2023': 14.5 } €/hora extraordinaria según tablas del convenio
   preciosOrdinaria: {}, // { '2023': 11.2 } €/hora ordinaria (valora el exceso de presencia)
   dietasSalario: 'ninguna', // 'ninguna' | 'exceso' | 'todas': dietas que se integran en la base

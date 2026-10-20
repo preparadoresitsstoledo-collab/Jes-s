@@ -7,6 +7,7 @@
 
 import { CONFIG_POR_DEFECTO, LIMITES_EXENTOS, TIPOS_DIETA, TIPOS_COTIZACION, CONCEPTOS_COTIZACION } from '../../data/dietasJornada.js'
 import { diasEnAnio, diasEntre, sumarDias, MESES } from '../tacografo/tiempo.js'
+import { precioHoraConvenio } from '../../data/conveniosTransporte.js'
 
 // ─────────────────────────── Utilidades ───────────────────────────
 
@@ -80,6 +81,9 @@ export function nuevoTrabajador(datos = {}) {
     id: `t${Date.now().toString(36)}${contador}`,
     nombre: '',
     dni: '',
+    categoria: '', // categoría profesional del convenio (vacía = la por defecto)
+    bienios: '', // antigüedad: nº de bienios (0-2) y quinquenios (0-3)
+    quinquenios: '',
     alta: '',
     baja: '',
     // Valores manuales por año (prevalecen sobre los calculados):
@@ -440,6 +444,30 @@ export function tiposDelAnio(anio, cfg = {}) {
 
 const red2 = (x) => Math.round(x * 100) / 100
 
+/**
+ * Precio de la hora extraordinaria y de la ordinaria para un trabajador y año:
+ * el introducido a mano para el año prevalece; si no, el que resulta de las
+ * tablas del convenio seleccionado según la categoría y antigüedad del trabajador.
+ */
+export function preciosHora(t, anio, cfg) {
+  const manualHE = aNumero(cfg.preciosHE?.[anio])
+  const manualOrd = aNumero(cfg.preciosOrdinaria?.[anio])
+  const conv = cfg.convenio
+    ? precioHoraConvenio(cfg.convenio, anio, {
+        categoria: t.categoria || cfg.categoria,
+        bienios: t.bienios,
+        quinquenios: t.quinquenios,
+        plusTransporte: cfg.plusTransporteEnHora,
+      })
+    : null
+  return {
+    precioHE: manualHE ?? conv?.extra ?? null,
+    precioOrd: manualOrd ?? conv?.ordinaria ?? null,
+    origenPrecio: manualHE !== null || manualOrd !== null ? 'manual' : conv ? 'convenio' : null,
+    detalle: conv?.detalle || '',
+  }
+}
+
 // Importe de las dietas del año que se integra en la base de cotización
 function dietasSalarioAnio(t, f, criterio) {
   if (criterio === 'ninguna') return 0
@@ -472,8 +500,7 @@ export function valoracion(resumen, cfgEntrada) {
       const porHoras = f.excesoHE !== null
       const horasHE = porHoras ? f.excesoHE : f.excesoHoras || 0
       const horasOrd = porHoras ? f.excesoCC || 0 : 0
-      const precioHE = aNumero(cfg.preciosHE?.[f.anio])
-      const precioOrd = aNumero(cfg.preciosOrdinaria?.[f.anio])
+      const { precioHE, precioOrd, origenPrecio } = preciosHora(d.trabajador, f.anio, cfg)
       const importeHE = red2(horasHE * (precioHE || 0))
       const importeOrd = red2(horasOrd * (precioOrd || 0))
       const dietas = dietasSalarioAnio(d.trabajador, f, cfg.dietasSalario)
@@ -499,6 +526,7 @@ export function valoracion(resumen, cfgEntrada) {
         importeHE,
         horasOrd,
         precioOrd,
+        origenPrecio,
         importeOrd,
         dietas,
         totalSalarial: red2(importeHE + importeOrd + dietas),

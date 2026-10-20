@@ -6,6 +6,7 @@
 
 import { NORMAS, TIPOS_DIETA } from '../../data/dietasJornada.js'
 import { normalizarConfig, valoracion } from './calculo.js'
+import { CONVENIOS } from '../../data/conveniosTransporte.js'
 import { fechaES, MESES } from '../tacografo/tiempo.js'
 
 // Número en formato español con separador de miles también en cifras de 4 dígitos
@@ -41,7 +42,8 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
   const B = []
   const empresa = expediente.empresa?.trim() || 'la empresa'
   const actividad = expediente.actividad?.trim()
-  const convenio = expediente.convenio?.trim() || 'el convenio colectivo de aplicación'
+  const conv = CONVENIOS[cfg.convenio]
+  const convenio = expediente.convenio?.trim() || conv?.nombreTexto || 'el convenio colectivo de aplicación'
   const diasHabiles = cfg.jornadaAnual / cfg.jornadaDiaria
   const n = resumen.datos.length
   const plantilla = n === 1 ? 'el trabajador examinado' : `los ${n} trabajadores examinados`
@@ -135,6 +137,17 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
       texto:
         'Por ello, si bien los trabajadores realizan desplazamientos compatibles con la percepción de dietas que pudieran estar exentas de cotización, la variación de tales importes sin justificación objetiva (carencia de tiques de gastos) ni correlación clara con los servicios realizados en algunos supuestos, supone un claro indicio de utilización de este concepto de forma no vinculada exclusivamente a la compensación de gastos.',
     })
+    if (conv) {
+      const anios = [...new Set(resumen.datos.flatMap((d) => d.cuadrante.filas.map((f) => f.anio)))].filter((a) => conv.dietas.nacional[a])
+      if (anios.length) {
+        B.push({
+          tipo: 'p',
+          texto: `Como referencia, ${conv.nombreTexto} (Anexo I) fija el importe de la dieta completa (desayuno, comida, cena y pernocta) en ${anios
+            .map((a) => `${eur(conv.dietas.nacional[a][4])} en territorio nacional y ${eur(conv.dietas.portugal[a][4])} en Portugal para ${a}`)
+            .join('; ')}, y establece que la dieta no necesitará justificación documental mientras no exceda de las cuantías exentas fijadas en la legislación fiscal (art. 33 bis).`,
+        })
+      }
+    }
   }
 
   if (resumen.conExcesoDias.length) {
@@ -291,7 +304,7 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
     if (v.totales.dietas > 0) partes.push(`${eur(v.totales.dietas)} de dietas que deben integrarse en la base de cotización`)
     B.push({
       tipo: 'p',
-      texto: `Valoradas conforme a las tablas salariales ${/^el /i.test(convenio) ? `del ${convenio.slice(3)}` : `de ${convenio}`}, las diferencias salariales ascienden a ${eur(v.totales.totalSalarial)} (${partes.join('; ')}), con unas cuotas a la Seguridad Social no ingresadas de ${eur(v.totales.cuotaTotal)} (${eur(v.totales.cuotaEmpresa)} a cargo de la empresa y ${eur(v.totales.cuotaTrabajador)} a cargo del trabajador), según el siguiente detalle:`,
+      texto: `${conv ? `El valor de la hora ordinaria se calcula conforme al art. 31 del convenio ((salario base + complementos personales y de puesto + antigüedad) × 15 / 1.800) y el de la hora extraordinaria con el recargo del 25 % del art. 35.b. ` : ''}Valoradas conforme a las tablas salariales ${/^el /i.test(convenio) ? `del ${convenio.slice(3)}` : `de ${convenio}`}, las diferencias salariales ascienden a ${eur(v.totales.totalSalarial)} (${partes.join('; ')}), con unas cuotas a la Seguridad Social no ingresadas de ${eur(v.totales.cuotaTotal)} (${eur(v.totales.cuotaEmpresa)} a cargo de la empresa y ${eur(v.totales.cuotaTrabajador)} a cargo del trabajador), según el siguiente detalle:`,
     })
     B.push({
       tipo: 'tabla',
