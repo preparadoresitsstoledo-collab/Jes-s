@@ -1,12 +1,14 @@
-// Redacción de los hechos comprobados a partir del cuadrante.
+// Informe de posibles incumplimientos a partir del cuadrante.
 //
 // Devuelve una lista de bloques ({ tipo: 'titulo' | 'p' | 'cita' | 'lista' | 'tabla' })
 // que se convierte en texto plano (para copiar) o en HTML (Word / impresión).
-// El texto es una propuesta: el actuante debe revisarlo y adaptarlo.
+// Está pensado para que la persona trabajadora (o quien la asesore) conozca sus
+// derechos y lo que puede reclamar a la empresa. Es orientativo.
 
 import { NORMAS, TIPOS_DIETA } from '../../data/dietasJornada.js'
-import { normalizarConfig, valoracion } from './calculo.js'
+import { normalizarConfig, valoracion, plazosReclamacion } from './calculo.js'
 import { CONVENIOS } from '../../data/conveniosTransporte.js'
+import { TEXTO_LICENCIA, textoCopyright } from '../../data/autoria.js'
 import { fechaES, MESES } from '../tacografo/tiempo.js'
 
 // Número en formato español con separador de miles también en cifras de 4 dígitos
@@ -27,176 +29,63 @@ function periodoTexto(desde, hasta) {
   return `desde ${mesLargo(desde.slice(0, 7))} hasta ${mesLargo(hasta.slice(0, 7))}`
 }
 
+const ESTADOS = {
+  vigente: 'se puede reclamar',
+  parcial: 'se puede reclamar en parte (los meses más antiguos ya habrían prescrito)',
+  prescrito: 'habría prescrito',
+}
+
 /**
  * @param {object} p
  * @param {object} p.expediente datos de la empresa
  * @param {object} p.cfg configuración
  * @param {object} p.resumen resultado de resumenExpediente()
  * @param {Set<string>|string[]} p.comprobaciones ids marcados
- * @param {string} p.alegaciones escrito de la empresa (opcional, se cita)
- * @param {string} p.importesDeclarados importes declarados por la empresa (texto libre)
+ * @param {string} p.alegaciones explicación de la empresa (opcional, se cita)
+ * @param {string} p.importesDeclarados importes de dieta que dice pagar la empresa (texto libre)
+ * @param {string} p.hoy fecha de referencia para los plazos ('AAAA-MM-DD')
  */
-export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comprobaciones = [], alegaciones = '', importesDeclarados = '' }) {
+export function generarBloques({
+  expediente = {},
+  cfg: cfgEntrada,
+  resumen,
+  comprobaciones = [],
+  alegaciones = '',
+  importesDeclarados = '',
+  hoy = new Date().toISOString().slice(0, 10),
+}) {
   const cfg = normalizarConfig(cfgEntrada)
   const marcado = new Set(comprobaciones)
   const B = []
   const empresa = expediente.empresa?.trim() || 'la empresa'
-  const actividad = expediente.actividad?.trim()
   const conv = CONVENIOS[cfg.convenio]
   const convenio = expediente.convenio?.trim() || conv?.nombreTexto || 'el convenio colectivo de aplicación'
+  const delConvenio = /^el /i.test(convenio) ? `del ${convenio.slice(3)}` : `de ${convenio}`
   const diasHabiles = cfg.jornadaAnual / cfg.jornadaDiaria
   const n = resumen.datos.length
-  const plantilla = n === 1 ? 'el trabajador examinado' : `los ${n} trabajadores examinados`
+  const hayTac = resumen.datos.some((d) => d.trabajador.tacografo || d.cuadrante.filas.some((f) => f.diasTacografo !== null))
 
-  // ── Antecedentes ──
-  B.push({ tipo: 'titulo', texto: 'Antecedentes' })
-  const sujeto = empresa === 'la empresa' ? 'La empresa' : `La empresa ${empresa}`
+  // ── Datos analizados ──
+  B.push({ tipo: 'titulo', texto: '1. Datos analizados' })
+  const fuentes = ['las nóminas']
+  if (hayTac) fuentes.push('los registros del tacógrafo')
+  if (marcado.has('partesTrabajo')) fuentes.push('los partes de trabajo')
+  if (resumen.datos.some((d) => d.cuadrante.filas.some((f) => f.vacaciones !== null))) fuentes.push('el calendario de vacaciones')
   B.push({
     tipo: 'p',
-    texto: actividad
-      ? `${sujeto} desarrolla la actividad de ${actividad.replace(/\.$/, '')}. En lo referente a las dietas abonadas a los trabajadores exentas de cotización, se ha examinado la documentación aportada.`
-      : `En lo referente a las dietas exentas de cotización abonadas a los trabajadores por ${empresa}, se ha examinado la documentación aportada.`,
+    texto: `Este informe analiza ${n === 1 ? 'la situación de un trabajador' : `la situación de ${n} trabajadores`} de ${empresa}${expediente.actividad?.trim() ? `, dedicada a ${expediente.actividad.trim().replace(/\.$/, '')}` : ''}, ${periodoTexto(cfg.desde, cfg.hasta)}, a partir de ${fuentes.join(', ').replace(/, ([^,]*)$/, ' y $1')}. Se compara con lo que establecen ${convenio} y la normativa laboral y de Seguridad Social. Su objetivo es ayudar a conocer los derechos de las personas trabajadoras y los posibles incumplimientos que pueden reclamarse a la empresa.`,
   })
   if (alegaciones.trim()) {
-    B.push({ tipo: 'p', texto: 'La empresa presenta escrito en el que se detalla lo siguiente:' })
+    B.push({ tipo: 'p', texto: 'La empresa ha explicado lo siguiente:' })
     B.push({ tipo: 'cita', texto: alegaciones.trim() })
   }
 
-  const fuentes = ['las nóminas']
-  if (resumen.datos.some((d) => d.trabajador.tacografo || d.cuadrante.filas.some((f) => f.diasTacografo !== null))) fuentes.push('los tacógrafos')
-  if (marcado.has('partesTrabajo')) fuentes.push('los partes de trabajo')
-  if (resumen.datos.some((d) => d.cuadrante.filas.some((f) => f.vacaciones !== null))) fuentes.push('el cuadrante de vacaciones')
+  // ── Jornada y horas extraordinarias ──
+  B.push({ tipo: 'titulo', texto: '2. Jornada anual y horas extraordinarias' })
   B.push({
     tipo: 'p',
-    texto: `Del examen de la documentación aportada, con especial relevancia de ${fuentes.join(', ').replace(/, ([^,]*)$/, ' y $1')}${marcado.has('sinHE') ? ', y de las comprobaciones efectuadas en la base de datos de la TGSS (eSIL)' : ''}, se han constatado los siguientes hechos:`,
+    texto: `${convenio.charAt(0).toUpperCase() + convenio.slice(1)} fija una jornada máxima de ${num(cfg.jornadaAnual)} horas al año, que equivalen a ${num(diasHabiles, 2)} días de trabajo de ${num(cfg.jornadaDiaria)} horas. En los periodos inferiores al año se aplica la parte proporcional. El trabajo que supera esa jornada son horas extraordinarias: deben pagarse (o compensarse con descanso) y no pueden pasar de ${num(cfg.limiteHEAnual)} al año (art. 35 ET).`,
   })
-
-  // ── 1. Dietas ──
-  B.push({ tipo: 'titulo', texto: '1.- Percepción reiterada de dietas exentas de cotización' })
-  const lineasHabitual = []
-  if (marcado.has('dietasMensuales')) {
-    lineasHabitual.push('Los trabajadores perciben de forma habitual y continuada todos los meses dietas exentas de cotización.')
-  }
-  if (marcado.has('sinJustificantes')) {
-    lineasHabitual.push(
-      `No existen facturas ni tiques que justifiquen el gasto realizado${marcado.has('partesTrabajo') ? '; únicamente se aportan partes de trabajo con fechas y servicios, matrícula del vehículo y kilómetros recorridos, que acreditan el desplazamiento pero no el importe del gasto' : ''}.`,
-    )
-  }
-  if (lineasHabitual.length) B.push({ tipo: 'p', texto: lineasHabitual.join(' ') })
-
-  const conDietas = resumen.datos.filter((d) => d.dietas.porTipo.length)
-  if (conDietas.length || marcado.has('variacionPrecios')) {
-    const tabla = []
-    for (const d of conDietas) {
-      for (const x of d.dietas.porTipo) {
-        tabla.push([
-          d.trabajador.nombre || '—',
-          x.nombre,
-          num(x.dias),
-          `${eur(x.min)} – ${eur(x.max)}`,
-          num(x.precios.length),
-          eur(x.media),
-          eur(x.total),
-        ])
-      }
-    }
-    const intro = importesDeclarados.trim()
-      ? `Según el escrito aportado por la empresa, los importes abonados son los siguientes: ${importesDeclarados.trim().replace(/\.$/, '')}. Ahora bien, examinadas las nóminas, se constata que no siempre están calculadas bajo tales cuantías`
-      : 'Examinadas las nóminas, se constata que los importes de las dietas no responden a una cuantía homogénea'
-    const variaciones = resumen.conVariacion.length
-      ? `, encontrándose variaciones en el precio de la dieta incluso dentro de una misma nómina (${resumen.conVariacion
-          .map((d) => `${d.trabajador.nombre || 'trabajador'}: ${d.dietas.mesesVariacion.length} ${d.dietas.mesesVariacion.length === 1 ? 'nómina' : 'nóminas'}`)
-          .join('; ')})`
-      : ''
-    B.push({
-      tipo: 'p',
-      texto: `${intro}${variaciones}${marcado.has('variacionPrecios') ? ', sin que tales variaciones tengan un gasto justificado ni explicación objetiva' : ''}.`,
-    })
-    if (tabla.length) {
-      B.push({
-        tipo: 'tabla',
-        cabecera: ['Trabajador', 'Tipo de dieta', 'Días', 'Rango de importes/día', 'Importes distintos', 'Media/día', 'Total abonado'],
-        filas: tabla,
-      })
-    }
-    const ejemplos = resumen.conVariacion
-      .flatMap((d) => d.dietas.mesesVariacion.slice(0, 3).map((v) => `${d.trabajador.nombre || 'trabajador'}, nómina de ${mesLargo(v.mes)} (${nombreTipo(v.tipo)}): ${v.precios.map(eur).join(', ')}`))
-      .slice(0, 8)
-    if (ejemplos.length) {
-      B.push({ tipo: 'p', texto: 'A título de ejemplo, se reflejan en una misma nómina distintos importes para un mismo tipo de dieta:' })
-      B.push({ tipo: 'lista', items: ejemplos })
-    }
-    if (resumen.excesoNoExento > 0) {
-      B.push({
-        tipo: 'p',
-        texto: `Además, parte de los importes supera los límites exentos del art. 9.A del Reglamento del IRPF, al que remite el art. 147.2.a) LGSS, lo que supone ${eur(resumen.excesoNoExento)} que, en todo caso, debieron integrarse en la base de cotización.`,
-      })
-    }
-    B.push({
-      tipo: 'p',
-      texto:
-        'Por ello, si bien los trabajadores realizan desplazamientos compatibles con la percepción de dietas que pudieran estar exentas de cotización, la variación de tales importes sin justificación objetiva (carencia de tiques de gastos) ni correlación clara con los servicios realizados en algunos supuestos, supone un claro indicio de utilización de este concepto de forma no vinculada exclusivamente a la compensación de gastos.',
-    })
-    if (conv) {
-      const anios = [...new Set(resumen.datos.flatMap((d) => d.cuadrante.filas.map((f) => f.anio)))].filter((a) => conv.dietas.nacional[a])
-      if (anios.length) {
-        B.push({
-          tipo: 'p',
-          texto: `Como referencia, ${conv.nombreTexto} (Anexo I) fija el importe de la dieta completa (desayuno, comida, cena y pernocta) en ${anios
-            .map((a) => `${eur(conv.dietas.nacional[a][4])} en territorio nacional y ${eur(conv.dietas.portugal[a][4])} en Portugal para ${a}`)
-            .join('; ')}, y establece que la dieta no necesitará justificación documental mientras no exceda de las cuantías exentas fijadas en la legislación fiscal (art. 33 bis).`,
-        })
-      }
-    }
-  }
-
-  if (resumen.conExcesoDias.length) {
-    B.push({
-      tipo: 'p',
-      texto: `Otra cuestión a tener en cuenta es que el número de días con percepción de dietas según se desprende de las nóminas aportadas${fuentes.includes('los tacógrafos') ? ', acreditadas con desplazamientos mediante los tacógrafos aportados,' : ''} alcanza cifras que, en cómputo anual, igualan o superan el número máximo de días laborables teóricos según lo establecido en ${convenio}.`,
-    })
-  }
-
-  // Vacaciones
-  if (resumen.sinVacaciones.length || resumen.conVacTrabajadas.length || marcado.has('dietasEnVacaciones')) {
-    const partes = ['Las dietas se abonan en un número de días incompatible con el disfrute efectivo de descansos y vacaciones.']
-    if (resumen.sinVacaciones.length) {
-      partes.push(
-        `En este sentido, se ha comprobado, además, la falta de disfrute efectivo de vacaciones: según el cuadrante de vacaciones aportado por la empresa, ${resumen.sinVacaciones.length === n ? 'los trabajadores' : `${resumen.sinVacaciones.length} de ${plantilla}`} no disfrutan del periodo mínimo de vacaciones anuales legalmente establecido (${num(cfg.vacacionesAnuales)} días naturales, art. 38 ET).`,
-      )
-    }
-    B.push({ tipo: 'p', texto: partes.join(' ') })
-    if (resumen.conVacTrabajadas.length || marcado.has('dietasEnVacaciones')) {
-      const detalle = resumen.conVacTrabajadas.length
-        ? ` (${resumen.conVacTrabajadas.map((d) => `${d.trabajador.nombre || 'trabajador'}: ${num(d.cuadrante.totales.diasEnVacaciones)} días`).join('; ')})`
-        : ''
-      B.push({
-        tipo: 'p',
-        texto: `Es más, se ha constatado que, durante periodos en los que deberían encontrarse en situación de vacaciones, continúan percibiendo dietas asociadas a actividad laboral realizada${detalle}. La falta de disfrute de vacaciones implica por tanto un aumento del número de días efectivamente trabajados y un incremento del cómputo anual de horas de trabajo, lo que contribuye a la superación de los límites legales y convencionales de jornada.`,
-      })
-    }
-  }
-
-  // ── 2. Jornada máxima anual ──
-  B.push({ tipo: 'titulo', texto: '2.- Superación de la jornada máxima anual' })
-  B.push({
-    tipo: 'lista',
-    items: [
-      `${convenio.charAt(0).toUpperCase() + convenio.slice(1)} establece la jornada máxima en cómputo anual de ${num(cfg.jornadaAnual)} horas/año. Ello supone un total de ${num(diasHabiles, 2)} días hábiles de trabajo con una jornada diaria de ${num(cfg.jornadaDiaria)} horas.`,
-      `El número de días efectivamente trabajados por los conductores, inferido a partir del abono de dietas${fuentes.includes('los tacógrafos') ? ', así como de las lecturas de los tacógrafos aportados' : ''}, resulta ${resumen.conExcesoDias.length ? 'superior' : 'no superior'} al número de días hábiles teóricos compatibles con dicha jornada máxima.`,
-      resumen.conExcesoDias.length
-        ? 'En conclusión, se ha podido constatar la realización de trabajo por encima de la jornada máxima anual establecida convencionalmente.'
-        : 'En conclusión, no se aprecia superación de la jornada máxima anual con los datos introducidos.',
-    ],
-  })
-
-  const parciales = [...new Set(resumen.datos.flatMap((d) => d.cuadrante.filas.filter((f) => !f.completo).map((f) => `${f.anio} (${num(f.diasTeoricos, cfg.redondeo === 'ninguno' ? 2 : 0)} días)`)))]
-  B.push({
-    tipo: 'p',
-    texto: `Se detallan en el siguiente cuadrante, en cómputo anual (y proporcional, en los casos que corresponda), los excesos de jornada detectados, teniendo en cuenta como parámetros la comparativa entre la jornada máxima anual (${num(cfg.jornadaAnual)} horas distribuidas en ${num(diasHabiles, 2)} días de trabajo${parciales.length ? `, salvo en los periodos inferiores al año, en los que se aplican los días hábiles proporcionales ${cfg.prorrateo === 'meses' ? 'por meses' : 'por días naturales'}: ${parciales.join(', ')}` : ''}) y el número de días efectivamente trabajados por los conductores, inferido a partir del abono de dietas${fuentes.includes('los tacógrafos') ? ', así como de las lecturas de los tacógrafos aportados' : ''}.`,
-  })
-  B.push({ tipo: 'p', texto: `Período examinado: ${periodoTexto(cfg.desde, cfg.hasta)}.` })
-
   const filasCuadrante = []
   for (const d of resumen.datos) {
     for (const f of d.cuadrante.filas) {
@@ -209,38 +98,31 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
         num(f.diasTrabajados),
         num(f.excesoDias),
         num(f.excesoHoras),
-        f.vacaciones === null ? '—' : `${num(f.vacaciones)} / ${num(f.vacacionesDebidas)}`,
       ])
-    }
-    if (d.cuadrante.filas.length > 1) {
-      const t = d.cuadrante.totales
-      filasCuadrante.push([`Total ${d.trabajador.nombre || ''}`.trim(), '', num(t.diasTeoricos), num(t.diasDieta), num(t.diasTacografo), num(t.diasTrabajados), num(t.excesoDias), num(t.excesoHoras), ''])
     }
   }
   B.push({
     tipo: 'tabla',
-    cabecera: ['Trabajador', 'Año', 'Días hábiles teóricos', 'Días con dieta', 'Días tacógrafo', 'Días trabajados', 'Exceso días', 'Exceso horas', 'Vacaciones disfrutadas / debidas'],
+    cabecera: ['Trabajador', 'Año', 'Días de trabajo máximos', 'Días con dieta', 'Días con tacógrafo', 'Días trabajados', 'Días de más', 'Horas de más'],
     filas: filasCuadrante,
   })
-  if (resumen.excesoHoras > 0) {
+  if (resumen.conExcesoDias.length) {
     B.push({
       tipo: 'p',
-      texto: `En total, el exceso asciende a ${num(resumen.excesoDias)} días, equivalentes a ${num(resumen.excesoHoras)} horas de trabajo por encima de la jornada máxima anual${resumen.importeHE > 0 ? `, con una valoración de ${eur(resumen.importeHE)} según el precio de la hora extraordinaria aplicado` : ''}.`,
+      texto: `Según estos datos, se habrían trabajado ${num(resumen.excesoDias)} días por encima de la jornada máxima, equivalentes a ${num(resumen.excesoHoras)} horas. Los días trabajados se deducen de los días en que se cobró dieta${hayTac ? ' y de los días con actividad en el tacógrafo' : ''}: si había desplazamiento, había trabajo.`,
     })
-    const superan = resumen.datos.filter((d) => d.cuadrante.filas.some((f) => f.superaLimiteHE))
-    if (superan.length) {
-      B.push({
-        tipo: 'p',
-        texto: `En ${superan.length === 1 ? 'un caso' : `${superan.length} casos`} se supera además el límite de ${num(cfg.limiteHEAnual)} horas extraordinarias al año del art. 35.2 ET.`,
-      })
-    }
+  } else {
+    B.push({ tipo: 'p', texto: 'Con los días introducidos no se aprecia que se haya superado la jornada máxima anual.' })
+  }
+  const superan = resumen.datos.filter((d) => d.cuadrante.filas.some((f) => f.superaLimiteHE))
+  if (superan.length) {
+    B.push({ tipo: 'p', texto: `En ${superan.length === 1 ? 'un caso' : `${superan.length} casos`} se superan además las ${num(cfg.limiteHEAnual)} horas extraordinarias al año que permite la ley.` })
   }
 
-  // Cómputo horario (lecturas del tacógrafo)
   if (resumen.conHoras.length) {
     B.push({
       tipo: 'p',
-      texto: `Además, se ha contrastado el tiempo registrado en los tacógrafos con la jornada exigible en cada tramo, obtenida en proporción a los días naturales del año a partir de la jornada anual de ${num(cfg.jornadaAnual)} horas, excluidos los días en que el contrato estuvo suspendido. Del tiempo que rebasa esa jornada, la parte correspondiente a trabajo efectivo (conducción y otros trabajos) tiene la consideración de horas extraordinarias (art. 35 ET), que se integran en la base de cotización por contingencias profesionales y están sujetas a la cotización adicional (arts. 147.2 y 149 LGSS); el resto corresponde a tiempo de presencia que excede de la jornada y que ha de retribuirse y cotizar como salario (art. 8.3 RD 1561/1995). Todo ello en la medida en que no figure ya retribuido y cotizado en las nóminas:`,
+      texto: `Con las horas registradas en el tacógrafo se ha comparado el tiempo trabajado con la jornada que correspondía en cada periodo (proporcional a los días del año y sin contar los días de baja u otras suspensiones del contrato). El trabajo efectivo (conducción y otros trabajos) que la supera son horas extraordinarias; el resto es tiempo de presencia (esperas, disponibilidad) por encima de la jornada, que también debe pagarse como salario (art. 8.3 RD 1561/1995):`,
     })
     const filasHoras = []
     for (const d of resumen.conHoras) {
@@ -249,11 +131,9 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
         filasHoras.push([
           d.trabajador.nombre || '—',
           f.completo ? f.anio : `${f.anio} (${fechaES(f.desde).slice(0, 5)}–${fechaES(f.hasta).slice(0, 5)})`,
-          num(f.diasComputables),
           num(f.jornadaProporcional, 2),
           num(f.horasEfectivas, 2),
           num(f.horasPresencia, 2),
-          num(f.excesoTotal, 2),
           num(f.excesoHE, 2),
           num(f.excesoPresencia, 2),
         ])
@@ -261,93 +141,140 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
     }
     B.push({
       tipo: 'tabla',
-      cabecera: ['Trabajador', 'Año', 'Días computables', 'Jornada exigible (h)', 'Trabajo efectivo (h)', 'Presencia (h)', 'Exceso total (h)', 'Horas extraordinarias', 'Exceso de presencia'],
+      cabecera: ['Trabajador', 'Año', 'Jornada que correspondía (h)', 'Trabajo efectivo (h)', 'Presencia (h)', 'Horas extraordinarias', 'Presencia de más (h)'],
       filas: filasHoras,
     })
-    if (resumen.excesoHE > 0 || resumen.excesoPresencia > 0) {
+  }
+  if (marcado.has('sinHE') && resumen.conExceso.length) {
+    B.push({ tipo: 'p', texto: 'En las nóminas no aparecen horas extraordinarias pagadas ni compensadas con descanso, por lo que estas horas podrían no haberse cobrado ni cotizado.' })
+  }
+
+  // ── Vacaciones ──
+  const conVac = resumen.datos.some((d) => d.cuadrante.filas.some((f) => f.vacaciones !== null))
+  if (conVac || marcado.has('dietasEnVacaciones')) {
+    B.push({ tipo: 'titulo', texto: '3. Vacaciones' })
+    B.push({ tipo: 'p', texto: `Toda persona trabajadora tiene derecho a disfrutar al menos ${num(cfg.vacacionesAnuales)} días naturales de vacaciones al año, que no pueden sustituirse por dinero mientras dure el contrato (art. 38 ET).` })
+    if (resumen.sinVacaciones.length) {
+      B.push({
+        tipo: 'lista',
+        items: resumen.sinVacaciones.flatMap((d) =>
+          d.cuadrante.filas
+            .filter((f) => f.deficitVacaciones > 0)
+            .map((f) => `${d.trabajador.nombre || 'Trabajador'}, ${f.anio}: ${num(f.vacaciones)} días disfrutados de ${num(f.vacacionesDebidas)}; faltan ${num(f.deficitVacaciones)}.`),
+        ),
+      })
+    }
+    if (resumen.conVacTrabajadas.length || marcado.has('dietasEnVacaciones')) {
       B.push({
         tipo: 'p',
-        texto: `Resultan, en conjunto, ${num(resumen.excesoHE, 2)} horas extraordinarias y ${num(resumen.excesoPresencia, 2)} horas de presencia por encima de la jornada.`,
+        texto: `Además, se habría trabajado en días que debían ser de vacaciones${resumen.conVacTrabajadas.length ? ` (${resumen.conVacTrabajadas.map((d) => `${d.trabajador.nombre || 'trabajador'}: ${num(d.cuadrante.totales.diasEnVacaciones)} días`).join('; ')})` : ''}. Esos días cuentan como trabajo y aumentan las horas realizadas en el año.`,
       })
     }
   }
 
-  // ── 3. Horas extraordinarias ──
-  B.push({ tipo: 'titulo', texto: '3.- Ausencia de abono de horas extraordinarias' })
-  B.push({
-    tipo: 'p',
-    texto: marcado.has('sinHE')
-      ? 'Del análisis de las nóminas y de la base de datos de la Seguridad Social con los CRA comunicados, se desprende que no consta en ningún caso el abono de horas extraordinarias, ni consta su compensación mediante descanso equivalente.'
-      : '[Indicar si consta o no el abono de horas extraordinarias en nóminas y CRA comunicados, o su compensación con descanso.]',
-  })
-  if (resumen.conExceso.length) {
-    B.push({
-      tipo: 'p',
-      texto:
-        'En base a todo lo anterior, y a la vista de los hechos constatados, se puede concluir la existencia de horas extraordinarias no declaradas: el exceso de días trabajados y la superación de la jornada máxima anual determinan la existencia de horas extraordinarias realizadas de forma habitual y estructural, que no han sido declaradas ni retribuidas conforme a la normativa vigente.',
-    })
-  }
+  // ── Dietas ──
+  const conDietas = resumen.datos.filter((d) => d.dietas.porTipo.length)
   if (conDietas.length || marcado.has('variacionPrecios')) {
+    B.push({ tipo: 'titulo', texto: '4. Dietas' })
     B.push({
       tipo: 'p',
-      texto:
-        'Al hilo de lo anterior, si bien no se pone en duda la existencia de los desplazamientos que motivan el pago de las dietas, la forma dispar de calcular el precio de estas, asignándoles distintos precios sin una motivación lógica y objetiva (tal como un gasto real), podría determinar que tales dietas están siendo utilizadas como un mecanismo para encubrir percepciones salariales, evitando su cotización a la Seguridad Social.',
+      texto: 'Las dietas compensan los gastos de comida y alojamiento de los desplazamientos y, dentro de ciertos límites, no cotizan a la Seguridad Social. Si en realidad pagan trabajo, son salario: deben cotizar y cuentan para la baja, el paro y la jubilación.',
     })
+    const tabla = []
+    for (const d of conDietas) {
+      for (const x of d.dietas.porTipo) {
+        tabla.push([d.trabajador.nombre || '—', x.nombre, num(x.dias), `${eur(x.min)} – ${eur(x.max)}`, num(x.precios.length), eur(x.media), eur(x.total)])
+      }
+    }
+    if (tabla.length) {
+      B.push({ tipo: 'tabla', cabecera: ['Trabajador', 'Tipo de dieta', 'Días', 'Importe por día', 'Importes distintos', 'Media por día', 'Total cobrado'], filas: tabla })
+    }
+    const indicios = []
+    if (importesDeclarados.trim()) indicios.push(`La empresa indica que paga ${importesDeclarados.trim().replace(/\.$/, '')}, pero las nóminas no siempre responden a esas cuantías.`)
+    if (resumen.conVariacion.length || marcado.has('variacionPrecios')) {
+      const ejemplos = resumen.conVariacion
+        .flatMap((d) => d.dietas.mesesVariacion.slice(0, 2).map((v) => `${mesLargo(v.mes)} (${nombreTipo(v.tipo)}: ${v.precios.map(eur).join(', ')})`))
+        .slice(0, 4)
+      indicios.push(`El importe de la dieta cambia sin un motivo aparente, incluso dentro de la misma nómina${ejemplos.length ? `; por ejemplo, ${ejemplos.join('; ')}` : ''}.`)
+    }
+    if (marcado.has('sinJustificantes')) indicios.push('No se justifican los gastos con facturas o tiques.')
+    if (marcado.has('dietasMensuales')) indicios.push('Se cobran todos los meses, de forma habitual.')
+    if (resumen.excesoNoExento > 0) indicios.push(`Hay ${eur(resumen.excesoNoExento)} por encima de los límites exentos de la normativa fiscal, que en todo caso debían cotizar.`)
+    if (conv) {
+      const anios = [...new Set(resumen.datos.flatMap((d) => d.cuadrante.filas.map((f) => f.anio)))].filter((a) => conv.dietas.nacional[a])
+      if (anios.length) {
+        indicios.push(`Como referencia, el convenio fija la dieta completa (desayuno, comida, cena y pernocta) en ${anios.map((a) => `${eur(conv.dietas.nacional[a][4])} en España y ${eur(conv.dietas.portugal[a][4])} en Portugal en ${a}`).join('; ')}.`)
+      }
+    }
+    if (indicios.length) {
+      B.push({ tipo: 'p', texto: 'Hay indicios de que parte de las dietas podría estar pagando trabajo en lugar de gastos:' })
+      B.push({ tipo: 'lista', items: indicios })
+    }
   }
 
-  // Valoración salarial y de cotización
+  // ── Diferencias salariales y de cotización ──
   const v = valoracion(resumen, cfg)
   if (v.totales.totalSalarial > 0) {
+    B.push({ tipo: 'titulo', texto: '5. Cantidades que podrían deberse' })
     const partes = []
     if (v.totales.importeHE > 0) partes.push(`${eur(v.totales.importeHE)} por horas extraordinarias`)
-    if (v.totales.importeOrd > 0) partes.push(`${eur(v.totales.importeOrd)} por exceso de tiempo de presencia valorado a precio de hora ordinaria`)
-    if (v.totales.dietas > 0) partes.push(`${eur(v.totales.dietas)} de dietas que deben integrarse en la base de cotización`)
+    if (v.totales.importeOrd > 0) partes.push(`${eur(v.totales.importeOrd)} por tiempo de presencia de más`)
+    if (v.totales.dietas > 0) partes.push(`${eur(v.totales.dietas)} de dietas que deberían cotizar`)
     B.push({
       tipo: 'p',
-      texto: `${conv ? `El valor de la hora ordinaria se calcula conforme al art. 31 del convenio ((salario base + complementos personales y de puesto + antigüedad) × 15 / 1.800) y el de la hora extraordinaria con el recargo del 25 % del art. 35.b. ` : ''}Valoradas conforme a las tablas salariales ${/^el /i.test(convenio) ? `del ${convenio.slice(3)}` : `de ${convenio}`}, las diferencias salariales ascienden a ${eur(v.totales.totalSalarial)} (${partes.join('; ')}), con unas cuotas a la Seguridad Social no ingresadas de ${eur(v.totales.cuotaTotal)} (${eur(v.totales.cuotaEmpresa)} a cargo de la empresa y ${eur(v.totales.cuotaTrabajador)} a cargo del trabajador), según el siguiente detalle:`,
+      texto: `${conv ? 'El precio de la hora se calcula con el art. 31 del convenio ((salario base + complementos + antigüedad) × 15 / 1.800) y la hora extraordinaria con el recargo del 25 % de su art. 35.b. ' : ''}Con las tablas salariales ${delConvenio}, las diferencias salariales serían de ${eur(v.totales.totalSalarial)} (${partes.join('; ')}). Las cotizaciones a la Seguridad Social que corresponderían ascienden a ${eur(v.totales.cuotaTotal)}, de los que ${eur(v.totales.cuotaEmpresa)} corresponden a la empresa y ${eur(v.totales.cuotaTrabajador)} a la parte del trabajador.`,
     })
     B.push({
       tipo: 'tabla',
-      cabecera: ['Trabajador', 'Año', 'Horas extra', '€/h', 'Importe HE', 'Horas presencia', '€/h', 'Importe presencia', 'Dietas a cotizar', 'Diferencia salarial', 'Cuota empresa', 'Cuota trabajador'],
+      cabecera: ['Trabajador', 'Año', 'Horas extra', 'Importe horas extra', 'Presencia de más (h)', 'Importe presencia', 'Dietas que deberían cotizar', 'Diferencia salarial', 'Cotización'],
       filas: v.filas
         .filter((x) => x.totalSalarial > 0)
-        .map((x) => [
-          x.trabajador.nombre || '—',
-          x.anio,
-          num(x.horasHE, 2),
-          x.precioHE ? num(x.precioHE, 2, true) : '—',
-          eur(x.importeHE),
-          num(x.horasOrd, 2),
-          x.precioOrd ? num(x.precioOrd, 2, true) : '—',
-          eur(x.importeOrd),
-          eur(x.dietas),
-          eur(x.totalSalarial),
-          eur(x.cuotaEmpresa),
-          eur(x.cuotaTrabajador),
-        ]),
+        .map((x) => [x.trabajador.nombre || '—', x.anio, num(x.horasHE, 2), eur(x.importeHE), num(x.horasOrd, 2), eur(x.importeOrd), eur(x.dietas), eur(x.totalSalarial), eur(x.cuotaTotal)]),
     })
   }
 
-  // ── Conclusión ──
-  B.push({ tipo: 'titulo', texto: 'Conclusión' })
-  const incumplimientos = []
-  if (resumen.conExceso.length) incumplimientos.push('no declarar ni retribuir horas extraordinarias')
-  if (resumen.sinVacaciones.length || resumen.conVacTrabajadas.length) incumplimientos.push('no garantizar el derecho al descanso anual (vacaciones)')
-  const dietasTxt = conDietas.length || marcado.has('variacionPrecios') ? 'la posible utilización de conceptos extrasalariales justificados de forma indebida' : ''
-  if (incumplimientos.length || dietasTxt) {
-    B.push({
-      tipo: 'p',
-      texto: `De todo lo anterior, se puede concluir el incumplimiento sistemático de la normativa laboral, dado que los hechos descritos evidencian un comportamiento empresarial consistente en ${incumplimientos.join(', así como ') || 'lo expuesto'}${dietasTxt ? `${incumplimientos.length ? ', amén de ' : ' y '}${dietasTxt}` : ''}.`,
-    })
-  }
-  if (resumen.conExceso.length) {
-    B.push({
-      tipo: 'p',
-      texto: `En base a las actuaciones realizadas, se concluye que ${empresa === 'la empresa' ? 'la empresa' : `la mercantil ${empresa}`} ha incurrido en un exceso de jornada no declarado, mediante la realización de horas extraordinarias no abonadas${dietasTxt ? ', utilizando para ello, posiblemente de forma fraudulenta, el concepto de dietas' : ''}${incumplimientos.length > 1 ? ' y sin garantizar el derecho efectivo al disfrute de vacaciones' : ''}, todo ello en vulneración de la normativa laboral vigente.`,
-    })
-  }
+  // ── Plazos ──
+  const anios = [...new Map(resumen.datos.flatMap((d) => d.cuadrante.filas).map((f) => [f.anio, f])).values()]
+  const minDesde = (anio) => resumen.datos.flatMap((d) => d.cuadrante.filas).filter((f) => f.anio === anio).reduce((m, f) => (f.desde < m ? f.desde : m), '9999')
+  const maxHasta = (anio) => resumen.datos.flatMap((d) => d.cuadrante.filas).filter((f) => f.anio === anio).reduce((m, f) => (f.hasta > m ? f.hasta : m), '0000')
+  const plazos = plazosReclamacion(anios.map((f) => ({ anio: f.anio, desde: minDesde(f.anio), hasta: maxHasta(f.anio) })), hoy)
+  B.push({ tipo: 'titulo', texto: '6. Plazos para reclamar' })
+  B.push({
+    tipo: 'lista',
+    items: [
+      'Salarios (horas extraordinarias, presencia y demás diferencias): 1 año desde que debieron pagarse (art. 59.2 ET). Cada mes cuenta por separado.',
+      'Cotizaciones a la Seguridad Social: 4 años desde que terminó el plazo para ingresarlas, que es el último día del mes siguiente al del salario (art. 24 LGSS). Por ejemplo, las del salario de enero de 2022 debían ingresarse hasta el 28 de febrero de 2022 y no prescriben hasta el 28 de febrero de 2026.',
+    ],
+  })
+  B.push({
+    tipo: 'tabla',
+    cabecera: ['Año', 'Salarios: se pueden reclamar hasta', 'Situación', 'Cotizaciones: prescriben entre', 'Situación'],
+    filas: plazos.map((p) => [p.anio, `${fechaES(p.salario.primero)} – ${fechaES(p.salario.ultimo)}`, ESTADOS[p.salario.estado], `${fechaES(p.cotizacion.primero)} – ${fechaES(p.cotizacion.ultimo)}`, ESTADOS[p.cotizacion.estado]]),
+  })
+  B.push({
+    tipo: 'p',
+    texto: `Situación calculada a ${fechaES(hoy)}. Los plazos se interrumpen, entre otras causas, con una reclamación a la empresa, la papeleta de conciliación o una denuncia; confírmalos con quien te asesore.`,
+  })
+
+  // ── Qué hacer ──
+  B.push({ tipo: 'titulo', texto: '7. Qué se puede hacer' })
+  B.push({
+    tipo: 'lista',
+    items: [
+      'Pedir asesoramiento a la representación de los trabajadores, a un sindicato o a un profesional antes de actuar.',
+      'Reclamar a la empresa por escrito, conservando copia con fecha de entrega, el pago de las horas extraordinarias, el tiempo de presencia, las vacaciones no disfrutadas y la cotización de las cantidades que corresponda.',
+      'Si la empresa no paga, presentar la papeleta de conciliación (paso previo a la demanda ante el Juzgado de lo Social) dentro del plazo.',
+      'Las cotizaciones no se reclaman directamente a la empresa: las regulariza la Seguridad Social. Se puede presentar una denuncia ante la Inspección de Trabajo y Seguridad Social.',
+      'Guardar las nóminas, los partes de trabajo, el calendario de vacaciones y las descargas del tacógrafo: son la prueba.',
+    ],
+  })
+
   B.push({ tipo: 'titulo', texto: 'Normativa de referencia' })
   B.push({ tipo: 'lista', items: NORMAS })
+  B.push({
+    tipo: 'p',
+    texto: 'Informe orientativo elaborado con una herramienta gratuita. Puede contener errores: revisa los datos y los resultados con la documentación y con quien te asesore antes de presentar cualquier reclamación.',
+  })
   return B
 }
 
@@ -371,7 +298,7 @@ const esc = (s) =>
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
 
-export function bloquesAHtml(bloques, titulo = 'Hechos comprobados') {
+export function bloquesAHtml(bloques, titulo = 'Informe de posibles incumplimientos') {
   const cuerpo = bloques
     .map((b) => {
       if (b.tipo === 'titulo') return `<h2>${esc(b.texto)}</h2>`
@@ -392,5 +319,6 @@ table{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:9.5pt}th,t
 td:first-child{text-align:left}
 </style></head><body><h1>${esc(titulo)}</h1>
 ${cuerpo}
+<hr><p style="font-size:8.5pt;color:#666">Informe generado con la herramienta gratuita «Dietas y jornada anual». ${esc(textoCopyright())} ${esc(TEXTO_LICENCIA)}</p>
 </body></html>`
 }

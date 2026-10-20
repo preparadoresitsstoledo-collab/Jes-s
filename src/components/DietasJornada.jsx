@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   CONFIG_POR_DEFECTO,
   CRITERIOS_DIAS,
@@ -26,7 +26,7 @@ import {
 import { generarBloques, bloquesATexto, bloquesAHtml } from '../lib/dietasJornada/informe.js'
 import { fechaES } from '../lib/tacografo/tiempo.js'
 import { CONVENIOS } from '../data/conveniosTransporte.js'
-import { AvisoPrivacidad, AvisoResponsabilidad, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
+import { AvisoPrivacidad, AvisoResponsabilidad, PieAutoria, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
 
 const EXTENSIONES_TAC = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
 
@@ -103,7 +103,20 @@ const nombreArchivo = (txt) =>
     .replace(/^_|_$/g, '')
     .slice(0, 40) || 'expediente'
 
+// Descarga ya todas las partes del programa: así la herramienta sigue funcionando
+// aunque después se desconecte internet (los archivos nunca salen del equipo).
+function usePrecarga() {
+  useEffect(() => {
+    import('../lib/tacografo/ddd.js').catch(() => {})
+    import('../lib/tacografo/conductores.js').catch(() => {})
+    import('../lib/tacografo/analisis.js').catch(() => {})
+    import('../data/tacografo.js').catch(() => {})
+    import('../lib/dietasJornada/excel.js').catch(() => {})
+  }, [])
+}
+
 export default function DietasJornada() {
+  usePrecarga()
   const [cfg, setCfgEstado] = useState({ ...CONFIG_POR_DEFECTO })
   const [expediente, setExpediente] = useState({})
   const [trabajadores, setTrabajadores] = useState([nuevoTrabajador({ nombre: 'Trabajador 1' })])
@@ -255,9 +268,9 @@ export default function DietasJornada() {
     if (!f) return
     try {
       const d = JSON.parse(await f.text())
-      if (!Array.isArray(d.trabajadores)) throw new Error('No es un expediente de esta herramienta')
+      if (!Array.isArray(d.trabajadores)) throw new Error('No es un archivo de datos de esta herramienta')
       cargar(d)
-      setMensajes([`✅ Expediente «${f.name}» abierto.`])
+      setMensajes([`✅ Datos de «${f.name}» abiertos.`])
     } catch (e) {
       setMensajes([`⚠️ ${e.message}`])
     }
@@ -293,7 +306,7 @@ export default function DietasJornada() {
   }
 
   function nuevoExpediente() {
-    if (!window.confirm('¿Empezar un expediente nuevo? Se borrarán los datos no guardados.')) return
+    if (!window.confirm('¿Empezar un cálculo nuevo? Se borrarán los datos no guardados.')) return
     cargar({ trabajadores: [nuevoTrabajador({ nombre: 'Trabajador 1' })] })
     setMensajes([])
   }
@@ -309,13 +322,13 @@ export default function DietasJornada() {
     }
   }
   function descargarWord() {
-    const html = bloquesAHtml(bloques, `Hechos comprobados${expediente.empresa ? ` — ${expediente.empresa}` : ''}`)
-    descargar('﻿' + html, `hechos_${nombreArchivo(expediente.empresa)}.doc`, 'application/msword')
+    const html = bloquesAHtml(bloques, `Informe de posibles incumplimientos${expediente.empresa ? ` — ${expediente.empresa}` : ''}`)
+    descargar('﻿' + html, `informe_${nombreArchivo(expediente.empresa)}.doc`, 'application/msword')
   }
   function imprimir() {
     const w = window.open('', '_blank')
     if (!w) return
-    w.document.write(bloquesAHtml(bloques, 'Hechos comprobados'))
+    w.document.write(bloquesAHtml(bloques, 'Informe de posibles incumplimientos'))
     w.document.close()
     w.focus()
     w.print()
@@ -345,11 +358,11 @@ export default function DietasJornada() {
             Cruza los <strong>días con dieta de las nóminas</strong>, la <strong>actividad del tacógrafo</strong> y el{' '}
             <strong>cuadrante de vacaciones</strong> con la <strong>jornada máxima anual del convenio</strong>. Calcula
             el cuadrante de excesos de jornada por años, las horas extraordinarias a cotizar, detecta importes de dietas
-            irregulares y redacta los hechos comprobados listos para el informe o el acta.
+            irregulares y prepara un informe con los derechos afectados, lo que se puede reclamar y los plazos para hacerlo.
           </p>
           <p className="analizador__aviso-legal">
             🔒 Todo se procesa <strong>solo en tu navegador</strong>: no se envía nada a ningún servidor ni se guarda en
-            la web, y nadie, ni el titular de esta web, tiene acceso a los datos. Usa «Guardar expediente» para conservarlo en tu equipo. ⚖️ Resultado <strong>orientativo</strong>:
+            la web, y nadie, ni el titular de esta web, tiene acceso a los datos. Usa «Guardar datos» para conservarlos en tu equipo. ⚖️ Resultado <strong>orientativo</strong>:
             revisa los parámetros del convenio y el texto antes de usarlo.
           </p>
         </div>
@@ -363,13 +376,13 @@ export default function DietasJornada() {
         <section className="analizador__panel">
           <div className="analizador__acciones dietas__barra">
             <button className="btn--secundario" onClick={nuevoExpediente}>
-              Nuevo expediente
+              Nuevo cálculo
             </button>
             <button className="btn--secundario" onClick={() => inputJson.current?.click()}>
-              Abrir expediente…
+              Abrir datos guardados…
             </button>
             <button className="btn--secundario" onClick={guardarExpediente}>
-              Guardar expediente
+              Guardar datos
             </button>
             <button
               className="btn--texto"
@@ -726,7 +739,7 @@ export default function DietasJornada() {
 
         {/* 4. Comprobaciones */}
         <section className="analizador__panel">
-          <h2>4. Comprobaciones y alegaciones</h2>
+          <h2>4. Situaciones detectadas</h2>
           {COMPROBACIONES.map((c) => (
             <label key={c.id} className="tacografo__casilla">
               <input
@@ -738,7 +751,7 @@ export default function DietasJornada() {
             </label>
           ))}
           <div className="campo">
-            <label htmlFor="imp">Importes de las dietas declarados por la empresa (opcional)</label>
+            <label htmlFor="imp">Importes de dieta que dice pagar la empresa (opcional)</label>
             <input
               id="imp"
               value={importesDeclarados}
@@ -747,7 +760,7 @@ export default function DietasJornada() {
             />
           </div>
           <div className="campo">
-            <label htmlFor="ale">Escrito de la empresa (opcional, se cita literalmente)</label>
+            <label htmlFor="ale">Explicación dada por la empresa (opcional, se cita literalmente)</label>
             <textarea id="ale" className="analizador__texto" rows={4} value={alegaciones} onChange={(e) => setAlegaciones(e.target.value)} />
           </div>
         </section>
@@ -991,10 +1004,10 @@ export default function DietasJornada() {
         {/* 6. Informe */}
         {resumen && (
           <section className="analizador__panel">
-            <h2>6. Hechos comprobados</h2>
+            <h2>6. Informe de posibles incumplimientos</h2>
             <p className="campo__ayuda">
-              Propuesta de redacción generada con los datos anteriores. Revísala y adáptala antes de incorporarla al
-              informe, requerimiento o acta.
+              Resumen con los derechos que podrían estar afectados, las cantidades que podrían deberse, los plazos
+              para reclamar y qué se puede hacer. Es orientativo: revísalo y adáptalo antes de usarlo.
             </p>
             <div className="analizador__acciones">
               <button className="btn btn--primario" onClick={copiarTexto}>
@@ -1051,6 +1064,7 @@ export default function DietasJornada() {
           </section>
         )}
       </div>
+      <PieAutoria />
     </div>
   )
 }

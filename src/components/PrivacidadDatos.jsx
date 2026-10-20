@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { AUTOR, TEXTO_LICENCIA, textoCopyright } from '../data/autoria.js'
 
 // Aviso de privacidad común a las herramientas que procesan datos personales
 // (tacógrafos, nóminas…) y utilidades para borrarlos.
@@ -9,10 +10,17 @@ export function AvisoPrivacidad({ onBorrar, hayDatos }) {
       <h2 id="privacidad-titulo">🔒 Tus datos son solo tuyos</h2>
       <ul className="privacidad__lista">
         <li>
-          Los archivos y datos que cargues (tarjetas de tacógrafo, nóminas, nombres, DNI…) se procesan{' '}
-          <strong>únicamente en este navegador, en tu equipo</strong>. No se envían a ningún servidor ni se
-          guardan en esta web. <strong>Nadie —ni el titular de esta web ni ningún tercero— recibe ni tiene
-          acceso a ellos</strong>: nadie puede verlos, conservarlos ni utilizarlos. Solo tú, en esta pestaña.
+          <strong>Los archivos no se suben a internet.</strong> Al elegirlos, tu navegador los abre directamente en
+          tu ordenador, igual que Excel o Word abren un documento. Lo único que se descarga de esta web es el
+          programa; los cálculos los hace tu propio equipo.
+        </li>
+        <li>
+          Por eso, <strong>nadie —ni el titular de esta web ni ningún tercero— recibe ni tiene acceso</strong> a
+          tus tarjetas de tacógrafo, nóminas, nombres o DNI: no pueden verlos, conservarlos ni utilizarlos.
+        </li>
+        <li>
+          Puedes comprobarlo: una vez abierta esta página, <strong>desconecta internet</strong> (wifi o datos) y
+          verás que la herramienta sigue funcionando con tus archivos.
         </li>
         <li>
           Los datos solo existen mientras esta pestaña está abierta. Se eliminan al pulsar{' '}
@@ -20,8 +28,7 @@ export function AvisoPrivacidad({ onBorrar, hayDatos }) {
         </li>
         <li>
           Los archivos que <strong>descargues tú</strong> (Excel, Word, expediente .json) quedan en tu equipo bajo
-          tu responsabilidad: guárdalos y bórralos conforme a tu normativa de protección de datos y deber de
-          sigilo.
+          tu responsabilidad: guárdalos en lugar seguro y bórralos cuando ya no los necesites.
         </li>
         <li>
           Recomendación: usa la herramienta en un equipo de confianza y pulsa «Borrar todo y salir» al terminar,
@@ -90,4 +97,17 @@ export function borrarYSalir(borrar, hayDatos) {
   }
   borrar()
   window.location.hash = '#herramientas-transporte'
+}
+
+// Pie de autoría y derechos de las herramientas.
+export function PieAutoria() {
+  return (
+    <footer className="contenedor pie-autoria">
+      <p>
+        <strong>{textoCopyright()}</strong> Herramienta elaborada por {AUTOR}, Inspector de Trabajo y Seguridad
+        Social.
+      </p>
+      <p>{TEXTO_LICENCIA}</p>
+    </footer>
+  )
 }

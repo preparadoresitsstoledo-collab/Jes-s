@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { leerArchivoTarjeta } from '../lib/tacografo/ddd.js'
 import { agruparPorConductor } from '../lib/tacografo/conductores.js'
 import { analizar, heSegunMetodo, resumenInfracciones } from '../lib/tacografo/analisis.js'
 import { fechaES, hhmm, sumarDias, inicioDia, diaSemana, MESES, MIN } from '../lib/tacografo/tiempo.js'
 import { CONFIG_POR_DEFECTO, METODOS_HE, DATOS_EXPEDIENTE } from '../data/tacografo.js'
-import { AvisoPrivacidad, AvisoResponsabilidad, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
+import { AvisoPrivacidad, AvisoResponsabilidad, PieAutoria, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
 
 const CLAVE_CFG = 'tacografo:config'
 const EXTENSIONES = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
@@ -30,7 +30,16 @@ function guardarConfig(cfg) {
 
 const horas = (min) => `${hhmm(min)} h`
 
+// Descarga ya todas las partes del programa: así la herramienta sigue funcionando
+// aunque después se desconecte internet (los archivos nunca salen del equipo).
+function usePrecarga() {
+  useEffect(() => {
+    import('../lib/tacografo/excel.js').catch(() => {})
+  }, [])
+}
+
 export default function AnalizadorTacografo() {
+  usePrecarga()
   const [lecturas, setLecturas] = useState([])
   const [errores, setErrores] = useState([])
   const [ignorados, setIgnorados] = useState(0)
@@ -201,8 +210,8 @@ export default function AnalizadorTacografo() {
           <p className="analizador__aviso-legal">
             🔒 Los archivos se procesan <strong>solo en tu navegador</strong>: no se envían a ningún servidor y nadie,
             ni el titular de esta web, tiene acceso a ellos. ⚖️
-            Resultado <strong>orientativo</strong>: revisa los parámetros del convenio y contrasta los datos con el resto
-            de pruebas del expediente.
+            Resultado <strong>orientativo</strong>: revisa los parámetros del convenio y contrasta los datos con tus nóminas,
+            contrato y demás documentos.
           </p>
         </div>
       </header>
@@ -415,7 +424,7 @@ export default function AnalizadorTacografo() {
                 </div>
               </div>
 
-              <h3 className="tacografo__subtitulo">Método de cómputo de las horas extraordinarias para el acta</h3>
+              <h3 className="tacografo__subtitulo">Cómo calcular las horas extraordinarias</h3>
               <div className="tacografo__metodos">
                 {METODOS_HE.map((m) => (
                   <label key={m.id} className={`tacografo__metodo ${cfg.metodoHE === m.id ? 'tacografo__metodo--activo' : ''}`}>
@@ -461,7 +470,7 @@ export default function AnalizadorTacografo() {
 
             {/* 4. Expediente */}
             <section className="analizador__panel">
-              <h2>4. Datos del expediente (opcional, para el Excel)</h2>
+              <h2>4. Datos de la empresa y del trabajador (opcional, para el Excel)</h2>
               <div className="tacografo__parametros">
                 {DATOS_EXPEDIENTE.map((d) => (
                   <div className="campo" key={d.id}>
@@ -621,6 +630,7 @@ export default function AnalizadorTacografo() {
           </section>
         )}
       </div>
+      <PieAutoria />
     </div>
   )
 }

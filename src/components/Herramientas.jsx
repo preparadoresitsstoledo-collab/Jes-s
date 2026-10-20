@@ -99,9 +99,9 @@ export default function Herramientas() {
           <span className="etiqueta-seccion">Inspección en el transporte por carretera</span>
           <h3 className="seccion__titulo hub-transporte__titulo">Tacógrafo, jornada y dietas</h3>
           <p className="seccion__subtitulo hub-transporte__subtitulo">
-            Para actuaciones en empresas de transporte de mercancías: lee las descargas de la tarjeta del
-            conductor, calcula excesos de jornada y horas extraordinarias, detecta dietas que encubren
-            salario y valora las diferencias salariales y de cotización con las tablas del convenio. Los
+            Para que los conductores y conductoras conozcan sus derechos: lee las descargas de la tarjeta del
+            conductor, calcula excesos de jornada y horas extraordinarias, detecta dietas que pueden esconder
+            salario y valora lo que podría reclamarse a la empresa con las tablas del convenio. Los
             archivos se procesan solo en tu navegador.
           </p>
           <div className="hub-herramientas">
@@ -110,7 +110,7 @@ export default function Herramientas() {
               <strong>Analizador de tacógrafo</strong>
               <span className="hub-card__desc">
                 Todas las descargas .DDD/.TGD a la vez: conducción, descansos e incumplimientos del
-                R. 561/2006, el RD 1561/1995 y el ET, con Excel para el acta de liquidación.
+                R. 561/2006, el RD 1561/1995 y el ET, con Excel de las horas extraordinarias que se pueden reclamar.
               </span>
               <span className="hub-card__cta">Abrir herramienta →</span>
             </a>
@@ -119,7 +119,7 @@ export default function Herramientas() {
               <strong>Dietas y jornada anual</strong>
               <span className="hub-card__desc">
                 Cuadrante de excesos sobre la jornada anual del convenio, vacaciones, dietas irregulares,
-                diferencias salariales y cuotas, con los hechos redactados (Word y Excel).
+                diferencias salariales y cotizaciones, y los plazos para reclamarlas (Word y Excel).
               </span>
               <span className="hub-card__cta">Abrir herramienta →</span>
             </a>

@@ -234,7 +234,7 @@ navegador: no se envía ni se guarda nada en la web (el expediente se guarda com
   categoría y antigüedad de cada trabajador. Un precio escrito a mano prevalece. Para añadir otro convenio
   basta con una nueva entrada en `CONVENIOS`.
 
-**Salidas:** hechos comprobados redactados con la estructura del requerimiento (copiar, Word, imprimir/PDF) y
+**Salidas:** informe de posibles incumplimientos (derechos afectados, cantidades, plazos para reclamar y qué hacer; copiar, Word, imprimir/PDF) y
 Excel con el cuadrante por días, el cómputo horario, la liquidación de diferencias y cuotas (con fórmulas editables), el análisis de dietas y las
 líneas de nómina.
 
@@ -249,6 +249,13 @@ procesan solo en el navegador de quien las usa, no se envían a ningún servidor
 pestaña todos los datos y resultados (y, en el analizador de tacógrafo, los parámetros recordados) y vuelve a
 Herramientas. Si se intenta cerrar o recargar la pestaña con datos cargados, el navegador pide confirmación.
 Componente común: `src/components/PrivacidadDatos.jsx`.
+
+### © Autoría
+
+Las herramientas muestran al pie «© Jesús María Prieto Valbuena. Todos los derechos reservados» y el aviso de
+uso (`src/data/autoria.js`). La misma marca figura en los Excel y Word que generan, en la etiqueta
+`<meta name="copyright">` y en la primera línea de cada archivo de código publicado (plugin `aviso-autoria`
+de `vite.config.js`).
 
 ## Publicar en Axarnet (preparadoritsstoledo.es)
 

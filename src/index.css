@@ -3560,3 +3560,16 @@ select.chip {
   border-left: 4px solid #b7791f;
   background: #fffbeb;
 }
+
+/* Pie de autoría de las herramientas */
+.pie-autoria {
+  margin: 32px auto 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gris-300);
+  font-size: 0.8rem;
+  color: var(--gris-500);
+  line-height: 1.5;
+}
+.pie-autoria p {
+  margin: 0 0 6px;
+}

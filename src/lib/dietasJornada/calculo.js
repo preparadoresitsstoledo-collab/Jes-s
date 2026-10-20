@@ -563,3 +563,45 @@ export function valoracion(resumen, cfgEntrada) {
     faltanPrecios: filas.some((x) => x.sinPrecio),
   }
 }
+
+// ─────────────────────────── Plazos para reclamar ───────────────────────────
+
+// Último día del mes de 'AAAA-MM' desplazado n meses
+function finDeMes(mes, n = 0) {
+  const a = +mes.slice(0, 4)
+  const m = +mes.slice(5, 7) - 1 + n
+  return new Date(Date.UTC(a, m + 1, 0)).toISOString().slice(0, 10)
+}
+function masAnios(fecha, n) {
+  const a = +fecha.slice(0, 4) + n
+  // El 29 de febrero pasa al 28 en los años no bisiestos
+  const bisiesto = (a % 4 === 0 && a % 100 !== 0) || a % 400 === 0
+  return `${a}${fecha.slice(4)}`.replace(/-02-29$/, bisiesto ? '-02-29' : '-02-28')
+}
+
+function estadoPlazo(primero, ultimo, hoy) {
+  if (hoy > ultimo) return 'prescrito'
+  if (hoy > primero) return 'parcial'
+  return 'vigente'
+}
+
+/**
+ * Plazos orientativos para reclamar, por tramo anual:
+ * - Salarios: 1 año desde que pudo ejercitarse la acción (art. 59.2 ET); se toma
+ *   el último día de cada mes como fecha de pago de lo devengado ese mes.
+ * - Cotizaciones: 4 años desde el fin del plazo reglamentario de ingreso, que
+ *   termina el último día del mes siguiente al del devengo (art. 24 LGSS).
+ * @param {object[]} filas filas del cuadrante (con desde y hasta)
+ * @param {string} hoy fecha 'AAAA-MM-DD'
+ */
+export function plazosReclamacion(filas, hoy = new Date().toISOString().slice(0, 10)) {
+  return filas.map((f) => {
+    const m1 = f.desde.slice(0, 7)
+    const m2 = f.hasta.slice(0, 7)
+    const salario = { primero: masAnios(finDeMes(m1), 1), ultimo: masAnios(finDeMes(m2), 1) }
+    const cotizacion = { primero: masAnios(finDeMes(m1, 1), 4), ultimo: masAnios(finDeMes(m2, 1), 4) }
+    salario.estado = estadoPlazo(salario.primero, salario.ultimo, hoy)
+    cotizacion.estado = estadoPlazo(cotizacion.primero, cotizacion.ultimo, hoy)
+    return { anio: f.anio, desde: f.desde, hasta: f.hasta, salario, cotizacion }
+  })
+}

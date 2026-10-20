@@ -6,6 +6,7 @@ import ExcelJS from 'exceljs'
 import { METODOS_HE, DATOS_EXPEDIENTE } from '../../data/tacografo.js'
 import { heSegunMetodo, resumenInfracciones } from './analisis.js'
 import { fechaES, fechaHoraLocal, diaSemana, sumarDias, MESES } from './tiempo.js'
+import { AUTOR, TEXTO_LICENCIA, textoCopyright } from '../../data/autoria.js'
 
 const AZUL = 'FF1F3A5F'
 const GRIS = 'FFF2F4F7'
@@ -97,14 +98,18 @@ function filaTotales(ws, fila, desde, hasta, columnasSuma, etiqueta = 'TOTAL') {
 export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, expediente = {}, periodoSolicitado = {} }) {
   const cfg = r.cfg || cfgEntrada
   const wb = new ExcelJS.Workbook()
-  wb.creator = 'Analizador de tacógrafo'
+  wb.creator = AUTOR
+  wb.lastModifiedBy = AUTOR
+  wb.company = AUTOR
+  wb.title = 'Analizador de tacógrafo'
+  wb.description = `Analizador de tacógrafo. ${textoCopyright()} ${TEXTO_LICENCIA}`
   wb.created = new Date()
   const metodo = METODOS_HE.find((x) => x.id === cfg.metodoHE) || METODOS_HE[0]
   const periodo = `${fechaES(r.desde)} – ${fechaES(r.hasta)}`
 
   // ───────── Resumen ─────────
   const res = wb.addWorksheet('Resumen', { properties: { tabColor: { argb: AZUL } } })
-  titulo(res, 'Análisis de tiempos de trabajo y descanso — tarjeta de conductor', 'Documento de trabajo orientativo. Debe contrastarse con el resto de pruebas del expediente.')
+  titulo(res, 'Análisis de tiempos de trabajo y descanso — tarjeta de conductor', 'Documento orientativo. Debe contrastarse con las nóminas, el contrato y demás documentación.')
   res.getColumn(1).width = 44
   for (let c = 2; c <= 10; c++) res.getColumn(c).width = 16
   let f = 4
@@ -132,7 +137,7 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
 
   const exp = DATOS_EXPEDIENTE.filter((d) => expediente[d.id])
   if (exp.length) {
-    seccion('Expediente')
+    seccion('Datos')
     for (const d of exp) par(d.label, expediente[d.id])
   }
 
@@ -178,7 +183,7 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
   cabecera(res, f, ['Método', ...r.anios.map((y) => y.anio), 'Total'])
   f++
   for (const mt of METODOS_HE) {
-    res.getCell(f, 1).value = `${mt.nombre}${mt.id === cfg.metodoHE ? '  ◄ usado en el acta' : ''}`
+    res.getCell(f, 1).value = `${mt.nombre}${mt.id === cfg.metodoHE ? '  ◄ método elegido' : ''}`
     if (mt.id === cfg.metodoHE) res.getRow(f).font = { bold: true }
     r.anios.forEach((y, i) => {
       res.getCell(f, i + 2).value = t(heSegunMetodo(y, mt.id))
@@ -211,7 +216,7 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
   const criterios = [
     `Trabajo efectivo = conducción + otros trabajos. La disponibilidad se computa como tiempo de presencia (RD 1561/1995, art. 8) y no como hora extraordinaria.`,
     `Jornada anual del convenio: ${cfg.jornadaAnual} h, prorrateada por días naturales. Jornada semanal: ${cfg.jornadaSemanal} h. Máximo diario ordinario: ${cfg.jornadaDiariaMax} h.`,
-    `Método de horas extraordinarias para el acta: ${metodo.nombre}. ${metodo.detalle}`,
+    `Método de cálculo de las horas extraordinarias: ${metodo.nombre}. ${metodo.detalle}`,
     `Periodos con la tarjeta no insertada sin actividad introducida: ${cfg.desconocidoComoDescanso ? 'se consideran descanso' : 'no se consideran descanso'}. Días sin registro: ${cfg.sinDatosComoDescanso ? 'se consideran descanso' : 'no se consideran descanso'}.`,
     `Trabajo nocturno: de ${cfg.nocturnoInicio} a ${cfg.nocturnoFin} (hora local). Las horas del tacógrafo (UTC) se convierten a la hora oficial de ${cfg.zonaHoraria}.`,
     'Descanso diario: periodos de 24 h desde el final del descanso anterior (art. 8.2 R. 561/2006). Se admite la fracción 3 h + 9 h. Los descansos de 24 h o más se tratan como semanales.',
@@ -227,21 +232,21 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
     f++
   }
 
-  // ───────── Acta de liquidación ─────────
-  const acta = wb.addWorksheet('Liquidación HE', { properties: { tabColor: { argb: 'FFB45309' } } })
-  titulo(acta, 'Horas extraordinarias acreditadas por el tacógrafo — base para el acta de liquidación', `Trabajador: ${conductor.nombreCompleto}${expediente.trabajadorNif ? ' · ' + expediente.trabajadorNif : ''}${expediente.empresa ? ' · Empresa: ' + expediente.empresa : ''}${expediente.ccc ? ' · CCC ' + expediente.ccc : ''}`)
-  acta.getCell('A3').value = `Periodo: ${periodo} · Método: ${metodo.nombre}. Los precios y el tipo de cotización son editables: los importes se recalculan solos.`
-  acta.getCell('A3').font = { color: { argb: 'FF555555' } }
-  acta.getCell('A5').value = 'Tipo de cotización aplicable (%)'
-  acta.getCell('A5').font = { bold: true }
-  acta.getCell('C5').value = cfg.tipoCotizacion || 0
-  acta.getCell('C5').numFmt = '0.00'
-  acta.getCell('C5').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AMARILLO } }
-  acta.getCell('D5').value = 'Introduzca el tipo vigente en cada periodo (horas extraordinarias / MEI) si desea calcular la cuota.'
-  acta.getCell('D5').font = { italic: true, color: { argb: 'FF777777' } }
+  // ───────── Horas extraordinarias y su valoración ─────────
+  const hojaHE = wb.addWorksheet('Horas extra a reclamar', { properties: { tabColor: { argb: 'FFB45309' } } })
+  titulo(hojaHE, 'Horas extraordinarias según el tacógrafo — cantidades que se pueden reclamar', `Trabajador: ${conductor.nombreCompleto}${expediente.trabajadorNif ? ' · ' + expediente.trabajadorNif : ''}${expediente.empresa ? ' · Empresa: ' + expediente.empresa : ''}${expediente.ccc ? ' · CCC ' + expediente.ccc : ''}`)
+  hojaHE.getCell('A3').value = `Periodo: ${periodo} · Método: ${metodo.nombre}. Los precios y el tipo de cotización son editables: los importes se recalculan solos.`
+  hojaHE.getCell('A3').font = { color: { argb: 'FF555555' } }
+  hojaHE.getCell('A5').value = 'Tipo de cotización aplicable (%)'
+  hojaHE.getCell('A5').font = { bold: true }
+  hojaHE.getCell('C5').value = cfg.tipoCotizacion || 0
+  hojaHE.getCell('C5').numFmt = '0.00'
+  hojaHE.getCell('C5').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AMARILLO } }
+  hojaHE.getCell('D5').value = 'Introduzca el tipo vigente en cada periodo (horas extraordinarias / MEI) si desea calcular la cuota.'
+  hojaHE.getCell('D5').font = { italic: true, color: { argb: 'FF777777' } }
 
   const filaCab = 7
-  const columnasActa = [
+  const columnasHE = [
     { titulo: 'Mes', ancho: 16, valor: (x) => `${MESES[+x.mes.slice(5, 7) - 1]} ${x.mes.slice(0, 4)}` },
     { titulo: 'Año', ancho: 8, valor: (x) => +x.mes.slice(0, 4) },
     { titulo: 'Días del periodo', ancho: 10, valor: (x) => x.dias },
@@ -254,39 +259,39 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
     { titulo: 'Cuota (€)', ancho: 13, valor: () => null, formato: FMT_EUR },
     { titulo: 'Exceso presencia (h)', ancho: 12, valor: (x) => h(x.excesoPresencia), formato: FMT_DEC },
   ]
-  const ultimaFila = tabla(acta, filaCab, columnasActa, r.meses)
+  const ultimaFila = tabla(hojaHE, filaCab, columnasHE, r.meses)
   for (let k = filaCab + 1; k <= ultimaFila; k++) {
-    acta.getCell(k, 9).value = { formula: `ROUND(G${k}*H${k},2)` }
-    acta.getCell(k, 10).value = { formula: `ROUND(I${k}*$C$5/100,2)` }
-    acta.getCell(k, 8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AMARILLO } }
+    hojaHE.getCell(k, 9).value = { formula: `ROUND(G${k}*H${k},2)` }
+    hojaHE.getCell(k, 10).value = { formula: `ROUND(I${k}*$C$5/100,2)` }
+    hojaHE.getCell(k, 8).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AMARILLO } }
   }
-  acta.views = [{ state: 'frozen', ySplit: filaCab }]
-  filaTotales(acta, ultimaFila + 1, filaCab + 1, ultimaFila, [[5, FMT_DEC], [6, FMT_DEC], [7, FMT_DEC], [9, FMT_EUR], [10, FMT_EUR], [11, FMT_DEC]])
+  hojaHE.views = [{ state: 'frozen', ySplit: filaCab }]
+  filaTotales(hojaHE, ultimaFila + 1, filaCab + 1, ultimaFila, [[5, FMT_DEC], [6, FMT_DEC], [7, FMT_DEC], [9, FMT_EUR], [10, FMT_EUR], [11, FMT_DEC]])
   let fa = ultimaFila + 3
-  acta.getCell(fa, 1).value = 'Resumen por año'
-  acta.getCell(fa, 1).font = { bold: true, color: { argb: AZUL } }
+  hojaHE.getCell(fa, 1).value = 'Resumen por año'
+  hojaHE.getCell(fa, 1).font = { bold: true, color: { argb: AZUL } }
   fa++
-  cabecera(acta, fa, ['Año', '', '', '', 'Trabajo efectivo (h)', 'Jornada ordinaria (h)', 'Horas extraordinarias (h)', '', 'Importe HE (€)', 'Cuota (€)', 'Exceso presencia (h)'])
+  cabecera(hojaHE, fa, ['Año', '', '', '', 'Trabajo efectivo (h)', 'Jornada ordinaria (h)', 'Horas extraordinarias (h)', '', 'Importe HE (€)', 'Cuota (€)', 'Exceso presencia (h)'])
   fa++
   const rango = (col) => `${col}$${filaCab + 1}:${col}$${ultimaFila}`
   for (const y of r.anios) {
-    acta.getCell(fa, 1).value = +y.anio
+    hojaHE.getCell(fa, 1).value = +y.anio
     for (const [col, fmt] of [['E', FMT_DEC], ['F', FMT_DEC], ['G', FMT_DEC], ['I', FMT_EUR], ['J', FMT_EUR], ['K', FMT_DEC]]) {
-      const c = acta.getCell(`${col}${fa}`)
+      const c = hojaHE.getCell(`${col}${fa}`)
       c.value = { formula: `SUMIF(${rango('B')},A${fa},${rango(col)})` }
       c.numFmt = fmt
     }
     if (h(heSegunMetodo(y, cfg.metodoHE)) > (cfg.limiteHEAnual * y.dias) / 365) {
-      acta.getCell(`L${fa}`).value = `Supera el límite de ${cfg.limiteHEAnual} h/año (art. 35.2 ET)`
-      acta.getCell(`L${fa}`).font = { color: { argb: 'FFB91C1C' }, bold: true }
+      hojaHE.getCell(`L${fa}`).value = `Supera el límite de ${cfg.limiteHEAnual} h/año (art. 35.2 ET)`
+      hojaHE.getCell(`L${fa}`).font = { color: { argb: 'FFB91C1C' }, bold: true }
     }
     fa++
   }
-  acta.getColumn(12).width = 40
+  hojaHE.getColumn(12).width = 40
   if (!Object.values(cfg.preciosHE || {}).some((v) => Number(v) > 0)) {
     fa++
-    acta.getCell(fa, 1).value = '⚠ No se han indicado precios de la hora extraordinaria: complete la columna H con los importes del convenio de cada año.'
-    acta.getCell(fa, 1).font = { bold: true, color: { argb: 'FFB45309' } }
+    hojaHE.getCell(fa, 1).value = '⚠ No se han indicado precios de la hora extraordinaria: complete la columna H con los importes del convenio de cada año.'
+    hojaHE.getCell(fa, 1).font = { bold: true, color: { argb: 'FFB45309' } }
   }
 
   // ───────── Años ─────────
@@ -455,6 +460,15 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
     fv++
     const fila = [l.nombre, l.generacion, fechaES(l.dias[0]?.fecha), fechaES(l.dias[l.dias.length - 1]?.fecha), l.dias.length, l.avisos.join('; ')]
     fila.forEach((v, i) => (wv.getCell(fv, i + 1).value = v))
+  }
+
+  // Autoría y derechos
+  {
+    const f0 = res.rowCount + 2
+    res.getCell(f0, 1).value = `Analizador de tacógrafo · ${textoCopyright()}`
+    res.getCell(f0, 1).font = { bold: true, color: { argb: 'FF555555' } }
+    res.getCell(f0 + 1, 1).value = TEXTO_LICENCIA
+    res.getCell(f0 + 1, 1).font = { italic: true, size: 9, color: { argb: 'FF777777' } }
   }
 
   return wb.xlsx.writeBuffer()

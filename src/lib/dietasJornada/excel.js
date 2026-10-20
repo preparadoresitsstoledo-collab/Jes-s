@@ -5,6 +5,7 @@ import ExcelJS from 'exceljs'
 import { TIPOS_DIETA, DATOS_EXPEDIENTE, CRITERIOS_DIAS, PRORRATEOS, CONCEPTOS_COTIZACION, DIETAS_SALARIO } from '../../data/dietasJornada.js'
 import { normalizarConfig, valoracion, tiposDelAnio } from './calculo.js'
 import { fechaES } from '../tacografo/tiempo.js'
+import { AUTOR, TEXTO_LICENCIA, textoCopyright } from '../../data/autoria.js'
 
 const AZUL = 'FF1F3A5F'
 const GRIS = 'FFF2F4F7'
@@ -42,7 +43,11 @@ const nombreTipo = (id) => TIPOS_DIETA.find((t) => t.id === id)?.nombre || id
 export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }) {
   const cfg = normalizarConfig(cfgEntrada)
   const wb = new ExcelJS.Workbook()
-  wb.creator = 'Dietas y jornada anual'
+  wb.creator = AUTOR
+  wb.lastModifiedBy = AUTOR
+  wb.company = AUTOR
+  wb.title = 'Dietas y jornada anual'
+  wb.description = `Dietas y jornada anual. ${textoCopyright()} ${TEXTO_LICENCIA}`
   wb.created = new Date()
 
   // ── Parámetros ──
@@ -240,6 +245,15 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
       r.getCell(6).numFmt = FMT_EUR
       fila++
     }
+  }
+
+  // Autoría y derechos
+  {
+    const f0 = wp.rowCount + 2
+    wp.getCell(f0, 1).value = `Dietas y jornada anual · ${textoCopyright()}`
+    wp.getCell(f0, 1).font = { bold: true, color: { argb: 'FF555555' } }
+    wp.getCell(f0 + 1, 1).value = TEXTO_LICENCIA
+    wp.getCell(f0 + 1, 1).font = { italic: true, size: 9, color: { argb: 'FF777777' } }
   }
 
   return wb.xlsx.writeBuffer()

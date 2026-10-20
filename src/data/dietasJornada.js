@@ -114,22 +114,22 @@ export const DATOS_EXPEDIENTE = [
     label: 'Convenio colectivo aplicable',
     placeholder: 'Convenio colectivo de transporte de mercancías por carretera de la provincia de …',
   },
-  { id: 'ordenServicio', label: 'Orden de servicio / expediente' },
 ]
 
-// Comprobaciones que el actuante marca para incluir en los hechos
+// Situaciones que el usuario puede marcar para incluirlas en el informe
 export const COMPROBACIONES = [
-  { id: 'sinJustificantes', texto: 'La empresa no aporta facturas ni tiques que justifiquen el gasto de las dietas.' },
-  { id: 'partesTrabajo', texto: 'Aporta partes de trabajo con fechas, servicios, matrícula y kilómetros.' },
-  { id: 'dietasMensuales', texto: 'Los trabajadores perciben dietas exentas de forma habitual todos los meses.' },
-  { id: 'variacionPrecios', texto: 'El importe de la dieta varía sin justificación objetiva, incluso dentro de la misma nómina.' },
-  { id: 'dietasEnVacaciones', texto: 'Se perciben dietas durante periodos que deberían ser de vacaciones.' },
-  { id: 'sinHE', texto: 'No consta abono de horas extraordinarias en nóminas ni en los CRA comunicados (eSIL), ni su compensación con descanso.' },
+  { id: 'sinJustificantes', texto: 'La empresa no pide ni guarda facturas o tiques que justifiquen el gasto de las dietas.' },
+  { id: 'partesTrabajo', texto: 'Existen partes de trabajo con fechas, servicios, matrícula y kilómetros de cada viaje.' },
+  { id: 'dietasMensuales', texto: 'Se cobran dietas todos los meses, de forma habitual.' },
+  { id: 'variacionPrecios', texto: 'El importe de la dieta cambia sin motivo aparente, incluso dentro de la misma nómina.' },
+  { id: 'dietasEnVacaciones', texto: 'Se han cobrado dietas (se ha trabajado) en días que debían ser de vacaciones.' },
+  { id: 'sinHE', texto: 'En las nóminas no aparecen horas extraordinarias pagadas ni compensadas con descanso.' },
 ]
 
 export const NORMAS = [
-  'Arts. 34.1, 35 y 38 del Estatuto de los Trabajadores (jornada, horas extraordinarias y vacaciones).',
-  'Art. 147 del texto refundido de la Ley General de la Seguridad Social (base de cotización y conceptos excluidos).',
-  'Art. 9.A del Reglamento del IRPF (dietas exentas y obligación del pagador de acreditar día, lugar y motivo del desplazamiento).',
-  'Art. 7.5 LISOS (infracción grave en materia de jornada, horas extraordinarias y vacaciones).',
+  'Arts. 34, 35 y 38 del Estatuto de los Trabajadores (jornada, horas extraordinarias y vacaciones).',
+  'Art. 8.3 del RD 1561/1995 (tiempo de presencia de los trabajadores móviles).',
+  'Arts. 147 y 149 de la Ley General de la Seguridad Social (base de cotización y cotización adicional por horas extraordinarias).',
+  'Art. 9.A del Reglamento del IRPF (dietas exentas).',
+  'Art. 59.2 del Estatuto de los Trabajadores (1 año para reclamar salarios) y art. 24 de la Ley General de la Seguridad Social (4 años para las cotizaciones).',
 ]

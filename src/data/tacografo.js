@@ -3,7 +3,7 @@
 // ⚠️ Los valores del CONVENIO son orientativos: compruébalos en el texto
 // vigente del Convenio Colectivo provincial de Transporte de Mercancías por
 // Carretera y Logística de Toledo (BOP de Toledo núm. 64, de 4 de abril de 2024,
-// y sus revisiones salariales) antes de usarlos en un acta.
+// y sus revisiones salariales) antes de usarlos en una reclamación.
 
 export const CONFIG_POR_DEFECTO = {
   zonaHoraria: 'Europe/Madrid',
@@ -23,7 +23,7 @@ export const CONFIG_POR_DEFECTO = {
   nocturnoInicio: '22:00', // art. 36.1 ET
   nocturnoFin: '06:00',
 
-  // Horas extraordinarias para el acta de liquidación
+  // Valoración de las horas extraordinarias
   metodoHE: 'mensual', // 'mensual' | 'semanal' | 'diario' | 'anual'
   preciosHE: {}, // { '2023': 14.5, ... } €/hora según tablas del convenio
   tipoCotizacion: 0, // % sobre el importe de HE (0 = no calcular cuota)
@@ -62,8 +62,6 @@ export const DATOS_EXPEDIENTE = [
   { id: 'naf', label: 'Nº afiliación Seguridad Social' },
   { id: 'categoria', label: 'Categoría profesional' },
   { id: 'convenio', label: 'Convenio aplicable', placeholder: 'Transporte de mercancías por carretera de Toledo' },
-  { id: 'ordenServicio', label: 'Orden de servicio / expediente' },
-  { id: 'actuante', label: 'Inspector/a o Subinspector/a actuante' },
 ]
 
 // Referencias normativas utilizadas en las incidencias

@@ -125,7 +125,7 @@ test('importa dietas pegadas desde Excel (tabuladores) o CSV', () => {
   assert.equal(aNumero('1.234,56'), 1234.56)
 })
 
-test('genera los hechos con la estructura del requerimiento', () => {
+test('genera el informe de posibles incumplimientos', () => {
   const t = nuevoTrabajador({
     nombre: 'Conductor 1',
     anios: { 2022: { diasDieta: 240, vacaciones: 10 }, 2023: { horasEfectivas: 1900, horasPresencia: 300 } },
@@ -141,16 +141,35 @@ test('genera los hechos con la estructura del requerimiento', () => {
     resumen,
     comprobaciones: ['sinJustificantes', 'variacionPrecios', 'sinHE'],
     importesDeclarados: 'entre 15 y 30 euros/día sin pernocta y entre 50 y 53 euros/día con pernocta',
+    hoy: '2026-10-20',
   })
   const texto = bloquesATexto(bloques)
-  assert.match(texto, /1\.800 horas\/año/)
-  assert.match(texto, /225 días hábiles/)
-  assert.match(texto, /incluso dentro de una misma nómina/)
-  assert.match(texto, /no disfrutan del periodo mínimo de vacaciones/)
-  assert.match(texto, /Período examinado: desde enero de 2022 hasta octubre de 2025/)
-  assert.match(texto, /horas extraordinarias no declaradas/)
-  assert.match(texto, /contingencias profesionales/)
-  assert.match(bloquesAHtml(bloques), /<table>/)
+  assert.match(texto, /1\.800 horas al año/)
+  assert.match(texto, /225 días de trabajo/)
+  assert.match(texto, /incluso dentro de la misma nómina/)
+  assert.match(texto, /faltan 20/)
+  assert.match(texto, /desde enero de 2022 hasta octubre de 2025/)
+  assert.match(texto, /PLAZOS PARA RECLAMAR/)
+  assert.match(texto, /papeleta de conciliación/)
+  assert.doesNotMatch(texto, /\bacta\b|actuante|mercantil|se han constatado/i)
+  const html = bloquesAHtml(bloques)
+  assert.match(html, /<table>/)
+  assert.match(html, /Todos los derechos reservados/)
+})
+
+test('plazos: 1 año para salarios y 4 años desde el fin del plazo de ingreso para cotizaciones', async () => {
+  const { plazosReclamacion } = await import('../calculo.js')
+  const [p] = plazosReclamacion([{ anio: '2022', desde: '2022-01-01', hasta: '2022-12-31' }], '2026-10-20')
+  // Salario de enero de 2022 (pagadero el 31/01/2022) → 31/01/2023; diciembre → 31/12/2023
+  assert.deepEqual([p.salario.primero, p.salario.ultimo, p.salario.estado], ['2023-01-31', '2023-12-31', 'prescrito'])
+  // Cotización de enero de 2022: ingreso hasta 28/02/2022 → prescribe 28/02/2026; diciembre → 31/01/2027
+  assert.deepEqual([p.cotizacion.primero, p.cotizacion.ultimo, p.cotizacion.estado], ['2026-02-28', '2027-01-31', 'parcial'])
+  const [q] = plazosReclamacion([{ anio: '2025', desde: '2025-01-01', hasta: '2025-10-31' }], '2026-10-20')
+  assert.equal(q.salario.estado, 'parcial')
+  assert.equal(q.cotizacion.estado, 'vigente')
+  // Febrero bisiesto
+  const [r] = plazosReclamacion([{ anio: '2024', desde: '2024-01-01', hasta: '2024-01-31' }], '2026-10-20')
+  assert.equal(r.cotizacion.primero, '2028-02-29')
 })
 
 test('valoración salarial y de cotización', async () => {
