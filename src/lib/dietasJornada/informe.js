@@ -5,7 +5,7 @@
 // El texto es una propuesta: el actuante debe revisarlo y adaptarlo.
 
 import { NORMAS, TIPOS_DIETA } from '../../data/dietasJornada.js'
-import { normalizarConfig } from './calculo.js'
+import { normalizarConfig, valoracion } from './calculo.js'
 import { fechaES, MESES } from '../tacografo/tiempo.js'
 
 // Número en formato español con separador de miles también en cifras de 4 dígitos
@@ -279,6 +279,39 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
       tipo: 'p',
       texto:
         'Al hilo de lo anterior, si bien no se pone en duda la existencia de los desplazamientos que motivan el pago de las dietas, la forma dispar de calcular el precio de estas, asignándoles distintos precios sin una motivación lógica y objetiva (tal como un gasto real), podría determinar que tales dietas están siendo utilizadas como un mecanismo para encubrir percepciones salariales, evitando su cotización a la Seguridad Social.',
+    })
+  }
+
+  // Valoración salarial y de cotización
+  const v = valoracion(resumen, cfg)
+  if (v.totales.totalSalarial > 0) {
+    const partes = []
+    if (v.totales.importeHE > 0) partes.push(`${eur(v.totales.importeHE)} por horas extraordinarias`)
+    if (v.totales.importeOrd > 0) partes.push(`${eur(v.totales.importeOrd)} por exceso de tiempo de presencia valorado a precio de hora ordinaria`)
+    if (v.totales.dietas > 0) partes.push(`${eur(v.totales.dietas)} de dietas que deben integrarse en la base de cotización`)
+    B.push({
+      tipo: 'p',
+      texto: `Valoradas conforme a las tablas salariales ${/^el /i.test(convenio) ? `del ${convenio.slice(3)}` : `de ${convenio}`}, las diferencias salariales ascienden a ${eur(v.totales.totalSalarial)} (${partes.join('; ')}), con unas cuotas a la Seguridad Social no ingresadas de ${eur(v.totales.cuotaTotal)} (${eur(v.totales.cuotaEmpresa)} a cargo de la empresa y ${eur(v.totales.cuotaTrabajador)} a cargo del trabajador), según el siguiente detalle:`,
+    })
+    B.push({
+      tipo: 'tabla',
+      cabecera: ['Trabajador', 'Año', 'Horas extra', '€/h', 'Importe HE', 'Horas presencia', '€/h', 'Importe presencia', 'Dietas a cotizar', 'Diferencia salarial', 'Cuota empresa', 'Cuota trabajador'],
+      filas: v.filas
+        .filter((x) => x.totalSalarial > 0)
+        .map((x) => [
+          x.trabajador.nombre || '—',
+          x.anio,
+          num(x.horasHE, 2),
+          x.precioHE ? num(x.precioHE, 2, true) : '—',
+          eur(x.importeHE),
+          num(x.horasOrd, 2),
+          x.precioOrd ? num(x.precioOrd, 2, true) : '—',
+          eur(x.importeOrd),
+          eur(x.dietas),
+          eur(x.totalSalarial),
+          eur(x.cuotaEmpresa),
+          eur(x.cuotaTrabajador),
+        ]),
     })
   }
 

@@ -300,8 +300,14 @@ navegador: no se envía ni se guarda nada en la web (el expediente se guarda com
   importes por encima de los límites exentos del art. 9.A RIRPF (verificar cada ejercicio en
   `src/data/dietasJornada.js`).
 
+- **Diferencias salariales y de cotización**: con el precio de la hora extraordinaria y de la hora
+  ordinaria de cada año (tablas del convenio, que introduce el usuario) valora las horas extra, el exceso de
+  presencia y, si se elige, las dietas que deben cotizar (exceso sobre el límite exento o todas). Calcula las
+  cuotas de empresa y trabajador por conceptos (CC, MEI, desempleo, FOGASA, FP, AT/EP y cotización adicional
+  por horas extra) con tipos editables por año. No aplica topes de bases ni cotización de solidaridad.
+
 **Salidas:** hechos comprobados redactados con la estructura del requerimiento (copiar, Word, imprimir/PDF) y
-Excel con el cuadrante por días, el cálculo por horas (con fórmulas editables), el análisis de dietas y las
+Excel con el cuadrante por días, el cálculo por horas, la liquidación de diferencias y cuotas (con fórmulas editables), el análisis de dietas y las
 líneas de nómina.
 
 Pruebas: `npm run test:dietas`.

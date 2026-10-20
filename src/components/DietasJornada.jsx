@@ -7,6 +7,8 @@ import {
   TIPOS_DIETA,
   DATOS_EXPEDIENTE,
   COMPROBACIONES,
+  DIETAS_SALARIO,
+  CONCEPTOS_COTIZACION,
 } from '../data/dietasJornada.js'
 import {
   nuevoTrabajador,
@@ -17,6 +19,8 @@ import {
   buscarTrabajador,
   aniosDelPeriodo,
   normalizarConfig,
+  valoracion,
+  tiposDelAnio,
 } from '../lib/dietasJornada/calculo.js'
 import { generarBloques, bloquesATexto, bloquesAHtml } from '../lib/dietasJornada/informe.js'
 import { fechaES } from '../lib/tacografo/tiempo.js'
@@ -117,6 +121,7 @@ export default function DietasJornada() {
   const periodoValido = cfg.desde && cfg.hasta && cfg.desde <= cfg.hasta
 
   const resumen = useMemo(() => (periodoValido ? resumenExpediente(trabajadores, cfg) : null), [trabajadores, cfg, periodoValido])
+  const valor = useMemo(() => (resumen ? valoracion(resumen, cfg) : null), [resumen, cfg])
   const bloques = useMemo(
     () => (resumen ? generarBloques({ expediente, cfg, resumen, comprobaciones, alegaciones, importesDeclarados }) : []),
     [resumen, expediente, cfg, comprobaciones, alegaciones, importesDeclarados],
@@ -433,20 +438,107 @@ export default function DietasJornada() {
 
           {periodoValido && (
             <>
-              <h3 className="tacografo__subtitulo">Precio de la hora extraordinaria (opcional, €/h)</h3>
-              <div className="tacografo__parametros">
-                {aniosDelPeriodo(cfg.desde, cfg.hasta).map((a) => (
-                  <div className="campo" key={a}>
-                    <label htmlFor={`p${a}`}>{a}</label>
-                    <input
-                      id={`p${a}`}
-                      inputMode="decimal"
-                      value={cfg.preciosHE?.[a] ?? ''}
-                      onChange={(e) => setCfg({ preciosHE: { ...cfg.preciosHE, [a]: e.target.value } })}
-                    />
-                  </div>
+              <h3 className="tacografo__subtitulo">Tablas salariales del convenio (para valorar las diferencias)</h3>
+              <p className="campo__ayuda">
+                Introduce, para cada año, el precio de la hora extraordinaria y el de la hora ordinaria de la categoría
+                del trabajador según las tablas del convenio aplicable (BOP). La hora ordinaria valora el exceso de
+                tiempo de presencia.
+              </p>
+              <div className="tacografo__tabla-scroll">
+                <table className="calc__tabla dietas__tabla-anios">
+                  <thead>
+                    <tr>
+                      <th>Año</th>
+                      <th>€ / hora extraordinaria</th>
+                      <th>€ / hora ordinaria</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {aniosDelPeriodo(cfg.desde, cfg.hasta).map((a) => (
+                      <tr key={a}>
+                        <td>{a}</td>
+                        <td>
+                          <input
+                            inputMode="decimal"
+                            aria-label={`Precio hora extraordinaria ${a}`}
+                            value={cfg.preciosHE?.[a] ?? ''}
+                            onChange={(e) => setCfg({ preciosHE: { ...cfg.preciosHE, [a]: e.target.value } })}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            inputMode="decimal"
+                            aria-label={`Precio hora ordinaria ${a}`}
+                            value={cfg.preciosOrdinaria?.[a] ?? ''}
+                            onChange={(e) => setCfg({ preciosOrdinaria: { ...cfg.preciosOrdinaria, [a]: e.target.value } })}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <h3 className="tacografo__subtitulo">Dietas que se integran en la base de cotización</h3>
+              <div className="tacografo__metodos">
+                {DIETAS_SALARIO.map((c) => (
+                  <label key={c.id} className={`tacografo__metodo ${cfg.dietasSalario === c.id ? 'tacografo__metodo--activo' : ''}`}>
+                    <input type="radio" name="dietasSalario" checked={cfg.dietasSalario === c.id} onChange={() => setCfg({ dietasSalario: c.id })} />
+                    <span>
+                      <strong>{c.nombre}</strong>
+                      <small>{c.detalle}</small>
+                    </span>
+                  </label>
                 ))}
               </div>
+
+              <details className="dietas__tipos">
+                <summary>Tipos de cotización (%) — revisar para cada ejercicio</summary>
+                <p className="campo__ayuda">
+                  Valores orientativos: contingencias comunes, MEI, desempleo (contrato indefinido), FOGASA, FP, AT/EP
+                  (CNAE 4941) y cotización adicional por horas extraordinarias no motivadas por fuerza mayor.
+                  Compruébalos en la Orden de cotización de cada año y en la tarifa de AT/EP del CNAE de la empresa.
+                </p>
+                <div className="tacografo__tabla-scroll">
+                  <table className="calc__tabla dietas__tabla-anios">
+                    <thead>
+                      <tr>
+                        <th>Concepto</th>
+                        {aniosDelPeriodo(cfg.desde, cfg.hasta).map((a) => (
+                          <th key={a} colSpan={2}>
+                            {a} (empresa / trabajador)
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {CONCEPTOS_COTIZACION.map((c) => (
+                        <tr key={c.id}>
+                          <td>{c.nombre}</td>
+                          {aniosDelPeriodo(cfg.desde, cfg.hasta).flatMap((a) => {
+                            const tp = tiposDelAnio(+a, cfg)
+                            return [0, 1].map((k) => (
+                              <td key={a + k}>
+                                <input
+                                  inputMode="decimal"
+                                  aria-label={`${c.nombre} ${a} ${k ? 'trabajador' : 'empresa'}`}
+                                  value={cfg.tiposCotizacion?.[a]?.[c.id]?.[k] ?? String(tp[c.id][k]).replace('.', ',')}
+                                  onChange={(e) => {
+                                    const actual = cfg.tiposCotizacion?.[a] || {}
+                                    const par = [...(actual[c.id] || tp[c.id])]
+                                    par[k] = e.target.value
+                                    setCfg({ tiposCotizacion: { ...cfg.tiposCotizacion, [a]: { ...actual, [c.id]: par } } })
+                                  }}
+                                />
+                              </td>
+                            ))
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
             </>
           )}
         </section>
@@ -551,7 +643,8 @@ export default function DietasJornada() {
               {resumen.conHoras.length > 0 && <Kpi titulo="Exceso jornada (B. CC)" valor={fmt(resumen.excesoCC, 2)} alerta={resumen.excesoCC > 0} />}
               <Kpi titulo="Sin vacaciones completas" valor={fmt(resumen.sinVacaciones.length)} alerta={resumen.sinVacaciones.length > 0} />
               <Kpi titulo="Con precios de dieta variables" valor={fmt(resumen.conVariacion.length)} alerta={resumen.conVariacion.length > 0} />
-              {resumen.importeHE > 0 && <Kpi titulo="Valoración HE" valor={`${fmt(resumen.importeHE, 2)} €`} />}
+              {valor?.totales.totalSalarial > 0 && <Kpi titulo="Diferencias salariales" valor={`${fmt(valor.totales.totalSalarial, 2)} €`} alerta />}
+              {valor?.totales.cuotaTotal > 0 && <Kpi titulo="Cuotas no ingresadas" valor={`${fmt(valor.totales.cuotaTotal, 2)} €`} alerta />}
               {resumen.excesoNoExento > 0 && <Kpi titulo="Dietas por encima del límite exento" valor={`${fmt(resumen.excesoNoExento, 2)} €`} alerta />}
             </div>
 
@@ -644,6 +737,74 @@ export default function DietasJornada() {
                   Jornada máxima = {fmt(cfgN.jornadaAnual)} h × (días en alta − IT) / días del año. El trabajo efectivo
                   que la excede son horas extraordinarias (base de contingencias profesionales); el resto del exceso
                   (presencia), base de contingencias comunes. Son horas a cotizar si no constan cotizadas en nómina.
+                </p>
+              </>
+            )}
+
+            {valor && (
+              <>
+                <h3 className="tacografo__subtitulo">Diferencias salariales y de cotización</h3>
+                {valor.faltanPrecios && (
+                  <p className="aviso aviso--alerta">
+                    Faltan precios de hora en las tablas salariales (apartado 1) para valorar todos los excesos.
+                  </p>
+                )}
+                <div className="tacografo__tabla-scroll">
+                  <table className="calc__tabla">
+                    <thead>
+                      <tr>
+                        <th>Trabajador</th>
+                        <th>Año</th>
+                        <th>Horas extra</th>
+                        <th>Importe HE</th>
+                        <th>Horas presencia</th>
+                        <th>Importe presencia</th>
+                        <th>Dietas a cotizar</th>
+                        <th>Diferencia salarial</th>
+                        <th>Cuota empresa</th>
+                        <th>Cuota trabajador</th>
+                        <th>Cuota total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {valor.filas.map((x) => (
+                        <tr key={x.trabajador.id + x.anio}>
+                          <td>{x.trabajador.nombre}</td>
+                          <td>
+                            {x.anio} <small>({x.metodo === 'horas' ? 'por horas' : 'por días'})</small>
+                          </td>
+                          <td>{fmt(x.horasHE, 2)}</td>
+                          <td>{fmt(x.importeHE, 2)} €</td>
+                          <td>{fmt(x.horasOrd, 2)}</td>
+                          <td>{fmt(x.importeOrd, 2)} €</td>
+                          <td>{fmt(x.dietas, 2)} €</td>
+                          <td className={x.totalSalarial > 0 ? 'dietas__exceso' : ''}>{fmt(x.totalSalarial, 2)} €</td>
+                          <td>{fmt(x.cuotaEmpresa, 2)} €</td>
+                          <td>{fmt(x.cuotaTrabajador, 2)} €</td>
+                          <td className={x.cuotaTotal > 0 ? 'dietas__exceso' : ''}>{fmt(x.cuotaTotal, 2)} €</td>
+                        </tr>
+                      ))}
+                      <tr className="dietas__total">
+                        <td>Total</td>
+                        <td />
+                        <td />
+                        <td>{fmt(valor.totales.importeHE, 2)} €</td>
+                        <td />
+                        <td>{fmt(valor.totales.importeOrd, 2)} €</td>
+                        <td>{fmt(valor.totales.dietas, 2)} €</td>
+                        <td>{fmt(valor.totales.totalSalarial, 2)} €</td>
+                        <td>{fmt(valor.totales.cuotaEmpresa, 2)} €</td>
+                        <td>{fmt(valor.totales.cuotaTrabajador, 2)} €</td>
+                        <td>{fmt(valor.totales.cuotaTotal, 2)} €</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p className="campo__ayuda">
+                  Se valoran las horas del método por horas (tacógrafo) cuando existen y, si no, el exceso por días.
+                  Las horas extraordinarias cotizan en la base de contingencias profesionales más la cotización
+                  adicional; el exceso de presencia y las dietas integradas, en ambas bases. No se aplican topes de
+                  bases ni la cotización de solidaridad.
                 </p>
               </>
             )}

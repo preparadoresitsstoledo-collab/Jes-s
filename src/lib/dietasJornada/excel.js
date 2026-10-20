@@ -2,8 +2,8 @@
 // análisis de importes de las dietas, líneas de nómina y parámetros.
 
 import ExcelJS from 'exceljs'
-import { TIPOS_DIETA, DATOS_EXPEDIENTE, CRITERIOS_DIAS, PRORRATEOS } from '../../data/dietasJornada.js'
-import { normalizarConfig } from './calculo.js'
+import { TIPOS_DIETA, DATOS_EXPEDIENTE, CRITERIOS_DIAS, PRORRATEOS, CONCEPTOS_COTIZACION, DIETAS_SALARIO } from '../../data/dietasJornada.js'
+import { normalizarConfig, valoracion, tiposDelAnio } from './calculo.js'
 import { fechaES } from '../tacografo/tiempo.js'
 
 const AZUL = 'FF1F3A5F'
@@ -160,6 +160,49 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
   nota.value =
     'Los excesos serán horas a cotizar si no constan como cotizadas en nómina. Las horas extraordinarias cotizan en la base de contingencias profesionales; el resto del exceso (presencia), en la de contingencias comunes.'
   nota.font = { italic: true }
+
+  // ── Liquidación: diferencias salariales y cuotas ──
+  const v = valoracion(resumen, cfg)
+  const wv = wb.addWorksheet('Liquidación', { views: [{ state: 'frozen', ySplit: 1 }] })
+  const cab = ['Trabajador', 'Año', 'Método', 'Horas extra', '€/hora extra', 'Importe HE', 'Horas presencia', '€/hora ordinaria', 'Importe presencia', 'Dietas a cotizar', 'Diferencia salarial', 'Base CC', 'Base CP']
+  for (const c of CONCEPTOS_COTIZACION) cab.push(`${c.nombre} empresa %`, `${c.nombre} trabajador %`)
+  cab.push('Cuota empresa', 'Cuota trabajador', 'Cuota total')
+  cabecera(wv, 1, cab)
+  wv.columns = cab.map((_, i) => ({ width: i === 0 ? 30 : 12 }))
+  const L = (n) => (n <= 26 ? String.fromCharCode(64 + n) : String.fromCharCode(64 + Math.floor((n - 1) / 26)) + String.fromCharCode(65 + ((n - 1) % 26)))
+  fila = 2
+  for (const x of v.filas) {
+    const r = wv.getRow(fila)
+    r.values = [x.trabajador.nombre, +x.anio, x.metodo === 'horas' ? 'Por horas' : 'Por días', x.horasHE, x.precioHE, null, x.horasOrd, x.precioOrd, null, x.dietas]
+    r.getCell(6).value = { formula: `D${fila}*N(E${fila})`, result: x.importeHE }
+    r.getCell(9).value = { formula: `G${fila}*N(H${fila})`, result: x.importeOrd }
+    r.getCell(11).value = { formula: `F${fila}+I${fila}+J${fila}`, result: x.totalSalarial }
+    r.getCell(12).value = { formula: `I${fila}+J${fila}`, result: x.baseCC }
+    r.getCell(13).value = { formula: `F${fila}+I${fila}+J${fila}`, result: x.baseCP }
+    const emp = []
+    const tra = []
+    let col = 14
+    const tiposAnio = tiposDelAnio(+x.anio, cfg)
+    for (const c of CONCEPTOS_COTIZACION) {
+      const base = c.id === 'cc' || c.id === 'mei' ? `L${fila}` : c.id === 'he' ? `F${fila}` : `M${fila}`
+      r.getCell(col).value = tiposAnio[c.id][0]
+      r.getCell(col + 1).value = tiposAnio[c.id][1]
+      emp.push(`${base}*${L(col)}${fila}/100`)
+      tra.push(`${base}*${L(col + 1)}${fila}/100`)
+      col += 2
+    }
+    r.getCell(col).value = { formula: emp.join('+'), result: x.cuotaEmpresa }
+    r.getCell(col + 1).value = { formula: tra.join('+'), result: x.cuotaTrabajador }
+    r.getCell(col + 2).value = { formula: `${L(col)}${fila}+${L(col + 1)}${fila}`, result: x.cuotaTotal }
+    for (const c of [5, 6, 8, 9, 10, 11, 12, 13, col, col + 1, col + 2]) r.getCell(c).numFmt = FMT_EUR
+    for (const c of [4, 7]) r.getCell(c).numFmt = FMT_DEC
+    fila++
+  }
+  const nCols = cab.length
+  totales(wv, fila, [4, 6, 7, 9, 10, 11, 12, 13, nCols - 2, nCols - 1, nCols], [6, 9, 10, 11, 12, 13, nCols - 2, nCols - 1, nCols])
+  const notaV = wv.getRow(fila + 2).getCell(1)
+  notaV.value = `Dietas integradas: ${DIETAS_SALARIO.find((d) => d.id === cfg.dietasSalario)?.nombre}. Las horas extraordinarias cotizan en la base de contingencias profesionales (AT/EP, desempleo, FOGASA, FP) y por la cotización adicional; el exceso de presencia y las dietas, en ambas bases. No se aplican topes de bases ni cotización de solidaridad. Verifica precios y tipos de cada ejercicio.`
+  notaV.font = { italic: true }
 
   // ── Análisis de dietas ──
   const wa = wb.addWorksheet('Análisis dietas')

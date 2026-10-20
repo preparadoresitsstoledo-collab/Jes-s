@@ -3001,3 +3001,18 @@ select.chip {
     grid-template-columns: 1fr;
   }
 }
+.dietas__tipos {
+  margin-top: 16px;
+}
+.dietas__tipos summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--azul-900);
+}
+.dietas__tipos .dietas__tabla-anios input {
+  width: 64px;
+}
+.dietas__total td {
+  font-weight: 700;
+  background: var(--gris-100);
+}

@@ -152,3 +152,33 @@ test('genera los hechos con la estructura del requerimiento', () => {
   assert.match(texto, /base de contingencias profesionales/)
   assert.match(bloquesAHtml(bloques), /<table>/)
 })
+
+test('valoración salarial y de cotización', async () => {
+  const { valoracion, tiposDelAnio } = await import('../calculo.js')
+  const t = nuevoTrabajador({
+    anios: { 2025: { horasEfectivas: 1600, horasPresencia: 100 } },
+    dietas: [{ mes: '2025-03', tipo: 'nacional_sin', dias: 10, importe: 30 }],
+  })
+  const c = { ...cfg, desde: '2025-01-01', hasta: '2025-10-31', preciosHE: { 2025: 15 }, preciosOrdinaria: { 2025: 10 }, dietasSalario: 'exceso' }
+  const v = valoracion(resumenExpediente([t], c), c)
+  const f = v.filas[0]
+  // jornada máxima 1800 × 304 / 365 = 1499,18 → HE 100,82 h; presencia 100 h
+  assert.equal(f.metodo, 'horas')
+  assert.equal(f.horasHE, 100.82)
+  assert.equal(f.importeHE, 1512.3)
+  assert.equal(f.importeOrd, 1000)
+  assert.equal(f.dietas, 33.3)
+  assert.equal(f.totalSalarial, 2545.6)
+  const tp = tiposDelAnio(2025, c)
+  const empresa =
+    (1033.3 * (tp.cc[0] + tp.mei[0])) / 100 +
+    (2545.6 * (tp.desempleo[0] + tp.fogasa[0] + tp.fp[0] + tp.atep[0])) / 100 +
+    (1512.3 * tp.he[0]) / 100
+  assert.ok(Math.abs(f.cuotaEmpresa - empresa) < 0.06)
+  // Sin horas del tacógrafo se valora el exceso por días
+  const t2 = nuevoTrabajador({ anios: { 2025: { diasDieta: 198 } } })
+  const f2 = valoracion(resumenExpediente([t2], c), c).filas[0]
+  assert.equal(f2.metodo, 'dias')
+  assert.equal(f2.horasHE, 80)
+  assert.equal(f2.importeHE, 1200)
+})

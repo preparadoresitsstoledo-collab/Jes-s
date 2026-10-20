@@ -5,7 +5,7 @@
 // hábiles teóricos que resultan de la jornada máxima anual del convenio, y
 // analiza la regularidad de los importes de las dietas.
 
-import { CONFIG_POR_DEFECTO, LIMITES_EXENTOS, TIPOS_DIETA } from '../../data/dietasJornada.js'
+import { CONFIG_POR_DEFECTO, LIMITES_EXENTOS, TIPOS_DIETA, TIPOS_COTIZACION, CONCEPTOS_COTIZACION } from '../../data/dietasJornada.js'
 import { diasEnAnio, diasEntre, sumarDias, MESES } from '../tacografo/tiempo.js'
 
 // ─────────────────────────── Utilidades ───────────────────────────
@@ -419,5 +419,111 @@ export function resumenExpediente(trabajadores, cfg) {
     excesoHE: Math.round(datos.reduce((s, d) => s + d.cuadrante.totales.excesoHE, 0) * 100) / 100,
     excesoCC: Math.round(datos.reduce((s, d) => s + d.cuadrante.totales.excesoCC, 0) * 100) / 100,
     conHoras: datos.filter((d) => d.cuadrante.filas.some((f) => f.excesoHE !== null)),
+  }
+}
+
+// ─────────────────────────── Valoración salarial y de cotización ───────────────────────────
+
+// Tipos de cotización del año: los por defecto (o los del año más próximo) con los cambios del usuario
+export function tiposDelAnio(anio, cfg = {}) {
+  const anios = Object.keys(TIPOS_COTIZACION).map(Number)
+  const cercano = anios.reduce((a, b) => (Math.abs(b - anio) < Math.abs(a - anio) ? b : a), anios[0])
+  const base = TIPOS_COTIZACION[anio] || TIPOS_COTIZACION[cercano]
+  const propios = cfg.tiposCotizacion?.[anio] || {}
+  const r = {}
+  for (const { id } of CONCEPTOS_COTIZACION) {
+    const [e, t] = base[id] || [0, 0]
+    r[id] = [aNumero(propios[id]?.[0]) ?? e, aNumero(propios[id]?.[1]) ?? t]
+  }
+  return r
+}
+
+const red2 = (x) => Math.round(x * 100) / 100
+
+// Importe de las dietas del año que se integra en la base de cotización
+function dietasSalarioAnio(t, f, criterio) {
+  if (criterio === 'ninguna') return 0
+  const lineas = (t.dietas || []).filter((l) => l.mes?.slice(0, 4) === f.anio && l.mes >= f.desde.slice(0, 7) && l.mes <= f.hasta.slice(0, 7))
+  return red2(
+    lineas.reduce((s, l) => {
+      const imp = aNumero(l.importe) || 0
+      const dias = aNumero(l.dias) || 0
+      if (criterio === 'todas') return s + imp * dias
+      const lim = aNumero(LIMITES_EXENTOS[l.tipo])
+      return s + (lim ? Math.max(0, imp - lim) * dias : 0)
+    }, 0),
+  )
+}
+
+/**
+ * Diferencias salariales y de cotización por trabajador y año.
+ * - Horas extraordinarias (método por horas o, si no hay horas, exceso por días):
+ *   cotizan en la base de contingencias profesionales (AT/EP, desempleo, FOGASA, FP)
+ *   más la cotización adicional por horas extraordinarias.
+ * - Exceso de presencia valorado a precio de hora ordinaria y dietas integradas:
+ *   cotizan en ambas bases (CC, MEI, AT/EP, desempleo, FOGASA, FP).
+ * No aplica topes de bases máximas ni cotización de solidaridad.
+ */
+export function valoracion(resumen, cfgEntrada) {
+  const cfg = normalizarConfig(cfgEntrada)
+  const filas = []
+  for (const d of resumen.datos) {
+    for (const f of d.cuadrante.filas) {
+      const porHoras = f.excesoHE !== null
+      const horasHE = porHoras ? f.excesoHE : f.excesoHoras || 0
+      const horasOrd = porHoras ? f.excesoCC || 0 : 0
+      const precioHE = aNumero(cfg.preciosHE?.[f.anio])
+      const precioOrd = aNumero(cfg.preciosOrdinaria?.[f.anio])
+      const importeHE = red2(horasHE * (precioHE || 0))
+      const importeOrd = red2(horasOrd * (precioOrd || 0))
+      const dietas = dietasSalarioAnio(d.trabajador, f, cfg.dietasSalario)
+      const tipos = tiposDelAnio(+f.anio, cfg)
+      const baseAmbas = importeOrd + dietas
+      const cuotas = {}
+      let empresa = 0
+      let trabajador = 0
+      for (const { id } of CONCEPTOS_COTIZACION) {
+        const base = id === 'cc' || id === 'mei' ? baseAmbas : id === 'he' ? importeHE : baseAmbas + importeHE
+        const e = red2((base * tipos[id][0]) / 100)
+        const t = red2((base * tipos[id][1]) / 100)
+        cuotas[id] = [e, t]
+        empresa += e
+        trabajador += t
+      }
+      filas.push({
+        trabajador: d.trabajador,
+        anio: f.anio,
+        metodo: porHoras ? 'horas' : 'dias',
+        horasHE,
+        precioHE,
+        importeHE,
+        horasOrd,
+        precioOrd,
+        importeOrd,
+        dietas,
+        totalSalarial: red2(importeHE + importeOrd + dietas),
+        baseCC: red2(baseAmbas),
+        baseCP: red2(baseAmbas + importeHE),
+        cuotas,
+        cuotaEmpresa: red2(empresa),
+        cuotaTrabajador: red2(trabajador),
+        cuotaTotal: red2(empresa + trabajador),
+        sinPrecio: (horasHE > 0 && !precioHE) || (horasOrd > 0 && !precioOrd),
+      })
+    }
+  }
+  const suma = (k) => red2(filas.reduce((s, x) => s + (x[k] || 0), 0))
+  return {
+    filas,
+    totales: {
+      importeHE: suma('importeHE'),
+      importeOrd: suma('importeOrd'),
+      dietas: suma('dietas'),
+      totalSalarial: suma('totalSalarial'),
+      cuotaEmpresa: suma('cuotaEmpresa'),
+      cuotaTrabajador: suma('cuotaTrabajador'),
+      cuotaTotal: suma('cuotaTotal'),
+    },
+    faltanPrecios: filas.some((x) => x.sinPrecio),
   }
 }

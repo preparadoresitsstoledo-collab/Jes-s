@@ -13,8 +13,48 @@ export const CONFIG_POR_DEFECTO = {
   prorrateo: 'meses', // 'meses' | 'dias'
   redondeo: 'proximo', // 'proximo' | 'superior' | 'inferior' | 'ninguno'
   criterioDias: 'maximo', // 'maximo' | 'dietas' | 'tacografo'
-  preciosHE: {}, // { '2023': 14.5 } €/hora para valorar el exceso (opcional)
+  preciosHE: {}, // { '2023': 14.5 } €/hora extraordinaria según tablas del convenio
+  preciosOrdinaria: {}, // { '2023': 11.2 } €/hora ordinaria (valora el exceso de presencia)
+  dietasSalario: 'ninguna', // 'ninguna' | 'exceso' | 'todas': dietas que se integran en la base
+  tiposCotizacion: {}, // { '2025': { cc: 23.6, ... } } sobrescribe TIPOS_COTIZACION
 }
+
+export const DIETAS_SALARIO = [
+  { id: 'ninguna', nombre: 'No integrar dietas', detalle: 'Solo se valoran las horas.' },
+  { id: 'exceso', nombre: 'Exceso sobre el límite exento', detalle: 'Lo que supera los límites del art. 9.A RIRPF.' },
+  { id: 'todas', nombre: 'Todas las dietas', detalle: 'Se consideran salario encubierto en su totalidad.' },
+]
+
+// Tipos de cotización (%) empresa / trabajador. ⚠️ VERIFICAR cada ejercicio en la
+// Orden de cotización y la tarifa de AT/EP (DA 4.ª Ley 42/2006) del CNAE de la empresa.
+// cc: contingencias comunes · mei: Mecanismo de Equidad Intergeneracional ·
+// desempleo (contrato indefinido) · fogasa · fp: formación profesional ·
+// atep: accidentes de trabajo y enfermedades profesionales (CNAE 4941, a cargo de la empresa) ·
+// he: cotización adicional por horas extraordinarias no motivadas por fuerza mayor.
+const TIPOS_BASE = {
+  cc: [23.6, 4.7],
+  desempleo: [5.5, 1.55],
+  fogasa: [0.2, 0],
+  fp: [0.6, 0.1],
+  atep: [6.7, 0],
+  he: [23.6, 4.7],
+}
+export const TIPOS_COTIZACION = {
+  2022: { ...TIPOS_BASE, mei: [0, 0] },
+  2023: { ...TIPOS_BASE, mei: [0.5, 0.1] },
+  2024: { ...TIPOS_BASE, mei: [0.58, 0.12] },
+  2025: { ...TIPOS_BASE, mei: [0.67, 0.13] },
+  2026: { ...TIPOS_BASE, mei: [0.75, 0.15] },
+}
+export const CONCEPTOS_COTIZACION = [
+  { id: 'cc', nombre: 'Contingencias comunes' },
+  { id: 'mei', nombre: 'MEI' },
+  { id: 'desempleo', nombre: 'Desempleo' },
+  { id: 'fogasa', nombre: 'FOGASA' },
+  { id: 'fp', nombre: 'Formación profesional' },
+  { id: 'atep', nombre: 'AT y EP' },
+  { id: 'he', nombre: 'Adicional horas extra' },
+]
 
 export const CRITERIOS_DIAS = [
   {
