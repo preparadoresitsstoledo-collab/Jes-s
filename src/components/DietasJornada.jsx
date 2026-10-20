@@ -36,7 +36,7 @@ const fmt = (x, dec = 0) =>
     : Number(x).toLocaleString('es-ES', { minimumFractionDigits: dec, maximumFractionDigits: Math.max(dec, 2), useGrouping: true })
 
 const CAMPOS_ANIO = [
-  { id: 'diasIT', label: 'Días IT', ayuda: 'Días de incapacidad temporal u otras situaciones que no computan' },
+  { id: 'diasIT', label: 'Días de suspensión', ayuda: 'Incapacidad temporal y demás suspensiones del contrato: no generan jornada exigible' },
   { id: 'diasDieta', label: 'Días con dieta', calc: 'diasDieta' },
   { id: 'diasTacografo', label: 'Días tacógrafo', calc: 'diasTacografo' },
   { id: 'horasEfectivas', label: 'Horas trabajo efectivo', calc: 'horasEfectivas', ayuda: 'Conducción + otros trabajos' },
@@ -760,8 +760,8 @@ export default function DietasJornada() {
               <Kpi titulo="Con exceso de jornada" valor={fmt(resumen.conExceso.length)} alerta={resumen.conExceso.length > 0} />
               <Kpi titulo="Exceso (días)" valor={fmt(resumen.excesoDias)} alerta={resumen.excesoDias > 0} />
               <Kpi titulo="Exceso (horas, por días)" valor={fmt(resumen.excesoHoras)} alerta={resumen.excesoHoras > 0} />
-              {resumen.conHoras.length > 0 && <Kpi titulo="Horas extra (B. CP)" valor={fmt(resumen.excesoHE, 2)} alerta={resumen.excesoHE > 0} />}
-              {resumen.conHoras.length > 0 && <Kpi titulo="Exceso jornada (B. CC)" valor={fmt(resumen.excesoCC, 2)} alerta={resumen.excesoCC > 0} />}
+              {resumen.conHoras.length > 0 && <Kpi titulo="Horas extraordinarias (tacógrafo)" valor={fmt(resumen.excesoHE, 2)} alerta={resumen.excesoHE > 0} />}
+              {resumen.conHoras.length > 0 && <Kpi titulo="Exceso de presencia" valor={fmt(resumen.excesoPresencia, 2)} alerta={resumen.excesoPresencia > 0} />}
               <Kpi titulo="Sin vacaciones completas" valor={fmt(resumen.sinVacaciones.length)} alerta={resumen.sinVacaciones.length > 0} />
               <Kpi titulo="Con precios de dieta variables" valor={fmt(resumen.conVariacion.length)} alerta={resumen.conVariacion.length > 0} />
               {valor?.totales.totalSalarial > 0 && <Kpi titulo="Diferencias salariales" valor={`${fmt(valor.totales.totalSalarial, 2)} €`} alerta />}
@@ -817,20 +817,20 @@ export default function DietasJornada() {
 
             {resumen.conHoras.length > 0 && (
               <>
-                <h3 className="tacografo__subtitulo">Cálculo por horas (jornada máxima proporcional a los días de alta)</h3>
+                <h3 className="tacografo__subtitulo">Cómputo horario con los registros del tacógrafo</h3>
                 <div className="tacografo__tabla-scroll">
                   <table className="calc__tabla">
                     <thead>
                       <tr>
                         <th>Trabajador</th>
                         <th>Año</th>
-                        <th>Días en alta</th>
-                        <th>Días IT</th>
-                        <th>Jornada máxima (h)</th>
+                        <th>Días computables</th>
+                        <th>Jornada exigible (h)</th>
                         <th>Trabajo efectivo (h)</th>
                         <th>Presencia (h)</th>
-                        <th>Exceso HE (B. CP)</th>
-                        <th>Exceso jornada (B. CC)</th>
+                        <th>Exceso total (h)</th>
+                        <th>Horas extraordinarias</th>
+                        <th>Exceso de presencia</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -841,13 +841,16 @@ export default function DietasJornada() {
                             <tr key={d.trabajador.id + f.anio}>
                               <td>{d.trabajador.nombre}</td>
                               <td>{f.anio}</td>
-                              <td>{fmt(f.diasAlta)}</td>
-                              <td>{fmt(f.diasIT)}</td>
-                              <td>{fmt(f.jornadaMaxima, 2)}</td>
+                              <td>
+                                {fmt(f.diasComputables)}
+                                {f.diasSuspension > 0 && <small> ({fmt(f.diasSuspension)} susp.)</small>}
+                              </td>
+                              <td>{fmt(f.jornadaProporcional, 2)}</td>
                               <td>{fmt(f.horasEfectivas, 2)}</td>
                               <td>{fmt(f.horasPresencia, 2)}</td>
+                              <td>{fmt(f.excesoTotal, 2)}</td>
                               <td className={f.excesoHE > 0 ? 'dietas__exceso' : ''}>{fmt(f.excesoHE, 2)}</td>
-                              <td className={f.excesoCC > 0 ? 'dietas__exceso' : ''}>{fmt(f.excesoCC, 2)}</td>
+                              <td className={f.excesoPresencia > 0 ? 'dietas__exceso' : ''}>{fmt(f.excesoPresencia, 2)}</td>
                             </tr>
                           )),
                       )}
@@ -855,9 +858,10 @@ export default function DietasJornada() {
                   </table>
                 </div>
                 <p className="campo__ayuda">
-                  Jornada máxima = {fmt(cfgN.jornadaAnual)} h × (días en alta − IT) / días del año. El trabajo efectivo
-                  que la excede son horas extraordinarias (base de contingencias profesionales); el resto del exceso
-                  (presencia), base de contingencias comunes. Son horas a cotizar si no constan cotizadas en nómina.
+                  Jornada exigible del tramo = {fmt(cfgN.jornadaAnual)} h × días computables / días naturales del año.
+                  Del tiempo que la rebasa, el trabajo efectivo son horas extraordinarias (cotizan por contingencias
+                  profesionales y cotización adicional) y el resto, exceso de presencia (salario que cotiza en ambas
+                  bases). Comprueba qué parte figura ya retribuida y cotizada en nómina.
                 </p>
               </>
             )}
@@ -892,7 +896,7 @@ export default function DietasJornada() {
                         <tr key={x.trabajador.id + x.anio}>
                           <td>{x.trabajador.nombre}</td>
                           <td>
-                            {x.anio} <small>({x.metodo === 'horas' ? 'por horas' : 'por días'})</small>
+                            {x.anio} <small>({x.metodo === 'horas' ? 'tacógrafo' : 'por días'})</small>
                           </td>
                           <td>
                             {fmt(x.horasHE, 2)}
@@ -928,7 +932,7 @@ export default function DietasJornada() {
                   </table>
                 </div>
                 <p className="campo__ayuda">
-                  Se valoran las horas del método por horas (tacógrafo) cuando existen y, si no, el exceso por días.
+                  Se valoran las horas del cómputo horario del tacógrafo cuando existen y, si no, el exceso por días.
                   Las horas extraordinarias cotizan en la base de contingencias profesionales más la cotización
                   adicional; el exceso de presencia y las dietas integradas, en ambas bases. No se aplican topes de
                   bases ni la cotización de solidaridad.

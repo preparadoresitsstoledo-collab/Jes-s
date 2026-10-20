@@ -236,11 +236,11 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
     }
   }
 
-  // Método por horas (lecturas del tacógrafo)
+  // Cómputo horario (lecturas del tacógrafo)
   if (resumen.conHoras.length) {
     B.push({
       tipo: 'p',
-      texto: `Asimismo, a partir de las horas registradas en los tacógrafos, se ha calculado la jornada máxima que podía realizar cada trabajador en su periodo de alta (${num(cfg.jornadaAnual)} horas × días en alta, descontados los días de incapacidad temporal u otras situaciones similares, / días del año). El tiempo de trabajo efectivo (conducción y otros trabajos) que excede de dicha jornada máxima constituye horas extraordinarias, a cotizar en la base de contingencias profesionales; el resto del tiempo que excede de la jornada máxima (tiempo de presencia) se integra en la base de contingencias comunes. Estos excesos son horas a cotizar en la medida en que no constan como cotizadas en las nóminas:`,
+      texto: `Además, se ha contrastado el tiempo registrado en los tacógrafos con la jornada exigible en cada tramo, obtenida en proporción a los días naturales del año a partir de la jornada anual de ${num(cfg.jornadaAnual)} horas, excluidos los días en que el contrato estuvo suspendido. Del tiempo que rebasa esa jornada, la parte correspondiente a trabajo efectivo (conducción y otros trabajos) tiene la consideración de horas extraordinarias (art. 35 ET), que se integran en la base de cotización por contingencias profesionales y están sujetas a la cotización adicional (arts. 147.2 y 149 LGSS); el resto corresponde a tiempo de presencia que excede de la jornada y que ha de retribuirse y cotizar como salario (art. 8.3 RD 1561/1995). Todo ello en la medida en que no figure ya retribuido y cotizado en las nóminas:`,
     })
     const filasHoras = []
     for (const d of resumen.conHoras) {
@@ -249,25 +249,25 @@ export function generarBloques({ expediente = {}, cfg: cfgEntrada, resumen, comp
         filasHoras.push([
           d.trabajador.nombre || '—',
           f.completo ? f.anio : `${f.anio} (${fechaES(f.desde).slice(0, 5)}–${fechaES(f.hasta).slice(0, 5)})`,
-          num(f.diasAlta),
-          num(f.diasIT),
-          num(f.jornadaMaxima, 2),
+          num(f.diasComputables),
+          num(f.jornadaProporcional, 2),
           num(f.horasEfectivas, 2),
           num(f.horasPresencia, 2),
+          num(f.excesoTotal, 2),
           num(f.excesoHE, 2),
-          num(f.excesoCC, 2),
+          num(f.excesoPresencia, 2),
         ])
       }
     }
     B.push({
       tipo: 'tabla',
-      cabecera: ['Trabajador', 'Año', 'Días en alta', 'Días IT', 'Jornada máxima (h)', 'Trabajo efectivo (h)', 'Presencia (h)', 'Exceso HE (B. CP)', 'Exceso jornada (B. CC)'],
+      cabecera: ['Trabajador', 'Año', 'Días computables', 'Jornada exigible (h)', 'Trabajo efectivo (h)', 'Presencia (h)', 'Exceso total (h)', 'Horas extraordinarias', 'Exceso de presencia'],
       filas: filasHoras,
     })
-    if (resumen.excesoHE > 0 || resumen.excesoCC > 0) {
+    if (resumen.excesoHE > 0 || resumen.excesoPresencia > 0) {
       B.push({
         tipo: 'p',
-        texto: `En total, ${num(resumen.excesoHE, 2)} horas extraordinarias y ${num(resumen.excesoCC, 2)} horas de exceso sobre la jornada máxima.`,
+        texto: `Resultan, en conjunto, ${num(resumen.excesoHE, 2)} horas extraordinarias y ${num(resumen.excesoPresencia, 2)} horas de presencia por encima de la jornada.`,
       })
     }
   }

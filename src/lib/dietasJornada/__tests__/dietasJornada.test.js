@@ -61,30 +61,30 @@ test('vacaciones: déficit y actividad del tacógrafo durante las vacaciones', (
   assert.equal(filas[0].horasEfectivas, 26)
 })
 
-test('método por horas (calculadora de transportes): HE en B. CP y presencia en B. CC', () => {
+test('cómputo horario: horas extraordinarias y exceso de presencia sobre la jornada exigible', () => {
   const base = { ...cfg, desde: '2023-03-01', hasta: '2023-10-31' }
-  // 245 días en alta → jornada máxima 1800 × 245 / 365 = 1208,22 h
+  // 245 días en el tramo → jornada exigible 1800 × 245 / 365 = 1208,22 h
   const t = nuevoTrabajador({ anios: { 2023: { horasEfectivas: 1300, horasPresencia: 400 } } })
   let f = cuadranteTrabajador(t, base).filas[0]
-  assert.equal(f.diasAlta, 245)
-  assert.equal(f.jornadaMaxima, 1208.22)
+  assert.equal(f.diasPeriodo, 245)
+  assert.equal(f.jornadaProporcional, 1208.22)
   assert.equal(f.excesoHE, 91.78)
-  assert.equal(f.excesoCC, 400)
+  assert.equal(f.excesoPresencia, 400)
 
-  // Si el trabajo efectivo no supera la jornada máxima no hay HE; el exceso total va a B. CC
+  // Si el trabajo efectivo no supera la jornada exigible no hay HE; todo el exceso es de presencia
   t.anios[2023] = { horasEfectivas: 1000, horasPresencia: 400 }
   f = cuadranteTrabajador(t, base).filas[0]
   assert.equal(f.excesoHE, 0)
-  assert.equal(f.excesoCC, 191.78)
+  assert.equal(f.excesoPresencia, 191.78)
 
-  // Los días de IT reducen la jornada máxima: 1800 × (245 − 20) / 365
+  // Los días de suspensión reducen la jornada exigible: 1800 × (245 − 20) / 365
   t.anios[2023] = { horasEfectivas: 1000, horasPresencia: 400, diasIT: 20 }
   f = cuadranteTrabajador(t, base).filas[0]
-  assert.equal(f.jornadaMaxima, 1109.59)
+  assert.equal(f.jornadaProporcional, 1109.59)
 
   // Año bisiesto: se divide entre 366
   const b = cuadranteTrabajador(nuevoTrabajador({ anios: { 2024: { horasEfectivas: 1800 } } }), { ...cfg, desde: '2024-01-01', hasta: '2024-12-31' })
-  assert.equal(b.filas[0].jornadaMaxima, 1800)
+  assert.equal(b.filas[0].jornadaProporcional, 1800)
 })
 
 test('análisis de dietas: precios distintos en la misma nómina y exceso no exento', () => {
@@ -149,7 +149,7 @@ test('genera los hechos con la estructura del requerimiento', () => {
   assert.match(texto, /no disfrutan del periodo mínimo de vacaciones/)
   assert.match(texto, /Período examinado: desde enero de 2022 hasta octubre de 2025/)
   assert.match(texto, /horas extraordinarias no declaradas/)
-  assert.match(texto, /base de contingencias profesionales/)
+  assert.match(texto, /contingencias profesionales/)
   assert.match(bloquesAHtml(bloques), /<table>/)
 })
 

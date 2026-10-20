@@ -132,12 +132,14 @@ export function cuadranteTrabajador(t, cfgEntrada) {
     const b = minF(`${anio}-12-31`, hasta)
     const completo = a === `${anio}-01-01` && b === `${anio}-12-31`
     const manual = t.anios?.[anio] || {}
-    // Días de IT (o situaciones similares) que no computan como tiempo de trabajo
-    const diasAlta = diasEntre(a, b)
-    const diasIT = Math.min(diasAlta, Math.max(0, aNumero(manual.diasIT) || 0))
-    const fraccion = fraccionAnio(a, b, cfg.prorrateo) * ((diasAlta - diasIT) / diasAlta)
-    // Jornada máxima del periodo por días naturales: jornada anual × (días en alta − IT) / días del año
-    const jornadaMaxima = Math.round(((cfg.jornadaAnual * (diasAlta - diasIT)) / diasEnAnio(+anio)) * 100) / 100
+    // Días del periodo en los que no hay obligación de trabajar (incapacidad temporal
+    // y demás suspensiones del contrato): no generan jornada exigible.
+    const diasPeriodo = diasEntre(a, b)
+    const diasSuspension = Math.min(diasPeriodo, Math.max(0, aNumero(manual.diasIT) || 0))
+    const diasComputables = diasPeriodo - diasSuspension
+    const fraccion = fraccionAnio(a, b, cfg.prorrateo) * (diasComputables / diasPeriodo)
+    // Jornada exigible en el tramo, en proporción a los días naturales del año
+    const jornadaProporcional = Math.round(((cfg.jornadaAnual * diasComputables) / diasEnAnio(+anio)) * 100) / 100
 
     // Días con dieta: dato manual o suma de las líneas de nómina del año dentro del periodo
     const lineas = (t.dietas || []).filter((l) => l.mes?.slice(0, 4) === anio && l.mes >= a.slice(0, 7) && l.mes <= b.slice(0, 7))
@@ -154,16 +156,19 @@ export function cuadranteTrabajador(t, cfgEntrada) {
     const horasEfectivas = aNumero(manual.horasEfectivas) ?? (t.tacografo ? aHoras(minEfectivo) : null)
     const horasPresencia = aNumero(manual.horasPresencia) ?? (t.tacografo ? aHoras(minPresencia) : null)
 
-    // Método por horas: el trabajo efectivo que excede la jornada máxima son horas
-    // extraordinarias (base de contingencias profesionales); el resto del tiempo que
-    // excede la jornada máxima (presencia) cotiza en la base de contingencias comunes.
+    // Cómputo horario: el tiempo total registrado (trabajo efectivo + presencia) que
+    // rebasa la jornada exigible es el exceso total. De él, la parte de trabajo efectivo
+    // que supera la jornada son horas extraordinarias (arts. 35 ET y 147.2 y 149 LGSS);
+    // el resto es exceso de tiempo de presencia (art. 8.3 RD 1561/1995).
+    let excesoTotal = null
     let excesoHE = null
-    let excesoCC = null
+    let excesoPresencia = null
     if (horasEfectivas !== null || horasPresencia !== null) {
       const ef = horasEfectivas ?? 0
-      const total = ef + (horasPresencia ?? 0)
-      excesoHE = Math.round(Math.max(0, ef - jornadaMaxima) * 100) / 100
-      excesoCC = Math.round(Math.max(0, total - excesoHE - jornadaMaxima) * 100) / 100
+      const r2 = (x) => Math.round(x * 100) / 100
+      excesoTotal = r2(Math.max(0, ef + (horasPresencia ?? 0) - jornadaProporcional))
+      excesoHE = r2(Math.max(0, ef - jornadaProporcional))
+      excesoPresencia = r2(excesoTotal - excesoHE)
     }
 
     // Vacaciones
@@ -197,13 +202,15 @@ export function cuadranteTrabajador(t, cfgEntrada) {
       importeDietas,
       lineasDieta: lineas.length,
       diasTacografo,
-      diasAlta,
-      diasIT,
-      jornadaMaxima,
+      diasPeriodo,
+      diasSuspension,
+      diasComputables,
+      jornadaProporcional,
+      excesoTotal,
       horasEfectivas,
       horasPresencia,
       excesoHE,
-      excesoCC,
+      excesoPresencia,
       diasTrabajados,
       excesoDias,
       excesoHoras,
@@ -226,11 +233,12 @@ export function cuadranteTrabajador(t, cfgEntrada) {
     excesoDias: Math.round(suma('excesoDias') * 100) / 100,
     excesoHoras: Math.round(suma('excesoHoras') * 100) / 100,
     deficitVacaciones: suma('deficitVacaciones'),
-    jornadaMaxima: Math.round(suma('jornadaMaxima') * 100) / 100,
+    jornadaProporcional: Math.round(suma('jornadaProporcional') * 100) / 100,
     horasEfectivas: Math.round(suma('horasEfectivas') * 100) / 100,
     horasPresencia: Math.round(suma('horasPresencia') * 100) / 100,
+    excesoTotal: Math.round(suma('excesoTotal') * 100) / 100,
     excesoHE: Math.round(suma('excesoHE') * 100) / 100,
-    excesoCC: Math.round(suma('excesoCC') * 100) / 100,
+    excesoPresencia: Math.round(suma('excesoPresencia') * 100) / 100,
     diasEnVacaciones: suma('diasEnVacaciones'),
     importeHE: Math.round(suma('importeHE') * 100) / 100,
     importeDietas: Math.round(suma('importeDietas') * 100) / 100,
@@ -405,7 +413,7 @@ export function resumenExpediente(trabajadores, cfg) {
     dietas: analizarDietas(t.dietas),
   }))
   const conExcesoDias = datos.filter((d) => d.cuadrante.totales.excesoDias > 0)
-  const conExceso = datos.filter((d) => d.cuadrante.totales.excesoDias > 0 || d.cuadrante.totales.excesoHE > 0 || d.cuadrante.totales.excesoCC > 0)
+  const conExceso = datos.filter((d) => d.cuadrante.totales.excesoDias > 0 || d.cuadrante.totales.excesoHE > 0 || d.cuadrante.totales.excesoPresencia > 0)
   const sinVacaciones = datos.filter((d) => d.cuadrante.totales.deficitVacaciones > 0)
   const conVacTrabajadas = datos.filter((d) => d.cuadrante.totales.diasEnVacaciones > 0)
   const conVariacion = datos.filter((d) => d.dietas.mesesVariacion.length > 0)
@@ -421,7 +429,7 @@ export function resumenExpediente(trabajadores, cfg) {
     importeHE: Math.round(datos.reduce((s, d) => s + d.cuadrante.totales.importeHE, 0) * 100) / 100,
     excesoNoExento: Math.round(datos.reduce((s, d) => s + d.dietas.excesoNoExento, 0) * 100) / 100,
     excesoHE: Math.round(datos.reduce((s, d) => s + d.cuadrante.totales.excesoHE, 0) * 100) / 100,
-    excesoCC: Math.round(datos.reduce((s, d) => s + d.cuadrante.totales.excesoCC, 0) * 100) / 100,
+    excesoPresencia: Math.round(datos.reduce((s, d) => s + d.cuadrante.totales.excesoPresencia, 0) * 100) / 100,
     conHoras: datos.filter((d) => d.cuadrante.filas.some((f) => f.excesoHE !== null)),
   }
 }
@@ -485,7 +493,7 @@ function dietasSalarioAnio(t, f, criterio) {
 
 /**
  * Diferencias salariales y de cotización por trabajador y año.
- * - Horas extraordinarias (método por horas o, si no hay horas, exceso por días):
+ * - Horas extraordinarias (cómputo horario del tacógrafo o, si no hay horas, exceso por días):
  *   cotizan en la base de contingencias profesionales (AT/EP, desempleo, FOGASA, FP)
  *   más la cotización adicional por horas extraordinarias.
  * - Exceso de presencia valorado a precio de hora ordinaria y dietas integradas:
@@ -499,7 +507,7 @@ export function valoracion(resumen, cfgEntrada) {
     for (const f of d.cuadrante.filas) {
       const porHoras = f.excesoHE !== null
       const horasHE = porHoras ? f.excesoHE : f.excesoHoras || 0
-      const horasOrd = porHoras ? f.excesoCC || 0 : 0
+      const horasOrd = porHoras ? f.excesoPresencia || 0 : 0
       const { precioHE, precioOrd, origenPrecio } = preciosHora(d.trabajador, f.anio, cfg)
       const importeHE = red2(horasHE * (precioHE || 0))
       const importeOrd = red2(horasOrd * (precioOrd || 0))

@@ -211,9 +211,10 @@ navegador: no se envía ni se guarda nada en la web (el expediente se guarda com
   (1.800 / 8 = 225), proporcionales en periodos inferiores al año (por meses: enero–octubre = 188 días; o por
   días naturales). Días trabajados = el mayor entre días con dieta y días de tacógrafo (configurable).
   Exceso de días × jornada diaria = horas de exceso.
-- **Por horas** (calculadora de transportes): jornada máxima = jornada anual × (días en alta − IT) / días del
-  año (365 o 366). El trabajo efectivo que la excede son horas extraordinarias (base de contingencias
-  profesionales); el resto del exceso (presencia), base de contingencias comunes.
+- **Cómputo horario** (con los registros del tacógrafo): jornada exigible del tramo = jornada anual × días
+  computables (sin los de suspensión del contrato) / días naturales del año. El tiempo registrado que la rebasa
+  es el exceso total; su parte de trabajo efectivo son horas extraordinarias (contingencias profesionales y
+  cotización adicional, arts. 147.2 y 149 LGSS) y el resto, exceso de presencia (art. 8.3 RD 1561/1995).
 - **Vacaciones**: disfrutadas frente a las debidas (30 días naturales, proporcionales) y días con actividad
   durante las vacaciones.
 - **Dietas**: rango e importes distintos por tipo, nóminas con varios precios para el mismo tipo de dieta e
@@ -234,7 +235,7 @@ navegador: no se envía ni se guarda nada en la web (el expediente se guarda com
   basta con una nueva entrada en `CONVENIOS`.
 
 **Salidas:** hechos comprobados redactados con la estructura del requerimiento (copiar, Word, imprimir/PDF) y
-Excel con el cuadrante por días, el cálculo por horas, la liquidación de diferencias y cuotas (con fórmulas editables), el análisis de dietas y las
+Excel con el cuadrante por días, el cómputo horario, la liquidación de diferencias y cuotas (con fórmulas editables), el análisis de dietas y las
 líneas de nómina.
 
 Pruebas: `npm run test:dietas`.

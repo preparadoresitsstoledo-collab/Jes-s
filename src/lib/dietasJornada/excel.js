@@ -87,7 +87,7 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
         +f.anio,
         new Date(f.desde + 'T00:00:00Z'),
         new Date(f.hasta + 'T00:00:00Z'),
-        f.diasIT,
+        f.diasSuspension,
         f.diasTeoricos,
         f.diasDieta,
         f.diasTacografo,
@@ -113,16 +113,16 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
   }
   totales(wc, fila, [5, 6, 7, 8, 9, 10, 11, 14, 15], [15])
 
-  // ── Cálculo por horas (jornada máxima proporcional a los días de alta) ──
-  const wh = wb.addWorksheet('Cálculo por horas', { views: [{ state: 'frozen', ySplit: 1 }] })
+  // ── Cómputo horario (tiempo registrado frente a la jornada exigible del tramo) ──
+  const wh = wb.addWorksheet('Cómputo horario', { views: [{ state: 'frozen', ySplit: 1 }] })
   wh.columns = [
-    { width: 32 }, { width: 8 }, { width: 12 }, { width: 12 }, { width: 10 }, { width: 9 }, { width: 10 },
-    { width: 13 }, { width: 14 }, { width: 13 }, { width: 13 }, { width: 15 }, { width: 15 },
+    { width: 32 }, { width: 8 }, { width: 22 }, { width: 11 }, { width: 12 }, { width: 13 },
+    { width: 14 }, { width: 13 }, { width: 13 }, { width: 14 }, { width: 14 },
   ]
   cabecera(wh, 1, [
-    'Trabajador', 'Año', 'Desde', 'Hasta', 'Días en alta', 'Días IT', 'Días del año', 'Jornada máxima (h)',
-    'Trabajo efectivo (conducción + otros trabajos)', 'Presencia (disponibilidad)', 'Total horas',
-    'Exceso horas extraordinarias (B. CP)', 'Exceso sobre jornada máxima (B. CC)',
+    'Trabajador', 'Año', 'Tramo', 'Días de suspensión', 'Días computables', 'Jornada exigible (h)',
+    'Trabajo efectivo registrado (h)', 'Presencia registrada (h)', 'Exceso total (h)',
+    'de ello: horas extraordinarias', 'de ello: exceso de presencia',
   ])
   const filaJornadaAnual = filaJornadaDiaria - 1
   fila = 2
@@ -132,11 +132,9 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
       r.values = [
         d.trabajador.nombre || '',
         +f.anio,
-        new Date(f.desde + 'T00:00:00Z'),
-        new Date(f.hasta + 'T00:00:00Z'),
-        f.diasAlta,
-        f.diasIT,
-        (+f.anio % 4 === 0 && +f.anio % 100 !== 0) || +f.anio % 400 === 0 ? 366 : 365,
+        `${fechaES(f.desde)} – ${fechaES(f.hasta)}`,
+        f.diasSuspension,
+        f.diasComputables,
         null,
         f.horasEfectivas,
         f.horasPresencia,
@@ -144,21 +142,25 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
         null,
         null,
       ]
-      r.getCell(8).value = { formula: `'Parámetros'!B${filaJornadaAnual}*(E${fila}-F${fila})/G${fila}`, result: f.jornadaMaxima }
-      r.getCell(11).value = { formula: `N(I${fila})+N(J${fila})`, result: (f.horasEfectivas || 0) + (f.horasPresencia || 0) }
-      r.getCell(12).value = { formula: `MAX(0,N(I${fila})-H${fila})`, result: f.excesoHE ?? 0 }
-      r.getCell(13).value = { formula: `MAX(0,K${fila}-L${fila}-H${fila})`, result: f.excesoCC ?? 0 }
-      r.getCell(3).numFmt = 'dd/mm/yyyy'
-      r.getCell(4).numFmt = 'dd/mm/yyyy'
-      for (const c of [8, 9, 10, 11, 12, 13]) r.getCell(c).numFmt = FMT_DEC
-      for (const c of [12, 13]) if ((c === 12 ? f.excesoHE : f.excesoCC) > 0) r.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ROJO_SUAVE } }
+      // Jornada exigible = jornada anual × días computables / días naturales del año
+      r.getCell(6).value = {
+        formula: `'Parámetros'!B${filaJornadaAnual}*E${fila}/(DATE(B${fila}+1,1,1)-DATE(B${fila},1,1))`,
+        result: f.jornadaProporcional,
+      }
+      r.getCell(9).value = { formula: `MAX(0,N(G${fila})+N(H${fila})-F${fila})`, result: f.excesoTotal ?? 0 }
+      r.getCell(10).value = { formula: `MAX(0,N(G${fila})-F${fila})`, result: f.excesoHE ?? 0 }
+      r.getCell(11).value = { formula: `I${fila}-J${fila}`, result: f.excesoPresencia ?? 0 }
+      for (const c of [6, 7, 8, 9, 10, 11]) r.getCell(c).numFmt = FMT_DEC
+      for (const [c, v] of [[10, f.excesoHE], [11, f.excesoPresencia]]) {
+        if (v > 0) r.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ROJO_SUAVE } }
+      }
       fila++
     }
   }
-  totales(wh, fila, [5, 6, 8, 9, 10, 11, 12, 13], [])
+  totales(wh, fila, [4, 5, 6, 7, 8, 9, 10, 11], [])
   const nota = wh.getRow(fila + 2).getCell(1)
   nota.value =
-    'Los excesos serán horas a cotizar si no constan como cotizadas en nómina. Las horas extraordinarias cotizan en la base de contingencias profesionales; el resto del exceso (presencia), en la de contingencias comunes.'
+    'Exceso total = tiempo registrado (trabajo efectivo + presencia) por encima de la jornada exigible. Las horas extraordinarias son la parte de trabajo efectivo que rebasa esa jornada (arts. 35 ET, 147.2 y 149 LGSS); el resto es exceso de tiempo de presencia (art. 8.3 RD 1561/1995). Debe comprobarse qué parte figura ya retribuida y cotizada en las nóminas.'
   nota.font = { italic: true }
 
   // ── Liquidación: diferencias salariales y cuotas ──
@@ -173,7 +175,7 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
   fila = 2
   for (const x of v.filas) {
     const r = wv.getRow(fila)
-    r.values = [x.trabajador.nombre, +x.anio, x.metodo === 'horas' ? 'Por horas' : 'Por días', x.horasHE, x.precioHE, null, x.horasOrd, x.precioOrd, null, x.dietas]
+    r.values = [x.trabajador.nombre, +x.anio, x.metodo === 'horas' ? 'Cómputo horario' : 'Por días', x.horasHE, x.precioHE, null, x.horasOrd, x.precioOrd, null, x.dietas]
     r.getCell(6).value = { formula: `D${fila}*N(E${fila})`, result: x.importeHE }
     r.getCell(9).value = { formula: `G${fila}*N(H${fila})`, result: x.importeOrd }
     r.getCell(11).value = { formula: `F${fila}+I${fila}+J${fila}`, result: x.totalSalarial }
