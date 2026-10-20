@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:tacografo": "node --test src/lib/tacografo/__tests__/tacografo.test.js"
+    "test:tacografo": "node --test src/lib/tacografo/__tests__/tacografo.test.js",
+    "test:dietas": "node --test src/lib/dietasJornada/__tests__/dietasJornada.test.js"
   },
   "dependencies": {
     "exceljs": "^4.4.0",

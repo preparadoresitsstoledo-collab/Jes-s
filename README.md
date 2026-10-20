@@ -272,6 +272,40 @@ Archivos relevantes:
 
 ---
 
+## 🧾 Dietas y jornada anual
+
+Herramienta pública en `#/dietas-jornada` para comprobar, en empresas de transporte, si las **dietas
+exentas** encubren salario y si se supera la **jornada máxima anual** del convenio. Todo se procesa en el
+navegador: no se envía ni se guarda nada en la web (el expediente se guarda como archivo `.json` en el equipo).
+
+**Datos de entrada** (por trabajador y año, cualquiera de ellos es opcional):
+
+- Días con dieta de las nóminas, o líneas de nómina pegadas desde Excel/CSV
+  (`trabajador · mes · tipo de dieta · días · importe por día`).
+- Archivos de la tarjeta del conductor (.DDD/.TGD): días con actividad y horas de trabajo efectivo y de presencia.
+- Periodos de vacaciones del cuadrante de la empresa, días de IT, fechas de alta y baja.
+
+**Cálculos:**
+
+- **Por días** (modelo de requerimiento): días hábiles teóricos = jornada anual / jornada diaria
+  (1.800 / 8 = 225), proporcionales en periodos inferiores al año (por meses: enero–octubre = 188 días; o por
+  días naturales). Días trabajados = el mayor entre días con dieta y días de tacógrafo (configurable).
+  Exceso de días × jornada diaria = horas de exceso.
+- **Por horas** (calculadora de transportes): jornada máxima = jornada anual × (días en alta − IT) / días del
+  año (365 o 366). El trabajo efectivo que la excede son horas extraordinarias (base de contingencias
+  profesionales); el resto del exceso (presencia), base de contingencias comunes.
+- **Vacaciones**: disfrutadas frente a las debidas (30 días naturales, proporcionales) y días con actividad
+  durante las vacaciones.
+- **Dietas**: rango e importes distintos por tipo, nóminas con varios precios para el mismo tipo de dieta e
+  importes por encima de los límites exentos del art. 9.A RIRPF (verificar cada ejercicio en
+  `src/data/dietasJornada.js`).
+
+**Salidas:** hechos comprobados redactados con la estructura del requerimiento (copiar, Word, imprimir/PDF) y
+Excel con el cuadrante por días, el cálculo por horas (con fórmulas editables), el análisis de dietas y las
+líneas de nómina.
+
+Pruebas: `npm run test:dietas`.
+
 ## SEO (posicionamiento en buscadores)
 
 La web está preparada para buscadores: etiquetas meta, Open Graph y Twitter Card,

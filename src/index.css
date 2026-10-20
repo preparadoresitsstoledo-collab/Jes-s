@@ -2870,3 +2870,134 @@ select.chip {
     display: none;
   }
 }
+
+/* ───────────────────────── Dietas y jornada anual ───────────────────────── */
+.dietas__barra {
+  margin-top: 0;
+}
+.dietas__importar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+.dietas__importar code {
+  font-size: 0.8rem;
+  background: var(--gris-100);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.dietas__trabajador {
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-sm);
+  margin-bottom: 12px;
+}
+.dietas__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  width: 100%;
+  background: var(--gris-50);
+  border: none;
+  border-radius: var(--radio-sm);
+  padding: 12px 14px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.dietas__cabecera small {
+  color: var(--gris-500);
+}
+.dietas__detalle {
+  padding: 14px;
+}
+.dietas__subtitulo {
+  font-size: 0.95rem;
+  margin: 16px 0 8px;
+  color: var(--azul-900);
+}
+.dietas__fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.dietas__fila input,
+.dietas__tabla-anios input,
+.dietas__tabla-lineas input {
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-sm);
+  background: var(--blanco);
+}
+.dietas__tabla-anios input {
+  width: 92px;
+}
+.dietas__tabla-lineas input {
+  width: 110px;
+}
+.dietas__tabla-anios input::placeholder {
+  color: var(--gris-500);
+  opacity: 0.8;
+}
+.dietas__exceso {
+  background: #fdecec;
+  font-weight: 600;
+}
+.dietas__kpi--alerta {
+  border-color: #c0392b;
+  background: #fdf3f2;
+}
+.dietas__quitar {
+  color: #c0392b;
+  margin-left: auto;
+}
+.dietas__informe {
+  margin-top: 16px;
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-sm);
+  padding: 20px 24px;
+  background: var(--blanco);
+  line-height: 1.55;
+}
+.dietas__informe h3 {
+  font-size: 1rem;
+  margin: 18px 0 8px;
+  color: var(--azul-900);
+}
+.dietas__informe h3:first-child {
+  margin-top: 0;
+}
+.dietas__informe p {
+  text-align: justify;
+  margin: 0 0 10px;
+}
+.dietas__informe blockquote {
+  margin: 8px 0 12px 18px;
+  padding-left: 12px;
+  border-left: 3px solid var(--gris-300);
+  font-style: italic;
+  white-space: pre-wrap;
+}
+@media (max-width: 600px) {
+  .dietas__informe {
+    padding: 14px;
+  }
+}
+.dietas .campo {
+  min-width: 0;
+}
+.dietas .campo input {
+  min-width: 0;
+  max-width: 100%;
+}
+.dietas .tacografo__parametros {
+  grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr));
+}
+@media (max-width: 520px) {
+  .dietas .campo-fila {
+    grid-template-columns: 1fr;
+  }
+}

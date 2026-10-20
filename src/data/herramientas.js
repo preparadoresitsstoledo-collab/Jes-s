@@ -40,6 +40,17 @@ export const HERRAMIENTAS = [
     Componente: lazy(() => import('../components/AnalizadorTacografo.jsx')),
   },
   {
+    id: 'dietas-jornada',
+    ruta: '#/dietas-jornada',
+    nombre: 'Dietas y jornada anual',
+    icono: '🧾',
+    resumen: 'Excesos de jornada, horas extra y dietas en el transporte',
+    descripcion:
+      'Cruza los días con dieta de las nóminas, la actividad del tacógrafo y las vacaciones con la jornada máxima anual del convenio. Calcula el cuadrante de excesos por años (por días y por horas, con la jornada proporcional a los días de alta e IT), detecta importes de dietas irregulares y redacta los hechos comprobados. Exporta a Word y Excel.',
+    etiquetas: ['Dietas', 'Jornada anual', 'Horas extra', 'Vacaciones', 'Transporte'],
+    Componente: lazy(() => import('../components/DietasJornada.jsx')),
+  },
+  {
     id: 'amianto',
     ruta: '#/amianto',
     nombre: 'Informes de amianto',
