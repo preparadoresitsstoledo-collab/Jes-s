@@ -3556,3 +3556,7 @@ select.chip {
   align-self: center;
   margin: 0;
 }
+.aviso-herramienta {
+  border-left: 4px solid #b7791f;
+  background: #fffbeb;
+}

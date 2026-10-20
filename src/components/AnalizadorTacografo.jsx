@@ -4,7 +4,7 @@ import { agruparPorConductor } from '../lib/tacografo/conductores.js'
 import { analizar, heSegunMetodo, resumenInfracciones } from '../lib/tacografo/analisis.js'
 import { fechaES, hhmm, sumarDias, inicioDia, diaSemana, MESES, MIN } from '../lib/tacografo/tiempo.js'
 import { CONFIG_POR_DEFECTO, METODOS_HE, DATOS_EXPEDIENTE } from '../data/tacografo.js'
-import { AvisoPrivacidad, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
+import { AvisoPrivacidad, AvisoResponsabilidad, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
 
 const CLAVE_CFG = 'tacografo:config'
 const EXTENSIONES = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
@@ -208,6 +208,7 @@ export default function AnalizadorTacografo() {
       </header>
 
       <div className="contenedor tacografo__cuerpo">
+        <AvisoResponsabilidad />
         <AvisoPrivacidad hayDatos={hayDatos} onBorrar={() => borrarYSalir(borrarTodo, hayDatos)} />
 
         {/* 1. Archivos */}

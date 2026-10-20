@@ -53,6 +53,32 @@ export function useAvisoAlSalir(hayDatos) {
   }, [hayDatos])
 }
 
+// Aviso sobre la naturaleza y las limitaciones de la herramienta.
+export function AvisoResponsabilidad() {
+  return (
+    <section className="analizador__panel aviso-herramienta" aria-labelledby="aviso-herramienta-titulo">
+      <h2 id="aviso-herramienta-titulo">⚖️ Sobre esta herramienta</h2>
+      <ul className="privacidad__lista">
+        <li>
+          Ha sido elaborada por un <strong>Inspector de Trabajo y Seguridad Social</strong>, a título personal, con
+          la única intención de <strong>ayudar</strong>.
+        </li>
+        <li>
+          Es <strong>gratuita</strong>: su uso no tiene coste alguno para quien la utilice.
+        </li>
+        <li>
+          <strong>Puede contener errores u omisiones.</strong> Los resultados son orientativos: compruébalos con la
+          normativa vigente, el convenio aplicable y la documentación del caso antes de utilizarlos.
+        </li>
+        <li>
+          No es una herramienta oficial de la Inspección de Trabajo y Seguridad Social ni sustituye el criterio
+          profesional de quien la utiliza.
+        </li>
+      </ul>
+    </section>
+  )
+}
+
 // Pregunta, borra y vuelve al apartado de herramientas de la web.
 export function borrarYSalir(borrar, hayDatos) {
   if (hayDatos && !window.confirm('Se borrarán de esta pestaña todos los datos cargados y los resultados. ¿Continuar?')) {
