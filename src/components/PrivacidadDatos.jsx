@@ -71,6 +71,10 @@ export function AvisoResponsabilidad() {
           normativa vigente, el convenio aplicable y la documentación del caso antes de utilizarlos.
         </li>
         <li>
+          <strong>Su autor no se hace responsable de los errores</strong> que pueda contener ni de las decisiones o
+          consecuencias derivadas de su uso, que corresponden a quien la utiliza.
+        </li>
+        <li>
           No es una herramienta oficial de la Inspección de Trabajo y Seguridad Social ni sustituye el criterio
           profesional de quien la utiliza.
         </li>
