@@ -116,6 +116,9 @@ export default function DietasJornada() {
   const [generando, setGenerando] = useState(false)
   const [copiado, setCopiado] = useState(false)
   const inputTac = useRef(null)
+  const inputCarpetaTac = useRef(null)
+  const lecturasTac = useRef([])
+  const [arrastrando, setArrastrando] = useState(false)
   const inputJson = useRef(null)
 
   const setCfg = (c) => setCfgEstado((p) => ({ ...p, ...c }))
@@ -163,15 +166,21 @@ export default function DietasJornada() {
         import('../lib/tacografo/analisis.js'),
         import('../data/tacografo.js'),
       ])
-      const lecturas = []
+      // Se acumulan las lecturas de cargas sucesivas: un mismo conductor puede
+      // cargarse en varias tandas y sus días se unen sin duplicar.
+      const vistos = new Set(lecturasTac.current.map((l) => l.clave))
       for (const f of ficheros) {
+        const clave = `${f.webkitRelativePath || f.name}|${f.size}`
+        if (vistos.has(clave)) continue
         try {
-          lecturas.push(leerArchivoTarjeta(await f.arrayBuffer(), f.name))
+          lecturasTac.current.push({ ...leerArchivoTarjeta(await f.arrayBuffer(), f.webkitRelativePath || f.name), clave })
+          vistos.add(clave)
         } catch (e) {
           msgs.push(`⚠️ ${f.name}: ${e.message}`)
         }
       }
-      const conductores = agruparPorConductor(lecturas)
+      const nuevos = new Set(ficheros.map((f) => f.webkitRelativePath || f.name))
+      const conductores = agruparPorConductor(lecturasTac.current).filter((c) => c.archivos.some((a) => nuevos.has(a)))
       setTrabajadores((previos) => {
         let ts = [...previos]
         for (const c of conductores) {
@@ -253,6 +262,7 @@ export default function DietasJornada() {
     }
   }
   function cargar(d) {
+    lecturasTac.current = []
     setCfgEstado({ ...CONFIG_POR_DEFECTO, ...(d.cfg || {}) })
     setExpediente(d.expediente || {})
     setTrabajadores(d.trabajadores.map((t) => nuevoTrabajador(t)))
@@ -306,7 +316,7 @@ export default function DietasJornada() {
     <div className="analizador tacografo dietas">
       <header className="analizador__hero">
         <div className="contenedor">
-          <a className="analizador__volver" href="#/herramientas">
+          <a className="analizador__volver" href="#herramientas-transporte">
             ← Volver a herramientas
           </a>
           <h1>Dietas y jornada anual</h1>
@@ -606,13 +616,44 @@ export default function DietasJornada() {
             <div>
               <h3 className="tacografo__subtitulo">Tacógrafo (tarjeta del conductor)</h3>
               <p className="campo__ayuda">
-                Archivos .DDD / .TGD de la tarjeta de cada conductor. Se calculan los días con actividad y las horas de
+                Archivos .DDD / .TGD de la tarjeta de cada conductor: puedes cargar a la vez todas las descargas de
+                todos los conductores (varios años incluidos). Se agrupan por número de tarjeta, se eliminan los
+                días duplicados y se calculan los días con actividad y las horas de
                 trabajo efectivo y de presencia, y se asignan al trabajador con el mismo nombre (o se crea uno nuevo).
               </p>
-              <button className="btn btn--primario" disabled={leyendo} onClick={() => inputTac.current?.click()}>
-                {leyendo ? 'Leyendo…' : 'Cargar archivos de tacógrafo'}
-              </button>
+              <div
+                className={`tacografo__zona ${arrastrando ? 'tacografo__zona--activa' : ''}`}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                  setArrastrando(true)
+                }}
+                onDragLeave={() => setArrastrando(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setArrastrando(false)
+                  leerTacografos(e.dataTransfer.files)
+                }}
+              >
+                <p className="campo__ayuda">Arrastra aquí los archivos de todos los conductores, o:</p>
+                <div className="analizador__acciones">
+                  <button className="btn btn--primario" disabled={leyendo} onClick={() => inputTac.current?.click()}>
+                    {leyendo ? 'Leyendo…' : 'Elegir archivos'}
+                  </button>
+                  <button className="btn--secundario" disabled={leyendo} onClick={() => inputCarpetaTac.current?.click()}>
+                    Elegir carpeta
+                  </button>
+                </div>
+              </div>
               <input ref={inputTac} type="file" multiple hidden onChange={(e) => (leerTacografos(e.target.files), (e.target.value = ''))} />
+              <input
+                ref={inputCarpetaTac}
+                type="file"
+                hidden
+                webkitdirectory=""
+                directory=""
+                multiple
+                onChange={(e) => (leerTacografos(e.target.files), (e.target.value = ''))}
+              />
             </div>
             <div>
               <h3 className="tacografo__subtitulo">Dietas de las nóminas</h3>

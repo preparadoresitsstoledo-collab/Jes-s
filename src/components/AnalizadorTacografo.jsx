@@ -172,7 +172,7 @@ export default function AnalizadorTacografo() {
     <div className="analizador tacografo">
       <header className="analizador__hero">
         <div className="contenedor">
-          <a className="analizador__volver" href="#/herramientas">
+          <a className="analizador__volver" href="#herramientas-transporte">
             ← Volver a herramientas
           </a>
           <h1>Analizador de tacógrafo</h1>

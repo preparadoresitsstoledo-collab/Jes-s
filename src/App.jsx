@@ -1,12 +1,15 @@
-import { Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
 import Ventajas from './components/Ventajas.jsx'
 import Preparador from './components/Preparador.jsx'
+import MiCamino from './components/MiCamino.jsx'
 import Profesion from './components/Profesion.jsx'
 import Resultados from './components/Resultados.jsx'
 import Estadisticas from './components/Estadisticas.jsx'
 import Proceso from './components/Proceso.jsx'
+import Cronograma from './components/Cronograma.jsx'
+import Herramientas from './components/Herramientas.jsx'
 import Metodologia from './components/Metodologia.jsx'
 import Toledo from './components/Toledo.jsx'
 import Pasos from './components/Pasos.jsx'
@@ -18,9 +21,17 @@ import CtaFinal from './components/CtaFinal.jsx'
 import Contacto from './components/Contacto.jsx'
 import Footer from './components/Footer.jsx'
 import WhatsappFlotante from './components/WhatsappFlotante.jsx'
-import Herramientas from './components/Herramientas.jsx'
-import PortalHerramientas from './components/PortalHerramientas.jsx'
-import { herramientaPorRuta } from './data/herramientas.js'
+
+// Herramientas pesadas: se cargan solo al abrir su ruta (no lastran la web).
+const CalculadoraDespido = lazy(() => import('./components/CalculadoraDespido.jsx'))
+const PlanesAmianto = lazy(() => import('./components/PlanesAmianto.jsx'))
+const AnalizadorConvenios = lazy(() => import('./components/AnalizadorConvenios.jsx'))
+const Graduacion = lazy(() => import('./components/Graduacion.jsx'))
+const Sanciones = lazy(() => import('./components/Sanciones.jsx'))
+const Obstruccion = lazy(() => import('./components/Obstruccion.jsx'))
+const Denuncia = lazy(() => import('./components/Denuncia.jsx'))
+const AnalizadorTacografo = lazy(() => import('./components/AnalizadorTacografo.jsx'))
+const DietasJornada = lazy(() => import('./components/DietasJornada.jsx'))
 
 function useRutaHash() {
   const [ruta, setRuta] = useState(() => window.location.hash)
@@ -32,40 +43,113 @@ function useRutaHash() {
   return ruta
 }
 
+function Cargando() {
+  return (
+    <div className="analizador">
+      <div className="analizador__hero">
+        <p>Cargando herramienta…</p>
+        <a className="analizador__volver" href="#inicio">
+          ← Volver a la web
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   const ruta = useRutaHash()
 
-  if (ruta.startsWith('#/herramientas')) {
-    return <PortalHerramientas />
-  }
+  // Al volver de una herramienta a un apartado de la web (#herramientas…), la
+  // sección aún no existía al cambiar el hash: se desplaza a ella tras pintar.
+  useEffect(() => {
+    if (!ruta || ruta.startsWith('#/')) return
+    const id = decodeURIComponent(ruta.slice(1))
+    requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView())
+  }, [ruta])
 
-  const herramienta = herramientaPorRuta(ruta)
-  if (herramienta) {
-    const Componente = herramienta.Componente
+  // Herramientas como páginas propias (carga diferida)
+  if (ruta.startsWith('#/analizador')) {
     return (
-      <Suspense
-        fallback={
-          <div className="contenedor herramienta__cargando">Cargando herramienta…</div>
-        }
-      >
-        <Componente />
+      <Suspense fallback={<Cargando />}>
+        <AnalizadorConvenios />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/despido')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <CalculadoraDespido />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/amianto')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <PlanesAmianto />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/graduacion')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Graduacion />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/sanciones')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Sanciones />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/obstruccion')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Obstruccion />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/tacografo')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <AnalizadorTacografo />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/dietas-jornada')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <DietasJornada />
+      </Suspense>
+    )
+  }
+  if (ruta.startsWith('#/denuncia')) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Denuncia />
       </Suspense>
     )
   }
 
   return (
     <>
+      <a className="skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
       <Navbar />
-      <main>
+      <main id="contenido">
         <Hero />
         <Ventajas />
         <Preparador />
+        <MiCamino />
         <Profesion />
         <Resultados />
         <Estadisticas />
         <Proceso />
-        <Metodologia />
+        <Cronograma />
         <Herramientas />
+        <Metodologia />
         <Toledo />
         <Pasos />
         <Precios />

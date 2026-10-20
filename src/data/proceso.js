@@ -106,6 +106,34 @@ export const modelosExamen = [
   },
 ]
 
+/**
+ * Cronograma orientativo del proceso selectivo 2026 (convocatoria BOE-A-2026-165).
+ * Basado en el orden de llamamiento del segundo ejercicio (exposición oral).
+ */
+export const cronograma2026 = {
+  intro:
+    'Calendario orientativo del segundo ejercicio (exposición oral) del proceso selectivo 2026. Las fechas dependen del orden de llamamiento y del ritmo del Tribunal.',
+  hitos: [
+    {
+      fecha: '29 de junio de 2026',
+      texto: 'Comienzo del segundo ejercicio (exposición oral) de la convocatoria 2026.',
+    },
+    {
+      fecha: 'Julio de 2026',
+      texto: 'Desarrollo de los llamamientos a lo largo del verano según el orden establecido.',
+    },
+    {
+      fecha: 'Hasta octubre de 2026',
+      texto:
+        'Según el ritmo de exámenes, los últimos llamamientos podrían prolongarse hasta el otoño.',
+    },
+  ],
+  nota: 'Calendario orientativo, sujeto a las decisiones del Tribunal de Oposiciones. Consulta el documento completo con el orden de llamamiento y las fechas por aspirante.',
+  archivo: 'documentos/cronograma-orientativo-2026.pdf',
+  archivoEtiqueta: 'Cronograma orientativo 2026 · orden de llamamiento',
+  archivoMeta: 'PDF · 7 págs',
+}
+
 /** Temario de preparación. */
 export const temario = {
   intro:

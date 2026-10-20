@@ -26,8 +26,7 @@ export const marca = {
   // Redes sociales (deja la cadena vacía para ocultar el enlace).
   x: 'https://x.com/Jesus_Prieto_V',
   xUsuario: '@Jesus_Prieto_V',
-  // (VERIFICAR) URL de LinkedIn deducida del perfil; confirma que es correcta.
-  linkedin: 'https://es.linkedin.com/in/jes%C3%BAs-mar%C3%ADa-prieto-valbuena-7163022ba',
+  linkedin: 'https://www.linkedin.com/in/jes%C3%BAs-mar%C3%ADa-prieto-valbuena-7163022ba/',
 }
 
 /**
@@ -164,9 +163,7 @@ export const preparador = {
       'El rigor de nuestros procesos de oposiciones elige a profesionales muy cualificados, bien formados y personalmente capacitados.',
     fuente: 'Entrevista en La Revista de Valdemoro, junio de 2025',
   },
-  // Vídeo de presentación. Pega el ID o la URL de embed de YouTube/Vimeo.
-  // (EDITAR) Vídeo público encontrado sobre la oposición. Sustitúyelo si prefieres
-  // tu propio vídeo de presentación.
+  // Vídeo de presentación del preparador (YouTube). Confirmado por Jesús Prieto.
   videoUrl: 'https://www.youtube.com/watch?v=xHMBxCNN-4I',
   // Méritos / referencias rápidas que se muestran como tarjetas.
   meritos: [
@@ -244,9 +241,8 @@ export const metodologia = [
 
 /** Precio de la preparación. */
 export const precio = {
-  importe: '175 €',
-  periodo: 'al mes',
-  descripcion: 'Cuota mensual de la preparación presencial en Toledo.',
+  importe: 'Cuota mensual',
+  descripcion: 'El importe se indicará en el correo de respuesta.',
   incluye: [
     'Clases presenciales en grupo único y reducido',
     'Planificación semanal del estudio',
@@ -257,7 +253,23 @@ export const precio = {
   nota: 'Plazas limitadas. Consulta la disponibilidad del grupo.',
 }
 
-/** Preguntas frecuentes. (EDITAR) Adáptalas a tu caso. */
+/** Testimonios reales de alumnos (publicados con su consentimiento). */
+export const testimonios = [
+  {
+    texto:
+      'Ser opositor implica no solo enfrentarte a un temario y a los exámenes, sino a ti mismo. Con esto quiero decir que habrá momentos de alegría, tristeza, concentración, vagueza, enfado, frustración y cuantos estados sentimentales se te puedan ocurrir, pero el final del camino supera a todos ellos. Haber preparado con «Preparadores ITSS Toledo» me ha ayudado a llevar una buena organización a efectos de acumular y arrastrar todos los temas. Siempre con una planificación individual de cada uno, sabiendo cuándo hay que exigir y cuándo hay que aflojar con cada persona. Agradezco la cercanía y, sobre todo, la rigurosidad en el estudio de los temas. Sin ellos no hubiera podido alcanzar la meta: ser Inspectora de Trabajo y Seguridad Social.',
+    autor: 'África',
+    cargo: 'Alumna aprobada · Inspectora de Trabajo y Seguridad Social',
+  },
+  {
+    texto:
+      'La preparación con Jesús fue clave para poder aprobar. No solo por todos los conocimientos que me transmitió, sino por el apoyo que me brindó durante toda la oposición, creando un ambiente de confianza tan necesario entre preparador y opositora. En aquellos momentos en los que pensaba en tirar la toalla, él siempre me ayudó a superar los baches. La preparación del caso práctico fue clave: tiene un método que requiere mucha dedicación, pero analizas muchísima casuística. Además de ser un gran preparador, tiene un carisma excepcional que hace que cada clase sea motivadora, amena y muy productiva. Sin duda, recomendable 100 %.',
+    autor: 'Blanca',
+    cargo: 'Alumna aprobada · Inspectora de Trabajo y Seguridad Social',
+  },
+]
+
+/** Preguntas frecuentes. */
 export const faqs = [
   {
     pregunta: '¿Dónde se preparan las oposiciones de Inspección de Trabajo en Toledo?',
@@ -269,11 +281,11 @@ export const faqs = [
   },
   {
     pregunta: '¿Necesito tener una titulación concreta para presentarme?',
-    respuesta: 'La oposición al Cuerpo Superior de Inspección de Trabajo y Seguridad Social exige titulación universitaria según las bases de cada convocatoria. Te orientamos sobre los requisitos vigentes. (EDITAR / confirmar con la convocatoria en vigor).',
+    respuesta: 'Hay que estar en posesión —o en condiciones de obtener— del título de Doctor, Licenciado, Ingeniero, Arquitecto o Grado, conforme a la última convocatoria (BOE-A-2026-165). Las titulaciones obtenidas en el extranjero deben estar homologadas.',
   },
   {
     pregunta: '¿Cuándo empiezan los grupos?',
-    respuesta: 'Consulta las fechas de inicio y disponibilidad de plazas por email. (EDITAR)',
+    respuesta: 'Empiezan en función de lo que se pacte de forma individualizada con cada alumno, atendiendo a su situación particular. Al ser un grupo pequeño y una preparación individualizada, no existe la misma preparación para dos alumnos: es personal de cada uno.',
   },
   {
     pregunta: '¿Cómo solicito información o reservo plaza?',

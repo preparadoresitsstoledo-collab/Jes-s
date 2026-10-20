@@ -2,22 +2,42 @@ import { useState } from 'react'
 import { marca } from '../data/sitio.js'
 
 export default function Contacto() {
-  const [form, setForm] = useState({ nombre: '', email: '', mensaje: '' })
+  const [form, setForm] = useState({ nombre: '', email: '', mensaje: '', website: '' })
+  const [estado, setEstado] = useState('idle') // idle | enviando | ok | error
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  // Sin backend: al enviar, se abre el cliente de correo del usuario con los
-  // datos ya rellenados hacia el email del preparador.
-  const onSubmit = (e) => {
+  // Envía el formulario por correo a info@preparadoritsstoledo.es a través de
+  // FormSubmit (servicio gratuito, sin backend propio). El visitante no necesita
+  // ninguna app: el correo se manda en segundo plano.
+  const onSubmit = async (e) => {
     e.preventDefault()
-    const asunto = `Información preparación ITSS — ${form.nombre || 'Solicitud'}`
-    const cuerpo =
-      `Nombre: ${form.nombre}\n` +
-      `Email: ${form.email}\n\n` +
-      `${form.mensaje}`
-    window.location.href = `mailto:${marca.email}?subject=${encodeURIComponent(
-      asunto,
-    )}&body=${encodeURIComponent(cuerpo)}`
+    setEstado('enviando')
+    try {
+      const resp = await fetch('https://formsubmit.co/ajax/45b42e56f8d27d27eb7a8a31303bef84', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          Nombre: form.nombre,
+          Email: form.email,
+          Mensaje: form.mensaje,
+          _subject: `Solicitud de información — ${form.nombre}`,
+          _template: 'table',
+          _captcha: 'false',
+          _honey: form.website, // antispam
+        }),
+      })
+      const json = await resp.json().catch(() => ({}))
+
+      if (resp.ok && String(json.success) === 'true') {
+        setEstado('ok')
+        setForm({ nombre: '', email: '', mensaje: '', website: '' })
+      } else {
+        setEstado('error')
+      }
+    } catch {
+      setEstado('error')
+    }
   }
 
   return (
@@ -137,9 +157,35 @@ export default function Contacto() {
               required
             />
 
-            <button className="btn btn--primario" type="submit">
-              Enviar solicitud
+            {/* Campo trampa antispam: oculto para personas, lo rellenan los bots */}
+            <div className="hp" aria-hidden="true">
+              <label htmlFor="website">No rellenar</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.website}
+                onChange={onChange}
+              />
+            </div>
+
+            <button className="btn btn--primario" type="submit" disabled={estado === 'enviando'}>
+              {estado === 'enviando' ? 'Enviando…' : 'Enviar solicitud'}
             </button>
+
+            {estado === 'ok' && (
+              <p className="form__aviso form__aviso--ok" role="status">
+                ✅ ¡Mensaje enviado! Te responderé lo antes posible.
+              </p>
+            )}
+            {estado === 'error' && (
+              <p className="form__aviso form__aviso--error" role="status">
+                ❌ No se ha podido enviar. Inténtalo de nuevo o escribe a{' '}
+                <a href={`mailto:${marca.email}`}>{marca.email}</a>.
+              </p>
+            )}
           </form>
         </div>
       </div>

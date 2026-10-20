@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de proporcionalidad — sistemas de control laboral</title>
+<style>
+:root{--verde:#78BE20;--verde2:#4a7a12;--navy:#00305E;--rojo:#C0392B;--ambar:#D68910;--gris:#f4f5f2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--gris);color:#1a1a1a;line-height:1.55}
+.wrap{max-width:780px;margin:0 auto;padding:24px 16px 60px}
+.volver{display:inline-block;margin-bottom:14px;color:var(--navy);font-size:.9rem;text-decoration:none;font-weight:bold}
+.volver:hover{text-decoration:underline}
+header{border-left:6px solid var(--verde);padding:10px 16px;margin-bottom:22px;background:#fff}
+header h1{font-size:1.45rem;color:var(--navy)}
+header p{font-size:.95rem;color:#444;margin-top:6px}
+.card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:22px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.fase{font-size:.8rem;letter-spacing:.12em;color:var(--verde2);font-weight:bold;text-transform:uppercase}
+h2{color:var(--navy);font-size:1.15rem;margin:6px 0 4px}
+.ayuda{font-size:.92rem;color:#555;margin-bottom:14px}
+.opts button{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;font-size:1rem;font-family:inherit;border:2px solid #ccd;border-radius:6px;background:#fff;cursor:pointer;transition:.15s}
+.opts button:hover{border-color:var(--verde);background:#f6fbee}
+.barra{height:8px;background:#e2e4de;border-radius:4px;margin-bottom:18px;overflow:hidden}
+.barra div{height:100%;background:var(--verde);width:0%;transition:.3s}
+.res{border-radius:8px;padding:26px;color:#fff;margin-bottom:18px}
+.res h2{color:#fff;font-size:1.5rem}
+.res.ok{background:var(--verde2)} .res.warn{background:var(--ambar)} .res.ko{background:var(--rojo)}
+.hallazgo{background:#fff;border-left:5px solid #999;padding:12px 16px;margin:10px 0;border-radius:0 6px 6px 0;font-size:.95rem}
+.hallazgo.ko{border-color:var(--rojo)} .hallazgo.warn{border-color:var(--ambar)} .hallazgo.ok{border-color:var(--verde)}
+.hallazgo b{color:var(--navy)}
+.norma{font-size:.85rem;color:#666;display:block;margin-top:4px}
+.acciones{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
+.acciones button{padding:11px 18px;font-size:.95rem;font-family:inherit;border:none;border-radius:6px;cursor:pointer;background:var(--navy);color:#fff}
+.acciones button.sec{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.aviso{font-size:.82rem;color:#666;margin-top:26px;border-top:1px solid #ddd;padding-top:12px}
+.atras{background:none;border:none;color:#777;font-size:.85rem;cursor:pointer;font-family:inherit;margin-bottom:8px;padding:0;text-decoration:underline}
+@media print{.acciones,.atras,.volver{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="volver" href="./#herramientas">← Volver a preparadoritsstoledo.es</a>
+<header>
+<h1>Test de proporcionalidad de sistemas de control laboral</h1>
+<p>Idoneidad · Necesidad · Proporcionalidad en sentido estricto · Garantías — conforme a la doctrina constitucional, el TEDH (Barbulescu y López Ribalda), el RGPD, la LOPDGDD, el Reglamento de IA y el RD 723/2026.</p>
+</header>
+<div class="barra"><div id="prog"></div></div>
+<div id="app"></div>
+<p class="aviso">Herramienta orientativa de autoevaluación. No constituye dictamen jurídico ni criterio oficial de la Inspección de Trabajo y Seguridad Social: cada supuesto exige un análisis individualizado. Ningún dato introducido sale de su navegador.</p>
+</div>
+<script>
+const TIPOS=[
+ {id:"bio",t:"Biometría (huella, rostro, iris) — fichaje o accesos"},
+ {id:"cam",t:"Videovigilancia (cámaras)"},
+ {id:"geo",t:"Geolocalización (GPS en vehículos o dispositivos)"},
+ {id:"dig",t:"Monitorización de dispositivos digitales (correo, navegación, teclado)"},
+ {id:"sco",t:"Sistema de IA que evalúa o puntúa el rendimiento"},
+ {id:"emo",t:"Análisis de emociones o del ‘clima emocional’"}
+];
+// Preguntas: cada una {f:fase, q, ayuda, opciones:[{t,v}], solo:[tipos], regla(v)->hallazgo}
+const PREGUNTAS=[
+ {id:"emoStop",solo:["emo"],f:"Prohibiciones",q:"¿El sistema infiere emociones de personas trabajadoras en el lugar de trabajo?",ayuda:"Estados de ánimo, estrés, actitud, ‘engagement’ emocional…",ops:[["Sí, esa es su función","si"],["Solo con finalidad médica o de seguridad, acreditada","med"]],
+  eval:v=>v==="si"?H("ko","Práctica prohibida","El reconocimiento de emociones en el trabajo está prohibido salvo razones médicas o de seguridad. No hay test de proporcionalidad que lo salve: es semáforo rojo directo, exigible desde el 2 de febrero de 2025, con sanciones de hasta 35 M€ o el 7 % del negocio mundial.","Art. 5.1.f Reglamento (UE) 2024/1689"):H("warn","Excepción médica o de seguridad","La excepción exige acreditación real de la finalidad médica o de seguridad, no una etiqueta. Documente quién la avala y por qué no hay alternativa.","Art. 5.1.f RIA, in fine")},
+ {id:"bioBase",solo:["bio"],f:"Base jurídica",q:"¿Cuál es la base jurídica del tratamiento biométrico?",ayuda:"Los datos biométricos para identificar unívocamente son categoría especial del art. 9 RGPD.",ops:[["El consentimiento del trabajador","cons"],["Una norma con rango de ley que lo habilita (convenio no basta por sí solo)","ley"],["No está definida","nada"]],
+  eval:v=>v==="cons"?H("ko","El consentimiento no vale","En la relación laboral el consentimiento no puede considerarse libre por el desequilibrio de poder. La AEPD sancionó fichajes biométricos apoyados solo en consentimiento (PS/00074/2024). Hace falta la excepción del art. 9.2.b): norma con rango de ley.","Art. 9 RGPD · Guía AEPD 23-11-2023"):v==="nada"?H("ko","Sin base jurídica","Sin base del art. 9.2 el tratamiento es ilícito desde el minuto uno.","Art. 9 RGPD"):H("ok","Base jurídica invocable","Existe habilitación legal. El test continúa: la base legal no exime de idoneidad, necesidad y proporcionalidad.","Art. 9.2.b RGPD")},
+ {id:"ido1",f:"Idoneidad",q:"¿El sistema sirve objetivamente a la finalidad declarada?",ayuda:"Ejemplo: unas cámaras en caja sirven para prevenir hurtos; un GPS sirve para optimizar rutas. ¿Puede explicar la conexión medio-fin en una frase?",ops:[["Sí, y puedo acreditarlo","si"],["La conexión es dudosa o genérica (‘mejorar la productividad’)","dud"]],
+  eval:v=>v==="si"?H("ok","Idoneidad","Primer escalón superado: el medio conduce al fin.","STC 186/2000; test Barbulescu"):H("ko","Falla la idoneidad","Si no puede explicar qué problema concreto resuelve el sistema, el test muere en el primer escalón. ‘Mejorar la productividad’ sin más no es una finalidad verificable.","STC 98/2000 y 186/2000")},
+ {id:"nec1",f:"Necesidad",q:"¿Existe una alternativa menos invasiva que logre razonablemente lo mismo?",ayuda:"Biometría: tarjeta, PIN o aplicación. Vigilancia total: controles aleatorios o por muestreo. Monitorización continua: revisiones acotadas ante sospecha.",ops:[["No: se valoraron alternativas y quedó documentado por qué no sirven","doc"],["Existen alternativas viables y no se han descartado por escrito","alt"]],
+  eval:v=>v==="doc"?H("ok","Necesidad documentada","El juicio de necesidad está hecho y por escrito: es exactamente lo que pedirá la Inspección o el juez.","Test Barbulescu, TEDH 05-09-2017"):H("ko","Falla la necesidad","Si una tarjeta, un PIN o un control por muestreo logran lo mismo, el sistema más invasivo no es necesario. La AEPD solo ha admitido la huella donde había exigencias objetivas — p. ej., condiciones higiénico-sanitarias en una industria cárnica (resolución de 29-01-2026) — tras valorar y descartar las alternativas.","Art. 5.1.c RGPD · doctrina AEPD")},
+ {id:"pro1",f:"Proporcionalidad estricta",q:"¿Cuál es el alcance subjetivo y temporal del control?",ayuda:"¿A quién y durante cuánto tiempo?",ops:[["Acotado: puestos concretos, tiempo limitado o ante sospechas fundadas","acot"],["Toda la plantilla, toda la jornada, con carácter permanente","total"]],
+  eval:v=>v==="acot"?H("ok","Alcance acotado","El control selectivo y limitado es el que mejor resiste el juicio: en Köpke se validaron dos semanas sobre dos sospechosas.","TEDH Köpke c. Alemania"):H("warn","Alcance total: zona de riesgo","López Ribalda validó una vigilancia amplia, pero solo por sospechas razonables de infracción grave y clara justificación. Sin ese presupuesto, el control permanente e indiscriminado difícilmente supera el juicio estricto.","TEDH López Ribalda, 17-10-2019")},
+ {id:"pro2",solo:["cam"],f:"Proporcionalidad estricta",q:"¿Hay captación en zonas de descanso, aseos, vestuarios o comedores?",ops:[["No","no"],["Sí","si"]],
+  eval:v=>v==="si"?H("ko","Zonas vedadas","La ley lo prohíbe expresamente: nunca en lugares destinados al descanso o esparcimiento — vestuarios, aseos, comedores y análogos.","Art. 89.2 LOPDGDD"):H("ok","Zonas correctas","","Art. 89 LOPDGDD")},
+ {id:"pro3",solo:["geo"],f:"Proporcionalidad estricta",q:"¿La geolocalización se apaga fuera de la jornada?",ops:[["Sí, o el dispositivo es desconectable por el trabajador","si"],["No: rastrea también fuera del tiempo de trabajo","no"]],
+  eval:v=>v==="no"?H("ko","Rastreo fuera de jornada","La localización fuera del tiempo de trabajo invade la vida privada y vulnera además el derecho a la desconexión.","Arts. 88 y 90 LOPDGDD · art. 20 bis ET"):H("ok","Limitada a la jornada","","Art. 90 LOPDGDD")},
+ {id:"pro4",solo:["dig"],f:"Proporcionalidad estricta",q:"¿Se han definido previamente los usos permitidos de los dispositivos y el trabajador los conoce?",ops:[["Sí, hay política de uso comunicada","si"],["No hay criterios de uso establecidos","no"]],
+  eval:v=>v==="no"?H("ko","Sin estándares de uso","Sin criterios de utilización previamente fijados y comunicados, el acceso al dispositivo vulnera la expectativa de privacidad del trabajador.","Art. 87.3 LOPDGDD · Barbulescu"):H("ok","Política de uso definida","","Art. 87 LOPDGDD")},
+ {id:"sco1",solo:["sco"],f:"Alto riesgo",q:"¿Quién adopta la decisión final que afecta al trabajador (evaluación, plus, turno, extinción)?",ops:[["Una persona con facultad real de apartarse del resultado del sistema","hum"],["En la práctica se aplica lo que dice el sistema","auto"]],
+  eval:v=>v==="auto"?H("ko","Decisión automatizada encubierta","Una revisión humana meramente simbólica no convierte la decisión automática en humana: lo dijo el Tribunal de Ámsterdam frente a Uber y Ola, y el TJUE en SCHUFA — quien puntúa de forma determinante, decide. Se activan el art. 22 RGPD y el derecho a explicación.","TJUE C-634/21 (SCHUFA) · Ámsterdam 04-04-2023"):H("ok","Supervisión humana real","Documente quién revisa, cuándo y con qué facultad de corregir: es la prueba estrella.","Art. 26 RIA · art. 22 RGPD")},
+ {id:"gar1",f:"Garantías",q:"¿Se informó previamente y por escrito a cada persona trabajadora?",ayuda:"Existencia del sistema, decisiones que toma o apoya, parámetros y lógica. Desde el 5-10-2026 la información individual escrita es obligatoria.",ops:[["Sí","si"],["No, o solo verbalmente","no"]],
+  eval:v=>v==="no"?H("ko","Falta la información individual","Desde el 5 de octubre de 2026 es exigible por escrito a cada trabajador; en relaciones vigentes, 30 días hábiles desde que la solicite. Su incumplimiento es infracción grave.","RD 723/2026, art. 3.2.k · art. 7 TRLISOS"):H("ok","Información individual","","RD 723/2026")},
+ {id:"gar2",f:"Garantías",q:"¿Se informó a la representación legal de las personas trabajadoras?",ops:[["Sí, con constancia escrita","si"],["No, o no hay constancia","no"],["No existe representación en la empresa","norlt"]],
+  eval:v=>v==="no"?H("ko","Falta la información colectiva","El comité tiene derecho a conocer los parámetros, reglas e instrucciones de los algoritmos que afectan a condiciones de trabajo. Negarlo — o mentir — ya ha costado una condena por vulneración de la libertad sindical (SAN 101/2025, Foundever).","Art. 64.4.d) ET · art. 26.7 RIA"):v==="norlt"?H("warn","Sin representación","La obligación colectiva decae, pero la individual y las del Reglamento de IA se mantienen íntegras.","Art. 26.7 y 26.11 RIA"):H("ok","Información colectiva","","Art. 64.4.d) ET")},
+ {id:"gar3",f:"Garantías",q:"¿Se ha realizado la evaluación de impacto en protección de datos (EIPD)?",ayuda:"Obligatoria ante tratamientos de alto riesgo: biometría, monitorización sistemática, evaluación de aspectos personales.",ops:[["Sí, y está documentada","si"],["No","no"]],
+  eval:v=>v==="no"?H("ko","Falta la EIPD","El control tecnológico sistemático de trabajadores es un supuesto típico de evaluación de impacto obligatoria. Sin ella, el despliegue nace viciado.","Art. 35 RGPD · listas AEPD"):H("ok","EIPD hecha","Si además el sistema es de IA de alto riesgo, recuerde la evaluación de impacto en derechos fundamentales cuando proceda (art. 27 RIA): son dos instrumentos distintos.","Art. 35 RGPD · art. 27 RIA")},
+];
+function H(nivel,titulo,texto,norma){return {nivel,titulo,texto,norma}}
+let tipo=null, idx=0, hallazgos=[], historial=[];
+const app=document.getElementById("app"), prog=document.getElementById("prog");
+function activas(){return PREGUNTAS.filter(p=>!p.solo||p.solo.includes(tipo));}
+function render(){
+ if(tipo===null){prog.style.width="0%";
+  app.innerHTML=`<div class="card"><span class="fase">Paso 1</span><h2>¿Qué sistema de control quiere evaluar?</h2><div class="opts">`+
+  TIPOS.map(t=>`<button onclick="setTipo('${t.id}')">${t.t}</button>`).join("")+`</div></div>`;return;}
+ const qs=activas();
+ if(idx>=qs.length){return resultado();}
+ prog.style.width=Math.round(100*idx/qs.length)+"%";
+ const p=qs[idx];
+ app.innerHTML=`<div class="card">${historial.length?'<button class="atras" onclick="atras()">← pregunta anterior</button>':""}
+  <span class="fase">${p.f}</span><h2>${p.q}</h2>${p.ayuda?`<p class="ayuda">${p.ayuda}</p>`:""}
+  <div class="opts">${p.ops.map(o=>`<button onclick="resp('${p.id}','${o[1]}')">${o[0]}</button>`).join("")}</div></div>`;
+}
+function setTipo(t){tipo=t;idx=0;hallazgos=[];historial=[];render();}
+function resp(id,v){const p=activas()[idx];historial.push(hallazgos.length);hallazgos.push(p.eval(v));idx++;render();}
+function atras(){if(!historial.length)return;const n=historial.pop();hallazgos=hallazgos.slice(0,n);idx--;render();}
+function resultado(){
+ prog.style.width="100%";
+ const ko=hallazgos.filter(h=>h.nivel==="ko"), warn=hallazgos.filter(h=>h.nivel==="warn");
+ let clase,tit,sub;
+ if(ko.length){clase="ko";tit="NO SUPERA el test";sub=ko.length+(ko.length>1?" incumplimientos graves detectados":" incumplimiento grave detectado")+". Implantar el sistema en estas condiciones expone a sanción y a nulidad de las medidas basadas en él.";}
+ else if(warn.length){clase="warn";tit="Supera el test CON RESERVAS";sub="Hay puntos en zona de riesgo que exigen justificación reforzada y documentación.";}
+ else {clase="ok";tit="Supera el test de proporcionalidad";sub="Con lo declarado, el sistema resiste el triple juicio. Recuerde: el test se supera cada día — si cambia el sistema o su uso, reevalúe.";}
+ app.innerHTML=`<div class="res ${clase}"><h2>${tit}</h2><p style="margin-top:8px">${sub}</p></div>`+
+  hallazgos.map(h=>`<div class="hallazgo ${h.nivel}"><b>${h.titulo}</b>${h.texto?" — "+h.texto:""}<span class="norma">${h.norma}</span></div>`).join("")+
+  `<div class="acciones"><button onclick="window.print()">Imprimir informe</button><button class="sec" onclick="reiniciar()">Evaluar otro sistema</button></div>`;
+}
+function reiniciar(){tipo=null;idx=0;hallazgos=[];historial=[];render();}
+render();
+</script>
+</body>
+</html>

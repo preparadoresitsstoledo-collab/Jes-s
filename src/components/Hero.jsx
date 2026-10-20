@@ -37,7 +37,7 @@ export default function Hero() {
           </div>
           <div className="hero__dato">
             <strong>{totales.plazas.toLocaleString('es-ES')}</strong>
-            <span>plazas convocadas entre 2019 y 2025</span>
+            <span>plazas convocadas entre 2019 y 2026</span>
           </div>
           <div className="hero__dato">
             <strong>Presencial</strong>

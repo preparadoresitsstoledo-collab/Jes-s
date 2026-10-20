@@ -17,6 +17,8 @@ export default function Toledo() {
             <img
               src={toledoCiudad}
               alt="Vista de Toledo con el Alcázar sobre el río Tajo al atardecer"
+              width="1000"
+              height="667"
               loading="lazy"
             />
           </figure>
@@ -39,6 +41,8 @@ export default function Toledo() {
                 className="toledo__lugar-foto"
                 src={trabajoSepe}
                 alt="Jesús Prieto frente a una oficina del Ministerio de Trabajo y Economía Social"
+                width="640"
+                height="426"
                 loading="lazy"
               />
               <h3>🏛️ Donde trabajo cada día</h3>

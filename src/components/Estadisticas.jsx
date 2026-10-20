@@ -69,8 +69,11 @@ function Tabla() {
         </thead>
         <tbody>
           {convocatoriasCalculadas.map((c) => (
-            <tr key={c.año}>
-              <td>{c.año}</td>
+            <tr key={c.año} className={c.destacado ? 'fila-destacada' : ''}>
+              <td>
+                {c.año}
+                {c.destacado && <span className="badge-nuevo">últimos datos</span>}
+              </td>
               <td>{fmt(c.plazasLibre)}</td>
               <td>{fmt(c.plazasPI)}</td>
               <td>{fmt(c.aprobadosLibre)}</td>
@@ -113,7 +116,7 @@ export default function Estadisticas() {
         <div className="resumen-stats">
           <div className="stat-card">
             <strong>{totales.plazas.toLocaleString('es-ES')}</strong>
-            <span>Plazas convocadas (2019–2025)</span>
+            <span>Plazas convocadas (2019–2026)</span>
           </div>
           <div className="stat-card">
             <strong>{totales.aprobados.toLocaleString('es-ES')}</strong>
@@ -134,7 +137,7 @@ export default function Estadisticas() {
 
         <p className="fuente-nota">
           Fuente: convocatorias y resoluciones del Tribunal de Oposiciones (BOE). Los aprobados de
-          las convocatorias 2024 y 2025 se publicarán al finalizar cada proceso selectivo.
+          la convocatoria 2026 se publicarán al finalizar el proceso selectivo.
         </p>
       </div>
     </section>
