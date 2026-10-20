@@ -1,0 +1,46 @@
+# Configuración del servidor (Apache / LiteSpeed, p. ej. Axarnet).
+# Se copia a la raíz de la web junto con el resto de archivos de dist/.
+
+# No listar el contenido de las carpetas
+Options -Indexes
+
+# Forzar HTTPS y el dominio sin «www»
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://preparadoritsstoledo.es%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP_HOST} ^www\.preparadoritsstoledo\.es$ [NC]
+  RewriteRule ^ https://preparadoritsstoledo.es%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Cabeceras de seguridad
+<IfModule mod_headers.c>
+  # El navegador usará siempre HTTPS durante 6 meses
+  Header always set Strict-Transport-Security "max-age=15552000"
+  # No interpretar archivos con un tipo distinto al declarado
+  Header always set X-Content-Type-Options "nosniff"
+  # Impedir que otras webs incrusten la página (clickjacking)
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # No enviar la dirección completa al salir a otras webs
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # La web no usa cámara, micrófono ni ubicación
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+  # index.html sin caché, para que las actualizaciones se vean al momento
+  # (los archivos de assets/ se cachean un año: ver assets/.htaccess)
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+# Tipos de archivo
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType application/wasm .wasm
+</IfModule>
+
+# Compresión
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

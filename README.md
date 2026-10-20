@@ -349,6 +349,20 @@ Tras `npm run build`, la carpeta `dist/` contiene archivos estáticos que puedes
 cualquier hosting (GitHub Pages, Netlify, Vercel, un servidor propio…). La configuración usa
 rutas relativas (`base: './'`), así que funciona también en subcarpetas.
 
+### Web en Axarnet (preparadoritsstoledo.es)
+
+La web pública está alojada en Axarnet. Para actualizarla:
+
+1. `npm run build` y comprime el **contenido** de `dist/` (no la carpeta) en
+   `web-preparadoritsstoledo.zip` (`cd dist && zip -r ../web-preparadoritsstoledo.zip .`).
+2. En el panel de Axarnet (Administrador de archivos o FTP), sube el ZIP a `public_html/`,
+   descomprímelo sobrescribiendo y borra el ZIP. Puedes borrar antes la carpeta `assets/` antigua.
+3. Comprueba que se han subido los archivos ocultos `.htaccess` (raíz y `assets/`): fuerzan HTTPS,
+   añaden cabeceras de seguridad y gestionan la caché.
+
+La web no tiene servidor ni base de datos: las herramientas procesan los archivos en el navegador
+de quien las usa y no envían ni guardan nada en Axarnet.
+
 ---
 
 ## Nota sobre el formulario de contacto
