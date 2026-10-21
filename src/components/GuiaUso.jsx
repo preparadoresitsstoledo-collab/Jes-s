@@ -30,7 +30,8 @@ function ComoConseguirArchivos() {
         </li>
         <li>
           La empresa debe llevar un <strong>registro del tiempo de trabajo</strong> de los trabajadores móviles,
-          conservarlo <strong>4 años</strong> (art. 34.9 ET) y darte copia si la pides (art. 10 bis.5 RD 1561/1995).
+          conservarlo y darte copia si la pides (art. 10 bis.5 RD 1561/1995). El RD fija una conservación de al menos
+          3 años; el art. 34.9 ET, posterior y de rango superior, exige <strong>4 años</strong>.
         </li>
         <li>
           Si te los dan en un <strong>ZIP</strong>, descomprímelo antes. Puedes cargar la carpeta entera: se leen
@@ -83,7 +84,13 @@ function LimitesTacografo() {
         <li>
           La tarjeta registra la actividad con <strong>todas las empresas</strong> para las que hayas conducido. Si
           has trabajado para varias, separa los periodos de cada una (el trabajador debe informar a cada empresa del
-          tiempo trabajado para otra, art. 10 bis.2 RD 1561/1995).
+          tiempo trabajado para otra, que debe pedírselo por escrito, art. 10 bis.3 RD 1561/1995).
+        </li>
+        <li>
+          Los límites de <strong>48 h semanales de promedio</strong> (en 4 meses, ampliable a 6 por convenio sectorial
+          estatal) y de <strong>60 h en una semana</strong> se aplican cuando el convenio o un acuerdo con los
+          representantes establece la distribución irregular de la jornada; en todo caso debe respetarse la jornada
+          máxima del art. 34 ET (art. 10 bis.1 RD 1561/1995).
         </li>
         <li>
           <strong>Esperas de carga y descarga:</strong> las 2 primeras horas de cada espera son tiempo de presencia;

@@ -410,10 +410,10 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
       infraccion(j.ini, NORMAS.RD1561, 'Art. 8.2', 'Jornada diaria total superior a 12 horas de trabajo efectivo (incluidas horas extraordinarias)', j.trabajoTotal, H(12))
     }
 
-    // Trabajo nocturno (art. 10 bis.3 RD 1561/1995)
+    // Trabajo nocturno (art. 10 bis.2 RD 1561/1995)
     if (j.nocturno > 0 && j.trabajoTotal > H(10)) {
       j.incidencias.push('Jornada con trabajo nocturno > 10 h')
-      infraccion(j.ini, NORMAS.RD1561, 'Art. 10 bis.3', 'Jornada con trabajo nocturno superior a 10 horas por cada periodo de 24 h', j.trabajoTotal, H(10))
+      infraccion(j.ini, NORMAS.RD1561, 'Art. 10 bis.2', 'Jornada con trabajo nocturno superior a 10 horas por cada periodo de 24 h', j.trabajoTotal, H(10))
     }
 
     // Descanso posterior
@@ -602,7 +602,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
       infraccion(ms, NORMAS.R561, 'Art. 6.2', `Conducción semanal superior a 56 h (semana del ${fechaES(w.lunes)})`, w.conduccion * MIN, H(56))
     }
     if (w.trabajoEfectivo > 60 * 60) {
-      infraccion(ms, NORMAS.RD1561, 'Art. 10 bis.1', `Tiempo de trabajo semanal superior a 60 h (semana del ${fechaES(w.lunes)})`, w.trabajoEfectivo * MIN, H(60))
+      infraccion(ms, NORMAS.RD1561, 'Art. 10 bis.1', `Tiempo de trabajo semanal superior a 60 h (semana del ${fechaES(w.lunes)}); con distribución irregular de la jornada nunca puede superarse y, sin ella, rige la jornada máxima del art. 34 ET`, w.trabajoEfectivo * MIN, H(60))
     }
   }
   for (let k = 1; k < semanas.length; k++) {
@@ -705,7 +705,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     cuatrimestres.push(q)
     if (promedio > 48 * 60 && diasC >= 28 * nRef) {
       const ini = inicioDia(ms[0].mes + '-01', tz)
-      infraccion(ini > t0 ? ini : t0, NORMAS.RD1561, 'Art. 10 bis.1', `Promedio de trabajo superior a 48 h semanales en el periodo de ${nRef} meses ${q.periodo}`, promedio * MIN, H(48))
+      infraccion(ini > t0 ? ini : t0, NORMAS.RD1561, 'Art. 10 bis.1', `Promedio de trabajo superior a 48 h semanales en el periodo de ${nRef} meses ${q.periodo} (límite aplicable con distribución irregular de la jornada; sin ella, rige la jornada máxima del art. 34 ET)`, promedio * MIN, H(48))
     }
   }
 

@@ -356,3 +356,14 @@ test('excepción del transporte internacional: dos descansos semanales reducidos
   assert.ok(art86[0].informativa, art86[0].descripcion)
   assert.match(art86[0].descripcion, /excepción del transporte internacional/)
 })
+
+test('trabajo nocturno: jornada de más de 10 h con trabajo nocturno (art. 10 bis.2 RD 1561/1995)', () => {
+  const dias = [
+    dia('2024-01-01', [['00:00', 'DESCANSO'], ['20:00', 'CONDUCCION']]),
+    dia('2024-01-02', [['00:00', 'DESCANSO'], ['00:45', 'CONDUCCION'], ['05:00', 'DESCANSO'], ['05:45', 'TRABAJO'], ['08:15', 'DESCANSO']]),
+  ]
+  const r = analizar({ dias: lee(dias).dias }, cfgUTC)
+  const noc = r.infracciones.find((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 10 bis.2')
+  assert.ok(noc, 'nocturno')
+  assert.equal(noc.valor, 10 * 60 + 45)
+})
