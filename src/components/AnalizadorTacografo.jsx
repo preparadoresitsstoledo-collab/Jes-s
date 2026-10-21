@@ -5,6 +5,7 @@ import { analizar, heSegunMetodo, resumenInfracciones } from '../lib/tacografo/a
 import { fechaES, hhmm, sumarDias, inicioDia, diaSemana, MESES, MIN } from '../lib/tacografo/tiempo.js'
 import { CONFIG_POR_DEFECTO, METODOS_HE, DATOS_EXPEDIENTE } from '../data/tacografo.js'
 import { AvisoPrivacidad, AvisoResponsabilidad, PieAutoria, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
+import { GuiaTacografo } from './GuiaUso.jsx'
 
 const CLAVE_CFG = 'tacografo:config'
 const EXTENSIONES = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
@@ -219,6 +220,7 @@ export default function AnalizadorTacografo() {
       <div className="contenedor tacografo__cuerpo">
         <AvisoResponsabilidad />
         <AvisoPrivacidad hayDatos={hayDatos} onBorrar={() => borrarYSalir(borrarTodo, hayDatos)} />
+        <GuiaTacografo />
 
         {/* 1. Archivos */}
         <section className="analizador__panel">
@@ -408,6 +410,13 @@ export default function AnalizadorTacografo() {
                 <Numero etiqueta="Límite anual de horas extra (h) · art. 35.2 ET" valor={cfg.limiteHEAnual} onChange={(v) => setCfg({ limiteHEAnual: v })} />
                 <Numero etiqueta="Presencia máxima (h/semana, promedio mensual)" valor={cfg.presenciaMaxSemanal} onChange={(v) => setCfg({ presenciaMaxSemanal: v })} />
                 <div className="campo">
+                  <label>Periodo de referencia del promedio de 48 h · art. 10 bis.1 RD 1561/1995</label>
+                  <select className="tacografo__select" value={cfg.mesesReferencia === 6 ? 6 : 4} onChange={(e) => setCfg({ mesesReferencia: Number(e.target.value) })}>
+                    <option value={4}>4 meses naturales consecutivos</option>
+                    <option value={6}>6 meses (si lo amplía el convenio sectorial estatal)</option>
+                  </select>
+                </div>
+                <div className="campo">
                   <label>Franja nocturna (art. 36 ET)</label>
                   <div className="campo-fila">
                     <input type="time" value={cfg.nocturnoInicio} onChange={(e) => setCfg({ nocturnoInicio: e.target.value || '22:00' })} />
@@ -459,7 +468,7 @@ export default function AnalizadorTacografo() {
                 Días sin registro en la tarjeta = descanso
               </Casilla>
               <Casilla valor={cfg.disponibilidadEsPausa} onChange={(v) => setCfg({ disponibilidadEsPausa: v })}>
-                La disponibilidad de 15 min o más interrumpe el trabajo continuado (art. 10 bis.2 RD 1561/1995)
+                La disponibilidad de 15 min o más interrumpe el trabajo continuado (art. 10 bis.4 RD 1561/1995)
               </Casilla>
               <div className="analizador__acciones">
                 <button className="btn--texto" onClick={() => setCfg({ ...CONFIG_POR_DEFECTO, preciosHE: cfg.preciosHE })}>
@@ -624,7 +633,7 @@ export default function AnalizadorTacografo() {
             )}
             <p className="campo__ayuda">
               El Excel incluye el detalle día a día, las jornadas con sus descansos, las semanas, los meses, los
-              cuatrimestres, todas las incidencias con fecha, la relación de actividades y la hoja de liquidación con
+              periodos de 4 meses, todas las incidencias con fecha, la relación de actividades y la hoja de liquidación con
               importes recalculables.
             </p>
           </section>

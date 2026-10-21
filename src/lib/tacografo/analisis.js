@@ -147,6 +147,8 @@ function trabajoNocturno(tramos, a, b, cfg) {
   return total
 }
 
+const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+
 // ─────────────────────────── Análisis ───────────────────────────
 
 /**
@@ -290,7 +292,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     j.nocturno = trabajoNocturno(tramos, j.ini, j.fin, cfg)
     j.incidencias = []
 
-    // Pausas en la conducción (art. 7) y en el trabajo (art. 10 bis.2 RD 1561/1995)
+    // Pausas en la conducción (art. 7) y en el trabajo (art. 10 bis.4 RD 1561/1995)
     let conduccionContinua = 0
     let primeraFraccion = false
     let maxConduccionContinua = 0
@@ -344,7 +346,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
         if (trabajoContinuo > H(6) && !avisadoTrabajo) {
           avisadoTrabajo = true
           j.incidencias.push('Más de 6 h de trabajo seguidas sin pausa')
-          infraccion(Math.max(t.ini, j.ini), NORMAS.RD1561, 'Art. 10 bis.2', 'Más de 6 horas consecutivas de trabajo sin pausa (mínimo 15 min)', null, H(6), { jornada: j })
+          infraccion(Math.max(t.ini, j.ini), NORMAS.RD1561, 'Art. 10 bis.4', 'Más de 6 horas consecutivas de trabajo sin pausa (fracciones de al menos 15 min)', null, H(6), { jornada: j })
         }
       }
     }
@@ -360,17 +362,23 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
       }
     }
 
-    // Pausa total exigida (art. 10 bis.2 RD 1561/1995)
+    // Pausa total exigida (art. 10 bis.4 RD 1561/1995): 30 min si el trabajo supera 6 h; 45 min si supera 9 h
     const exigida = j.trabajoTotal > H(9) ? 45 * MIN : j.trabajoTotal > H(6) ? 30 * MIN : 0
     if (exigida && pausasComputables < exigida && j.descanso) {
       j.incidencias.push(`Pausas insuficientes (${hhmm(aMin(pausasComputables))} de ${hhmm(aMin(exigida))})`)
-      infraccion(j.ini, NORMAS.RD1561, 'Art. 10 bis.2', `Pausas insuficientes para ${hhmm(aMin(j.trabajoTotal))} h de trabajo`, pausasComputables, exigida)
+      infraccion(j.ini, NORMAS.RD1561, 'Art. 10 bis.4', `Pausas insuficientes para ${hhmm(aMin(j.trabajoTotal))} h de trabajo`, pausasComputables, exigida)
     }
 
     // Conducción diaria (art. 6.1)
     if (j.conduccion > H(10)) {
       j.incidencias.push('Conducción diaria > 10 h')
       infraccion(j.ini, NORMAS.R561, 'Art. 6.1', 'Tiempo de conducción diario superior a 10 h', j.conduccion, H(10))
+    }
+
+    // Jornada diaria total: no más de 12 h de trabajo efectivo, incluidas las horas extraordinarias (art. 8.2 RD 1561/1995)
+    if (j.trabajoTotal > H(12)) {
+      j.incidencias.push('Trabajo efectivo en la jornada > 12 h')
+      infraccion(j.ini, NORMAS.RD1561, 'Art. 8.2', 'Jornada diaria total superior a 12 horas de trabajo efectivo (incluidas horas extraordinarias)', j.trabajoTotal, H(12))
     }
 
     // Trabajo nocturno (art. 10 bis.3 RD 1561/1995)
@@ -391,6 +399,11 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
         }
       }
       if (tipo === 'insuficiente') j.incidencias.push('Descanso diario insuficiente')
+      // Descanso mínimo entre jornadas de 10 h (art. 9 RD 1561/1995). Informativo: para los
+      // conductores sujetos al R. 561/2006 rigen los descansos de ese Reglamento.
+      if (!tipo.startsWith('semanal') && tipo !== 'insuficiente' && j.descanso.dur < H(10)) {
+        infraccion(j.descanso.ini, NORMAS.RD1561, 'Art. 9', 'Descanso entre jornadas inferior a 10 h (compruebe si rigen los descansos del R. 561/2006)', j.descanso.dur, H(10), { informativa: true })
+      }
       if (j.descanso.dur < H(cfg.descansoEntreJornadas)) {
         j.incidencias.push(`Descanso entre jornadas < ${cfg.descansoEntreJornadas} h`)
         infraccion(j.descanso.ini, NORMAS.ET, 'Art. 34.3', `Descanso entre jornadas inferior a ${cfg.descansoEntreJornadas} h`, j.descanso.dur, H(cfg.descansoEntreJornadas), { informativa: true })
@@ -602,19 +615,44 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     }
   }
 
-  // ── Cuatrimestres: promedio de 48 h semanales (art. 10 bis.1 RD 1561/1995) ──
+  // ── Promedio de 48 h semanales (art. 10 bis.1 RD 1561/1995) ──
+  // Periodo de referencia de 4 meses naturales consecutivos (ampliable a 6 por convenio
+  // sectorial estatal). Se evalúan todos los periodos completos dentro de lo analizado,
+  // cada uno terminado en un mes distinto.
   const cuatrimestres = []
-  for (const y of anios) {
-    for (let c = 0; c < 3; c++) {
-      const ms = meses.filter((x) => x.mes.startsWith(y.anio) && Math.floor((+x.mes.slice(5, 7) - 1) / 4) === c)
-      if (!ms.length) continue
-      const diasC = ms.reduce((s, x) => s + x.dias, 0)
-      const trabajo = ms.reduce((s, x) => s + x.trabajoEfectivo, 0)
-      const promedio = trabajo / (diasC / 7)
-      const q = { periodo: `${y.anio} · ${['ene-abr', 'may-ago', 'sep-dic'][c]}`, dias: diasC, trabajoEfectivo: trabajo, promedioSemanal: Math.round(promedio) }
-      cuatrimestres.push(q)
-      if (promedio > 48 * 60 && diasC >= 28) {
-        infraccion(inicioDia(ms[0].mes + '-01', tz) > t0 ? inicioDia(ms[0].mes + '-01', tz) : t0, NORMAS.RD1561, 'Art. 10 bis.1', `Promedio de trabajo superior a 48 h semanales en el cuatrimestre ${q.periodo}`, promedio * MIN, H(48))
+  const nRef = cfg.mesesReferencia === 6 ? 6 : 4
+  for (let k = 0; k + nRef <= meses.length; k++) {
+    const ms = meses.slice(k, k + nRef)
+    const diasC = ms.reduce((s, x) => s + x.dias, 0)
+    const trabajo = ms.reduce((s, x) => s + x.trabajoEfectivo, 0)
+    const promedio = trabajo / (diasC / 7)
+    const nombreMes = (m) => `${MESES_CORTOS[+m.slice(5, 7) - 1]} ${m.slice(0, 4)}`
+    const q = {
+      periodo: `${nombreMes(ms[0].mes)} – ${nombreMes(ms[ms.length - 1].mes)}`,
+      dias: diasC,
+      trabajoEfectivo: trabajo,
+      promedioSemanal: Math.round(promedio),
+    }
+    cuatrimestres.push(q)
+    if (promedio > 48 * 60 && diasC >= 28 * nRef) {
+      const ini = inicioDia(ms[0].mes + '-01', tz)
+      infraccion(ini > t0 ? ini : t0, NORMAS.RD1561, 'Art. 10 bis.1', `Promedio de trabajo superior a 48 h semanales en el periodo de ${nRef} meses ${q.periodo}`, promedio * MIN, H(48))
+    }
+  }
+
+  // ── Descanso semanal de día y medio computable en periodos de 4 semanas (art. 9 RD 1561/1995) ──
+  // Informativo: en cada periodo de 4 semanas debe haber al menos 4 descansos de 36 h.
+  {
+    const lunesSemanas = [...new Set(jornadas.map((j) => j.semana))].sort()
+    for (let k = 3; k < lunesSemanas.length; k++) {
+      const desdeL = lunesSemanas[k - 3]
+      if (lunesSemanas[k] !== sumarDias(desdeL, 21)) continue // solo 4 semanas consecutivas
+      const a = inicioDia(desdeL, tz)
+      const b = inicioDia(sumarDias(lunesSemanas[k], 7), tz)
+      if (a < t0 || b > t1) continue
+      const largos = bloques.filter((x) => x.ini >= a && x.ini < b && x.dur >= H(36)).length
+      if (largos < 4) {
+        infraccion(a, NORMAS.RD1561, 'Art. 9', `Menos de 4 descansos de 36 h en las cuatro semanas del ${fechaES(desdeL)} al ${fechaES(sumarDias(lunesSemanas[k], 6))} (${largos} de al menos 36 h; compruebe si rigen los descansos del R. 561/2006)`, null, null, { informativa: true })
       }
     }
   }

@@ -3573,3 +3573,42 @@ select.chip {
 .pie-autoria p {
   margin: 0 0 6px;
 }
+
+/* Guía de uso de las herramientas */
+.guia {
+  border-left: 4px solid var(--azul-400);
+}
+.guia__pasos {
+  margin: 0 0 12px;
+  padding-left: 22px;
+  display: grid;
+  gap: 8px;
+  line-height: 1.5;
+}
+.guia__pasos ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.guia__bloque {
+  border-top: 1px solid var(--gris-100);
+  padding: 10px 0;
+}
+.guia__bloque summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--azul-900);
+}
+.guia__contenido ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.guia__contenido code {
+  font-size: 0.82rem;
+  background: var(--gris-100);
+  padding: 1px 4px;
+  border-radius: 4px;
+}

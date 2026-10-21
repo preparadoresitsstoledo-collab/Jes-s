@@ -27,6 +27,7 @@ import { generarBloques, bloquesATexto, bloquesAHtml } from '../lib/dietasJornad
 import { fechaES } from '../lib/tacografo/tiempo.js'
 import { CONVENIOS } from '../data/conveniosTransporte.js'
 import { AvisoPrivacidad, AvisoResponsabilidad, PieAutoria, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
+import { GuiaDietasJornada } from './GuiaUso.jsx'
 
 const EXTENSIONES_TAC = /\.(ddd|tgd|c1b|esm|dtc|bin)$/i
 
@@ -371,6 +372,7 @@ export default function DietasJornada() {
       <div className="contenedor tacografo__cuerpo">
         <AvisoResponsabilidad />
         <AvisoPrivacidad hayDatos={hayDatos} onBorrar={() => borrarYSalir(borrarTodo, hayDatos)} />
+        <GuiaDietasJornada />
 
         {/* Barra de expediente */}
         <section className="analizador__panel">

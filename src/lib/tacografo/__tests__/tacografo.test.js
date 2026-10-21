@@ -7,6 +7,7 @@ import { generarTarjeta, m } from './generador.js'
 import { leerArchivoTarjeta, ACT } from '../ddd.js'
 import { agruparPorConductor } from '../conductores.js'
 import { analizar } from '../analisis.js'
+import { sumarDias } from '../tiempo.js'
 import { CONFIG_POR_DEFECTO } from '../../../data/tacografo.js'
 
 const cfgUTC = { ...CONFIG_POR_DEFECTO, zonaHoraria: 'UTC' }
@@ -99,7 +100,7 @@ test('detecta conducción continuada, exceso de 10 h, descanso insuficiente y pa
   assert.ok(a.includes('Reglamento (CE) 561/2006|Art. 7'), 'art. 7')
   assert.ok(a.includes('Reglamento (CE) 561/2006|Art. 6.1'), 'art. 6.1')
   assert.ok(a.includes('Reglamento (CE) 561/2006|Art. 8.2'), 'art. 8.2')
-  assert.ok(a.includes('RD 1561/1995|Art. 10 bis.2'), 'pausas RD 1561')
+  assert.ok(a.includes('RD 1561/1995|Art. 10 bis.4'), 'pausas RD 1561')
   const art7 = r.infracciones.find((i) => i.articulo === 'Art. 7')
   assert.equal(art7.valor, 300)
   const art61 = r.infracciones.find((i) => i.articulo === 'Art. 6.1')
@@ -235,4 +236,51 @@ test('detiene la lectura ante registros diarios dañados', () => {
   const l = leerArchivoTarjeta(bytes, 'dañado.ddd')
   assert.deepEqual(l.dias.map((d) => d.fecha), ['2024-02-03', '2024-02-04'])
   assert.ok(l.avisos.length > 0)
+})
+
+test('RD 1561/1995: jornada total > 12 h y descanso entre jornadas < 10 h (informativo)', () => {
+  const dias = [
+    // 12 h 30 min de trabajo efectivo con pausas suficientes; después, 9 h 30 min de descanso (reducido)
+    dia('2024-01-01', [['00:00', 'DESCANSO'], ['04:00', 'CONDUCCION'], ['08:00', 'DESCANSO'], ['08:45', 'TRABAJO'], ['13:00', 'DESCANSO'], ['13:45', 'CONDUCCION'], ['18:00', 'DESCANSO']]),
+    dia('2024-01-02', [['00:00', 'DESCANSO'], ['03:30', 'CONDUCCION'], ['07:30', 'DESCANSO']]),
+    dia('2024-01-03', [['00:00', 'DESCANSO']]),
+  ]
+  const r = analizar({ dias: lee(dias).dias }, cfgUTC)
+  const j12 = r.infracciones.find((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 8.2')
+  assert.ok(j12, 'jornada > 12 h')
+  assert.equal(j12.valor, 12 * 60 + 30)
+  const d10 = r.infracciones.find((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 9')
+  assert.ok(d10 && d10.informativa, 'descanso < 10 h informativo')
+  assert.equal(d10.valor, 9 * 60 + 30)
+})
+
+test('RD 1561/1995: promedio de 48 h en periodos móviles de 4 o 6 meses', () => {
+  // 1 de enero a 30 de junio de 2024: 9 h 30 min de trabajo de lunes a sábado (57 h/semana)
+  const dias = []
+  for (let d = 0; d < 182; d++) {
+    const f = sumarDias('2024-01-01', d)
+    const dow = new Date(f + 'T00:00:00Z').getUTCDay()
+    if (dow === 0) dias.push(dia(f, [['00:00', 'DESCANSO']]))
+    else dias.push(dia(f, [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['10:00', 'DESCANSO'], ['10:45', 'TRABAJO'], ['14:45', 'DESCANSO'], ['15:30', 'CONDUCCION'], ['17:00', 'DESCANSO']]))
+  }
+  const r4 = analizar({ dias: lee(dias, { tamBuffer: 60000 }).dias }, cfgUTC)
+  const p4 = r4.infracciones.filter((i) => i.articulo === 'Art. 10 bis.1' && /48 h/.test(i.descripcion))
+  assert.equal(r4.cuatrimestres.length, 3) // ene-abr, feb-may, mar-jun
+  assert.equal(p4.length, 3)
+  assert.match(r4.cuatrimestres[0].periodo, /ene 2024 – abr 2024/)
+  const r6 = analizar({ dias: lee(dias, { tamBuffer: 60000 }).dias }, { ...cfgUTC, mesesReferencia: 6 })
+  assert.equal(r6.cuatrimestres.length, 1)
+  assert.equal(r6.infracciones.filter((i) => i.articulo === 'Art. 10 bis.1' && /48 h/.test(i.descripcion)).length, 1)
+})
+
+test('RD 1561/1995: menos de 4 descansos de 36 h en 4 semanas (informativo)', () => {
+  // 1 a 28 de enero de 2024 (de lunes a domingo): se trabaja todos los días, sin descansos de 36 h
+  const dias = []
+  for (let d = 0; d < 28; d++) {
+    dias.push(dia(sumarDias('2024-01-01', d), [['00:00', 'DESCANSO'], ['08:00', 'CONDUCCION'], ['12:00', 'DESCANSO'], ['12:45', 'CONDUCCION'], ['15:00', 'DESCANSO']]))
+  }
+  const r = analizar({ dias: lee(dias).dias }, cfgUTC)
+  const sem = r.infracciones.filter((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 9' && /36 h/.test(i.descripcion))
+  assert.equal(sem.length, 1)
+  assert.ok(sem[0].informativa)
 })
