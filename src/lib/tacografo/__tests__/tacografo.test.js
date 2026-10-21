@@ -284,3 +284,13 @@ test('RD 1561/1995: menos de 4 descansos de 36 h en 4 semanas (informativo)', ()
   assert.equal(sem.length, 1)
   assert.ok(sem[0].informativa)
 })
+
+test('esperas: aviso informativo cuando la disponibilidad diaria es muy alta', () => {
+  const dias = [dia('2024-01-01', [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['08:00', 'DISPONIBILIDAD'], ['14:30', 'CONDUCCION'], ['15:00', 'DESCANSO']])]
+  const r = analizar({ dias: lee(dias).dias }, { ...cfgUTC, umbralEsperaH: 6 })
+  const e = r.infracciones.find((i) => i.articulo === 'Art. 3')
+  assert.ok(e && e.informativa)
+  assert.equal(e.valor, 6 * 60 + 30)
+  const r2 = analizar({ dias: lee(dias).dias }, { ...cfgUTC, umbralEsperaH: 0 })
+  assert.equal(r2.infracciones.find((i) => i.articulo === 'Art. 3'), undefined)
+})

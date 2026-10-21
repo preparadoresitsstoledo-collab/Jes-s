@@ -640,6 +640,17 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     }
   }
 
+  // ── Esperas largas (disponibilidad): aviso informativo para revisar el marcado ──
+  // Las esperas de carga y descarga son tiempo de presencia (art. 3 RD 1561/1995). El tacógrafo no
+  // las distingue de otra disponibilidad: un día con mucha disponibilidad merece revisión.
+  for (const d of dias) {
+    const umbral = Number(cfg.umbralEsperaH) * 60
+    if (umbral > 0 && d.presencia >= umbral) {
+      const ms = inicioDia(d.fecha, tz)
+      infraccion(ms, NORMAS.RD1561, 'Art. 3', `Disponibilidad de ${hhmm(d.presencia)} h en el día: compruebe si son esperas de carga o descarga (presencia) y si el conductor las marcó correctamente`, d.presencia * MIN, umbral * MIN, { informativa: true })
+    }
+  }
+
   // ── Descanso semanal de día y medio computable en periodos de 4 semanas (art. 9 RD 1561/1995) ──
   // Informativo: en cada periodo de 4 semanas debe haber al menos 4 descansos de 36 h.
   {

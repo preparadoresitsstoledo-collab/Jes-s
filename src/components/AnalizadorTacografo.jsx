@@ -409,6 +409,7 @@ export default function AnalizadorTacografo() {
                 <Numero etiqueta="Descanso mínimo entre jornadas (h) · art. 34.3 ET" valor={cfg.descansoEntreJornadas} onChange={(v) => setCfg({ descansoEntreJornadas: v })} />
                 <Numero etiqueta="Límite anual de horas extra (h) · art. 35.2 ET" valor={cfg.limiteHEAnual} onChange={(v) => setCfg({ limiteHEAnual: v })} />
                 <Numero etiqueta="Presencia máxima (h/semana, promedio mensual)" valor={cfg.presenciaMaxSemanal} onChange={(v) => setCfg({ presenciaMaxSemanal: v })} />
+                <Numero etiqueta="Aviso de esperas: disponibilidad diaria (h) · 0 = sin aviso" valor={cfg.umbralEsperaH} onChange={(v) => setCfg({ umbralEsperaH: v })} />
                 <div className="campo">
                   <label>Periodo de referencia del promedio de 48 h · art. 10 bis.1 RD 1561/1995</label>
                   <select className="tacografo__select" value={cfg.mesesReferencia === 6 ? 6 : 4} onChange={(e) => setCfg({ mesesReferencia: Number(e.target.value) })}>

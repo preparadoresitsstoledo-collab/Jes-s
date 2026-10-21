@@ -266,6 +266,11 @@ uso (`src/data/autoria.js`). La misma marca figura en los Excel y Word que gener
 `<meta name="copyright">` y en la primera línea de cada archivo de código publicado (plugin `aviso-autoria`
 de `vite.config.js`).
 
+**Esperas y presencia (RD 1561/1995).** El tacógrafo no distingue las esperas de carga y descarga de otra
+disponibilidad: el análisis cuenta la disponibilidad como presencia y avisa (informativo) de los días con más
+de `umbralEsperaH` horas (6 por defecto). Límite de 20 h semanales de promedio mensual (art. 8.3); la presencia
+no computa para la jornada máxima ni para las horas extra salvo compensación con descanso.
+
 ## Publicar en Axarnet (preparadoritsstoledo.es)
 
 La web pública está alojada en Axarnet. Para actualizarla:
