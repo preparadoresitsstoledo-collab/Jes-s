@@ -411,6 +411,13 @@ export default function AnalizadorTacografo() {
                 <Numero etiqueta="Presencia máxima (h/semana, promedio mensual)" valor={cfg.presenciaMaxSemanal} onChange={(v) => setCfg({ presenciaMaxSemanal: v })} />
                 <Numero etiqueta="Aviso de esperas: disponibilidad diaria (h) · 0 = sin aviso" valor={cfg.umbralEsperaH} onChange={(v) => setCfg({ umbralEsperaH: v })} />
                 <div className="campo">
+                  <label>Periodo de referencia de la presencia (20 h/semana) · art. 10.5 RD 1561/1995</label>
+                  <select className="tacografo__select" value={cfg.mesesReferenciaPresencia === 2 ? 2 : 1} onChange={(e) => setCfg({ mesesReferenciaPresencia: Number(e.target.value) })}>
+                    <option value={1}>1 mes natural</option>
+                    <option value={2}>2 meses (si lo amplía el convenio sectorial estatal)</option>
+                  </select>
+                </div>
+                <div className="campo">
                   <label>Periodo de referencia del promedio de 48 h · art. 10 bis.1 RD 1561/1995</label>
                   <select className="tacografo__select" value={cfg.mesesReferencia === 6 ? 6 : 4} onChange={(e) => setCfg({ mesesReferencia: Number(e.target.value) })}>
                     <option value={4}>4 meses naturales consecutivos</option>
@@ -472,8 +479,9 @@ export default function AnalizadorTacografo() {
                 La disponibilidad de 15 min o más interrumpe el trabajo continuado (art. 10 bis.4 RD 1561/1995)
               </Casilla>
               <Casilla valor={cfg.esperasComoTrabajo} onChange={(v) => setCfg({ esperasComoTrabajo: v })}>
-                Esperas de carga y descarga: la disponibilidad continuada que exceda de 2 h cuenta como trabajo efectivo
-                (art. 10.4 RD 1561/1995, cuando la empresa no comunicó de antemano su duración)
+                Esperas de carga y descarga: desde la tercera hora de cada espera, la disponibilidad cuenta como trabajo
+                efectivo (art. 10.4.c RD 1561/1995), salvo que su duración previsible se conociera de antemano en las
+                condiciones del convenio
               </Casilla>
               <div className="analizador__acciones">
                 <button className="btn--texto" onClick={() => setCfg({ ...CONFIG_POR_DEFECTO, preciosHE: cfg.preciosHE })}>

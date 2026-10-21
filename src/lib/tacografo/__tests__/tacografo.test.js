@@ -367,3 +367,21 @@ test('trabajo nocturno: jornada de más de 10 h con trabajo nocturno (art. 10 bi
   assert.ok(noc, 'nocturno')
   assert.equal(noc.valor, 10 * 60 + 45)
 })
+
+test('presencia: periodo de referencia de 1 o 2 meses (art. 10.5 RD 1561/1995)', () => {
+  // Enero: mucha disponibilidad (6 h diarias de lunes a viernes); febrero: ninguna
+  const dias = []
+  for (let d = 0; d < 60; d++) {
+    const f = sumarDias('2024-01-01', d)
+    const dow = new Date(f + 'T00:00:00Z').getUTCDay()
+    if (dow === 0 || dow === 6) dias.push(dia(f, [['00:00', 'DESCANSO']]))
+    else if (f < '2024-02-01') dias.push(dia(f, [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['08:00', 'DISPONIBILIDAD'], ['14:00', 'CONDUCCION'], ['15:00', 'DESCANSO']]))
+    else dias.push(dia(f, [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['09:00', 'DESCANSO']]))
+  }
+  const pres = (r) => r.infracciones.filter((i) => i.articulo === 'Art. 8.3')
+  const r1 = analizar({ dias: lee(dias, { tamBuffer: 30000 }).dias }, cfgUTC)
+  assert.equal(pres(r1).length, 1) // enero: 23 días × 6 h = 138 h > 20 × 31/7
+  const r2 = analizar({ dias: lee(dias, { tamBuffer: 30000 }).dias }, { ...cfgUTC, mesesReferenciaPresencia: 2 })
+  // Con 2 meses se promedia enero–febrero: 138 h < 20 × 60/7 = 171 h → sin incidencia
+  assert.equal(pres(r2).length, 0)
+})

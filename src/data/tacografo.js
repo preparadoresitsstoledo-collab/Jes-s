@@ -12,7 +12,7 @@ export const CONFIG_POR_DEFECTO = {
   desconocidoComoDescanso: true, // tarjeta extraída sin actividad introducida
   sinDatosComoDescanso: true, // días sin registro en la tarjeta
   disponibilidadEsPausa: false, // ¿la disponibilidad ≥ 15 min interrumpe las 6 h de trabajo?
-  esperasComoTrabajo: false, // art. 10.4 RD 1561/1995: disponibilidad continuada > 2 h como trabajo efectivo
+  esperasComoTrabajo: false, // art. 10.4.c RD 1561/1995: desde la 3.ª hora de espera de carga/descarga, trabajo efectivo
 
   // Convenio colectivo / Estatuto de los Trabajadores
   jornadaAnual: 1800, // horas de trabajo efectivo/año (VERIFICAR en el convenio)
@@ -21,6 +21,7 @@ export const CONFIG_POR_DEFECTO = {
   descansoEntreJornadas: 12, // art. 34.3 ET (horas)
   limiteHEAnual: 80, // art. 35.2 ET
   presenciaMaxSemanal: 20, // RD 1561/1995, art. 8.3 (promedio mensual)
+  mesesReferenciaPresencia: 1, // art. 10.5 RD 1561/1995: 1 mes, ampliable a 2 por convenio sectorial estatal
   umbralEsperaH: 6, // aviso informativo de disponibilidad diaria (esperas de carga/descarga). 0 = desactivado
   paisPropio: 'E', // país de la empresa (código del tacógrafo): el resto se considera extranjero
   mesesReferencia: 4, // RD 1561/1995, art. 10 bis.1: promedio de 48 h en 4 meses (6 por convenio sectorial estatal)

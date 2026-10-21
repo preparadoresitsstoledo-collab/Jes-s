@@ -69,8 +69,10 @@ export function construirTramos(dias) {
   return fusionarTramos(tramos)
 }
 
-// Esperas de carga y descarga (art. 10.4 RD 1561/1995): las 2 primeras horas de cada espera son
-// tiempo de presencia; desde la tercera, trabajo efectivo si no se comunicó de antemano su duración.
+// Esperas de carga y descarga (art. 10.4.c RD 1561/1995): las 2 primeras horas de cada espera son
+// tiempo de presencia; desde la tercera, trabajo efectivo salvo que su duración previsible se conozca de
+// antemano en las condiciones pactadas en convenio. La del copiloto en conducción en equipo es presencia
+// (art. 10.4.d).
 // El tacógrafo no distingue el motivo de la disponibilidad: si se activa la opción, la parte de cada
 // periodo continuado de disponibilidad (salvo el del copiloto en conducción en equipo) que exceda de
 // 2 h se trata como trabajo efectivo.
@@ -638,7 +640,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     const limitePresencia = cfg.presenciaMaxSemanal * 60 * (x.dias / 7)
     x.presenciaMaxima = Math.round(limitePresencia)
     x.excesoPresencia = Math.max(0, x.presencia - Math.round(limitePresencia))
-    if (x.excesoPresencia > 0) {
+    if (x.excesoPresencia > 0 && cfg.mesesReferenciaPresencia !== 2) {
       infraccion(inicioDia(x.mes + '-01', tz), NORMAS.RD1561, 'Art. 8.3', `Tiempo de presencia superior a ${cfg.presenciaMaxSemanal} h semanales de promedio en ${MESES[+x.mes.slice(5, 7) - 1]} de ${x.mes.slice(0, 4)}`, x.presencia * MIN, limitePresencia * MIN)
     }
   }
@@ -650,6 +652,19 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     for (const d of diasSemana) porMes.get(d.fecha.slice(0, 7)).heSemanal += (w.heSemanal * d.trabajoEfectivo) / total
   }
   for (const x of meses) x.heSemanal = Math.round(x.heSemanal)
+
+  // Presencia con periodo de referencia de 2 meses (art. 10.5 RD 1561/1995, por convenio sectorial estatal)
+  if (cfg.mesesReferenciaPresencia === 2) {
+    for (let k = 0; k + 2 <= meses.length; k++) {
+      const [a, b] = [meses[k], meses[k + 1]]
+      const diasP = a.dias + b.dias
+      const presencia = a.presencia + b.presencia
+      const limite = cfg.presenciaMaxSemanal * 60 * (diasP / 7)
+      if (presencia > Math.round(limite)) {
+        infraccion(inicioDia(a.mes + '-01', tz), NORMAS.RD1561, 'Art. 8.3', `Tiempo de presencia superior a ${cfg.presenciaMaxSemanal} h semanales de promedio en el periodo de 2 meses ${MESES[+a.mes.slice(5, 7) - 1]}–${MESES[+b.mes.slice(5, 7) - 1]} de ${b.mes.slice(0, 4)}`, presencia * MIN, limite * MIN)
+      }
+    }
+  }
 
   // ── Años ──
   const anios = []

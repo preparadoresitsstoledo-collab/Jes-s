@@ -94,14 +94,25 @@ function LimitesTacografo() {
         </li>
         <li>
           <strong>Esperas de carga y descarga:</strong> las 2 primeras horas de cada espera son tiempo de presencia;
-          desde la tercera son trabajo efectivo si la empresa no comunicó de antemano su duración (art. 10.4 RD
-          1561/1995). El tacógrafo no sabe por qué se esperó: activa la opción de los parámetros solo si las esperas
-          largas fueron de carga o descarga sin aviso previo.
+          desde la tercera son trabajo efectivo, salvo que su duración previsible se conociera de antemano en las
+          condiciones del convenio (art. 10.4.c RD 1561/1995). El tacógrafo no sabe por qué se esperó: activa la
+          opción de los parámetros solo si las esperas largas fueron de carga o descarga.
+        </li>
+        <li>
+          <strong>Ferry o tren, esperas en frontera y prohibiciones de circular</strong> son presencia solo si la
+          empresa comunicó antes de salir su existencia y duración previsible; si no lo hizo, son trabajo efectivo
+          (art. 10.4.a y b). El tiempo del copiloto sentado o en la litera mientras conduce el otro es presencia
+          (art. 10.4.d).
+        </li>
+        <li>
+          La empresa debe informarte de la normativa, el convenio y los acuerdos que regulan tu tiempo de trabajo y
+          tener un ejemplar a tu disposición (art. 10.6 RD 1561/1995).
         </li>
         <li>
           La <strong>presencia</strong> no cuenta para la jornada máxima ni para el límite de horas extraordinarias,
           pero debe pagarse, como mínimo, como hora ordinaria o compensarse con descanso retribuido; su límite de 20 h
-          semanales se calcula de promedio en el mes (art. 8.3 RD 1561/1995).
+          semanales se calcula de promedio en el mes (art. 8.3 RD 1561/1995), ampliable a 2 meses por convenio
+          sectorial estatal (art. 10.5).
         </li>
         <li>
           <strong>Transporte internacional:</strong> si la tarjeta registra países, la herramienta indica los días en
