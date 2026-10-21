@@ -35,3 +35,4 @@ publicacion-anuncio.jpg
 
 # Archivos de salida para el usuario (no se versionan)
 ejemplo-*.xlsx
+codigo-fuente-*.zip
