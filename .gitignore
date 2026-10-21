@@ -32,3 +32,6 @@ pnpm-debug.log*
 # Artefactos de despliegue (no versionar)
 web-preparadoritsstoledo.zip
 publicacion-anuncio.jpg
+
+# Archivos de salida para el usuario (no se versionan)
+ejemplo-*.xlsx
