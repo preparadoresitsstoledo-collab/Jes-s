@@ -250,6 +250,15 @@ pestaña todos los datos y resultados (y, en el analizador de tacógrafo, los pa
 Herramientas. Si se intenta cerrar o recargar la pestaña con datos cargados, el navegador pide confirmación.
 Componente común: `src/components/PrivacidadDatos.jsx`.
 
+### 🔐 Funciones avanzadas (con clave)
+
+En «Dietas y jornada», la importación de bases cotizadas (relación nominal de trabajadores), los datos de
+afiliación y la pestaña **«Bases de cotización»** del Excel (cabecera con empresa, CCC y fechas; columnas NAF,
+número identificativo, trabajador, CTO, CTP, GR, EPI/CNAE, ocupación, periodo, días, TRL; bloques **COTIZÓ**,
+**DIFERENCIAS DE COTIZACIÓN** y **BASES RESULTANTES**) solo se muestran tras introducir la clave del autor. El
+código guarda únicamente el resumen SHA-256 de la clave (`src/data/accesoAvanzado.js`). Para cambiarla:
+`node scripts/generar-clave.mjs "nueva clave"` y sustituir las dos líneas `SAL` y `HASH`.
+
 ### © Autoría
 
 Las herramientas muestran al pie «© Jesús María Prieto Valbuena. Todos los derechos reservados» y el aviso de

@@ -222,3 +222,33 @@ test('tablas del convenio de Toledo: hora ordinaria (art. 31) y extra (+25 %)', 
   assert.equal(preciosHora({}, '2025', c).precioHE, 12.34)
   assert.equal(preciosHora({}, '2025', c).origenPrecio, 'convenio')
 })
+
+test('bases cotizadas (relación nominal) y reparto mensual de las diferencias', async () => {
+  const { leerRNT, asignarRNT, basesMensuales } = await import('../calculo.js')
+  const texto = [
+    'NAF\tNúmero Identificativo\tTrabajador\tCTO\tCTP\tGR\tEPI / CNAE\tOcupación\tPeriodo\tDías desde\tDías hasta\tTotal Días\tTRL\tC_COM\tAT EP\tHEFM\tHER',
+    '281234567890\t00000000T\tConductor Uno\t401\t\t10\t0141\t\t10/2024\t01\t13\t13\t000\t935,16\t935,16\t0\t0',
+    '281234567890\t00000000T\tConductor Uno\t189\t\t10\t0141\t\t10/2024\t14\t31\t18\t000\t807,03\t807,03\t0\t0',
+    '281234567890\t00000000T\tConductor Uno\t189\t\t10\t0141\t\t11/2024\t01\t30\t30\t000\t2171,24\t2171,24\t0\t0',
+  ].join('\n')
+  const { lineas, errores } = leerRNT(texto)
+  assert.equal(errores.length, 0)
+  assert.equal(lineas.length, 3)
+  assert.deepEqual([lineas[0].mes, lineas[0].desde, lineas[0].hasta, lineas[0].ccom], ['2024-10', 1, 13, 935.16])
+  const { trabajadores } = asignarRNT([nuevoTrabajador({ nombre: 'Trabajador 1' })], lineas)
+  assert.equal(trabajadores.length, 1)
+  const t = { ...trabajadores[0], anios: { 2024: { horasEfectivas: 400, horasPresencia: 40 } } }
+  assert.equal(t.naf, '281234567890')
+  assert.equal(t.afiliacion.gr, '10')
+  const c = { ...cfg, desde: '2024-10-01', hasta: '2024-11-30', preciosHE: { 2024: 10 }, preciosOrdinaria: { 2024: 8 } }
+  const filas = basesMensuales(resumenExpediente([t], c), c)
+  assert.equal(filas.length, 3)
+  // 61 días: jornada exigible 1800 × 61 / 366 = 300 h → 100 h extra (1.000 €) y 40 h de presencia (320 €)
+  const sum = (k) => Math.round(filas.reduce((s, f) => s + f.dif[k], 0) * 100) / 100
+  assert.equal(sum('her'), 1000)
+  assert.equal(sum('ccom'), 320)
+  assert.equal(sum('atep'), 1320)
+  // Reparto por días cotizados: 13 de 61 días en la primera línea
+  assert.equal(filas[0].dif.her, Math.round((1000 * 13) / 61 * 100) / 100)
+  assert.equal(filas[0].cto, '401')
+})

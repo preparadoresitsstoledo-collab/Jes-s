@@ -104,6 +104,7 @@ export const DATOS_EXPEDIENTE = [
   { id: 'empresa', label: 'Empresa' },
   { id: 'nif', label: 'NIF' },
   { id: 'ccc', label: 'Código de cuenta de cotización' },
+  { id: 'referencia', label: 'Nº de referencia (opcional)' },
   {
     id: 'actividad',
     label: 'Actividad',

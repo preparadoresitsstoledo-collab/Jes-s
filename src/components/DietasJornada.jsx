@@ -16,6 +16,8 @@ import {
   resumenExpediente,
   resumenTacografo,
   leerLineasDietas,
+  leerRNT,
+  asignarRNT,
   buscarTrabajador,
   aniosDelPeriodo,
   normalizarConfig,
@@ -26,6 +28,7 @@ import {
 import { generarBloques, bloquesATexto, bloquesAHtml } from '../lib/dietasJornada/informe.js'
 import { fechaES } from '../lib/tacografo/tiempo.js'
 import { CONVENIOS } from '../data/conveniosTransporte.js'
+import { comprobarClave } from '../data/accesoAvanzado.js'
 import { AvisoPrivacidad, AvisoResponsabilidad, PieAutoria, useAvisoAlSalir, borrarYSalir } from './PrivacidadDatos.jsx'
 import { GuiaDietasJornada } from './GuiaUso.jsx'
 
@@ -126,6 +129,40 @@ export default function DietasJornada() {
   const [alegaciones, setAlegaciones] = useState('')
   const [importesDeclarados, setImportesDeclarados] = useState('')
   const [textoDietas, setTextoDietas] = useState('')
+  const [textoRNT, setTextoRNT] = useState('')
+  // Funciones avanzadas (bases de cotización): se activan con la clave del autor y solo
+  // para esta pestaña del navegador
+  const [avanzado, setAvanzado] = useState(() => {
+    try {
+      return sessionStorage.getItem('dietas:avanzado') === '1'
+    } catch {
+      return false
+    }
+  })
+  const [clave, setClave] = useState('')
+  const [errorClave, setErrorClave] = useState('')
+
+  async function activarAvanzado(e) {
+    e.preventDefault()
+    if (await comprobarClave(clave)) {
+      setAvanzado(true)
+      setErrorClave('')
+      try {
+        sessionStorage.setItem('dietas:avanzado', '1')
+      } catch {
+        /* sin almacenamiento disponible */
+      }
+    } else setErrorClave('Clave incorrecta.')
+    setClave('')
+  }
+  function desactivarAvanzado() {
+    setAvanzado(false)
+    try {
+      sessionStorage.removeItem('dietas:avanzado')
+    } catch {
+      /* sin almacenamiento disponible */
+    }
+  }
   const [mensajes, setMensajes] = useState([])
   const [leyendo, setLeyendo] = useState(false)
   const [generando, setGenerando] = useState(false)
@@ -260,6 +297,23 @@ export default function DietasJornada() {
     setTextoDietas('')
   }
 
+  // ── Relación nominal de trabajadores (bases cotizadas) pegada ──
+  function importarRNT() {
+    const { lineas, errores } = leerRNT(textoRNT)
+    const msgs = errores.map((e) => `⚠️ Fila ${e.fila}: ${e.error}`)
+    if (!lineas.length) {
+      setMensajes([...msgs, '⚠️ No se ha reconocido ninguna línea de bases de cotización.'])
+      return
+    }
+    setTrabajadores((previos) => {
+      const r = asignarRNT(previos, lineas)
+      msgs.push(`✅ ${lineas.length} líneas de bases cotizadas asignadas a: ${r.nombres.join(', ')}.`)
+      return r.trabajadores
+    })
+    setMensajes(msgs)
+    setTextoRNT('')
+  }
+
   // ── Guardar / abrir expediente ──
   function guardarExpediente() {
     const datos = { version: 1, cfg, expediente, trabajadores, comprobaciones, alegaciones, importesDeclarados }
@@ -297,13 +351,14 @@ export default function DietasJornada() {
         !/^Trabajador \d+$/.test(t.nombre),
     ) ||
     Object.values(expediente).some(Boolean) ||
-    Boolean(alegaciones || importesDeclarados || textoDietas)
+    Boolean(alegaciones || importesDeclarados || textoDietas || textoRNT)
   useAvisoAlSalir(hayDatos)
 
   function borrarTodo() {
     cargar({ trabajadores: [nuevoTrabajador({ nombre: 'Trabajador 1' })] })
     setMensajes([])
     setTextoDietas('')
+    setTextoRNT('')
   }
 
   function nuevoExpediente() {
@@ -338,7 +393,7 @@ export default function DietasJornada() {
     setGenerando(true)
     try {
       const { generarExcel } = await import('../lib/dietasJornada/excel.js')
-      const buf = await generarExcel({ resumen, cfg, expediente })
+      const buf = await generarExcel({ resumen, cfg, expediente, incluirBases: avanzado })
       descargar(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `dietas-jornada_${nombreArchivo(expediente.empresa)}.xlsx`)
     } catch (e) {
       setMensajes([`⚠️ No se pudo generar el Excel: ${e.message}`])
@@ -708,7 +763,54 @@ export default function DietasJornada() {
                 </button>
               </div>
             </div>
+            {avanzado ? (
+              <div>
+              <h3 className="tacografo__subtitulo">Bases cotizadas (relación nominal de trabajadores)</h3>
+              <p className="campo__ayuda">
+                Opcional, para la pestaña «Bases de cotización» del Excel. Pega desde Excel una fila por trabajador y
+                mes con las columnas:{' '}
+                <code>NAF · Número identificativo · Trabajador · CTO · CTP · GR · EPI/CNAE · Ocupación · Periodo (MM/AAAA) · Días desde · Días hasta · Total días · TRL · C_COM · AT EP · HEFM · HER</code>
+              </p>
+              <textarea className="analizador__texto" rows={4} value={textoRNT} onChange={(e) => setTextoRNT(e.target.value)} placeholder="Pega aquí las bases cotizadas…" />
+              <div className="analizador__acciones">
+                <button className="btn--secundario" disabled={!textoRNT.trim()} onClick={importarRNT}>
+                  Importar bases cotizadas
+                </button>
+              </div>
+            </div>
+            ) : null}
           </div>
+          <form className="dietas__avanzado" onSubmit={activarAvanzado}>
+            {avanzado ? (
+              <p className="campo__ayuda">
+                🔓 Funciones avanzadas activadas en esta pestaña: importación de bases cotizadas, datos de afiliación y
+                pestaña «Bases de cotización» del Excel.{' '}
+                <button type="button" className="btn--texto" onClick={desactivarAvanzado}>
+                  Desactivar
+                </button>
+              </p>
+            ) : (
+              <>
+                <label htmlFor="clave-avanzada" className="campo__ayuda">
+                  🔒 Funciones avanzadas (acceso restringido)
+                </label>
+                <div className="dietas__fila">
+                  <input
+                    id="clave-avanzada"
+                    type="password"
+                    autoComplete="off"
+                    value={clave}
+                    onChange={(e) => setClave(e.target.value)}
+                    placeholder="Clave"
+                  />
+                  <button type="submit" className="btn--secundario" disabled={!clave}>
+                    Activar
+                  </button>
+                  {errorClave && <span className="aviso aviso--alerta">{errorClave}</span>}
+                </div>
+              </>
+            )}
+          </form>
         </section>
 
         {/* 3. Trabajadores */}
@@ -724,6 +826,7 @@ export default function DietasJornada() {
               t={t}
               cfg={cfg}
               conv={conv}
+              avanzado={avanzado}
               periodoValido={periodoValido}
               abierto={abierto === t.id || trabajadores.length === 1}
               onToggle={() => setAbierto(abierto === t.id ? null : t.id)}
@@ -1080,7 +1183,7 @@ function Kpi({ titulo, valor, alerta }) {
   )
 }
 
-function Trabajador({ t, cfg, conv, periodoValido, abierto, onToggle, onCambio, onAnio, onQuitar }) {
+function Trabajador({ t, cfg, conv, avanzado, periodoValido, abierto, onToggle, onCambio, onAnio, onQuitar }) {
   const cuadrante = periodoValido ? cuadranteTrabajador({ ...t, anios: {} }, cfg) : { filas: [] }
   const calc = Object.fromEntries(cuadrante.filas.map((f) => [f.anio, f]))
   const anios = cuadrante.filas.map((f) => f.anio)
@@ -1100,7 +1203,8 @@ function Trabajador({ t, cfg, conv, periodoValido, abierto, onToggle, onCambio, 
         <small>
           {t.tacografo ? `🚚 ${t.tacografo.fechas.length} días de tacógrafo · ` : ''}
           {t.dietas.length ? `🧾 ${t.dietas.length} líneas de dietas · ` : ''}
-          {t.vacaciones.length ? `🏖️ ${t.vacaciones.length} periodos de vacaciones` : ''}
+          {t.vacaciones.length ? `🏖️ ${t.vacaciones.length} periodos de vacaciones · ` : ''}
+          {t.rnt?.length ? `📑 ${t.rnt.length} meses cotizados` : ''}
         </small>
       </button>
       {abierto && (
@@ -1113,6 +1217,10 @@ function Trabajador({ t, cfg, conv, periodoValido, abierto, onToggle, onCambio, 
             <div className="campo">
               <label>DNI/NIE (opcional)</label>
               <input value={t.dni} onChange={(e) => onCambio({ dni: e.target.value })} />
+            </div>
+            <div className="campo">
+              <label>NAF (opcional)</label>
+              <input value={t.naf || ''} onChange={(e) => onCambio({ naf: e.target.value })} />
             </div>
             {conv && (
               <>
@@ -1180,6 +1288,38 @@ function Trabajador({ t, cfg, conv, periodoValido, abierto, onToggle, onCambio, 
                 </tbody>
               </table>
             </div>
+          )}
+
+          {avanzado && (
+          <details className="dietas__afiliacion">
+            <summary>Datos de afiliación (opcional, para la pestaña «Bases de cotización»)</summary>
+            <div className="tacografo__parametros">
+              {[
+                ['cto', 'CTO (contrato)'],
+                ['ctp', 'CTP (coef. tiempo parcial)'],
+                ['gr', 'GR (grupo de cotización)'],
+                ['cnae', 'EPI / CNAE'],
+                ['ocupacion', 'Ocupación'],
+                ['trl', 'TRL'],
+              ].map(([k, etiqueta]) => (
+                <div className="campo" key={k}>
+                  <label>{etiqueta}</label>
+                  <input
+                    value={t.afiliacion?.[k] || ''}
+                    onChange={(e) => onCambio((x) => ({ afiliacion: { ...(x.afiliacion || {}), [k]: e.target.value } }))}
+                  />
+                </div>
+              ))}
+            </div>
+            {t.rnt?.length > 0 && (
+              <p className="campo__ayuda">
+                {t.rnt.length} líneas de bases cotizadas cargadas.{' '}
+                <button className="btn--texto" onClick={() => onCambio({ rnt: [] })}>
+                  Quitarlas
+                </button>
+              </p>
+            )}
+          </details>
           )}
 
           <h4 className="dietas__subtitulo">Periodos de vacaciones disfrutados (cuadrante de la empresa)</h4>

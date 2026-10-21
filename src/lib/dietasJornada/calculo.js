@@ -81,6 +81,10 @@ export function nuevoTrabajador(datos = {}) {
     id: `t${Date.now().toString(36)}${contador}`,
     nombre: '',
     dni: '',
+    naf: '', // número de afiliación a la Seguridad Social
+    // Datos de afiliación para la hoja de bases (como en la relación nominal de trabajadores)
+    afiliacion: { cto: '', ctp: '', gr: '', cnae: '', ocupacion: '', trl: '' },
+    rnt: [], // líneas mensuales cotizadas { mes, desde, hasta, dias, cto, ctp, gr, cnae, ocupacion, trl, ccom, atep, hefm, her }
     categoria: '', // categoría profesional del convenio (vacía = la por defecto)
     bienios: '', // antigüedad: nº de bienios (0-2) y quinquenios (0-3)
     quinquenios: '',
@@ -604,4 +608,135 @@ export function plazosReclamacion(filas, hoy = new Date().toISOString().slice(0,
     cotizacion.estado = estadoPlazo(cotizacion.primero, cotizacion.ultimo, hoy)
     return { anio: f.anio, desde: f.desde, hasta: f.hasta, salario, cotizacion }
   })
+}
+
+// ─────────────────────────── Bases de cotización mensuales ───────────────────────────
+
+const COLUMNAS_RNT = ['naf', 'ipf', 'nombre', 'cto', 'ctp', 'gr', 'cnae', 'ocupacion', 'periodo', 'desde', 'hasta', 'dias', 'trl', 'ccom', 'atep', 'hefm', 'her']
+
+/**
+ * Lee líneas de la relación nominal de trabajadores pegadas desde Excel, con las columnas:
+ * NAF · Número identificativo · Trabajador · CTO · CTP · GR · EPI/CNAE · Ocupación · Periodo (MM/AAAA) ·
+ * Días desde · Días hasta · Total días · TRL · C_COM · AT EP · HEFM · HER
+ */
+export function leerRNT(texto) {
+  const filas = String(texto || '').split(/\r?\n/).filter((l) => l.trim())
+  if (!filas.length) return { lineas: [], errores: [] }
+  const sep = filas[0].includes('\t') ? '\t' : ';'
+  const lineas = []
+  const errores = []
+  filas.forEach((fila, i) => {
+    const c = fila.split(sep).map((x) => x.trim().replace(/^"|"$/g, ''))
+    const o = Object.fromEntries(COLUMNAS_RNT.map((k, j) => [k, c[j] ?? '']))
+    const mes = mesDesdeTexto(o.periodo)
+    const ccom = aNumero(o.ccom)
+    if (!mes || ccom === null) {
+      if (!/periodo|naf|trabajador/i.test(fila)) errores.push({ fila: i + 1, error: 'Periodo o base de contingencias comunes no válidos' })
+      return
+    }
+    const dm = new Date(Date.UTC(+mes.slice(0, 4), +mes.slice(5, 7), 0)).getUTCDate()
+    const desde = Math.min(dm, Math.max(1, parseInt(o.desde, 10) || 1))
+    const hasta = Math.min(dm, Math.max(desde, parseInt(o.hasta, 10) || dm))
+    lineas.push({
+      naf: o.naf.replace(/\s/g, ''),
+      ipf: o.ipf,
+      nombre: o.nombre,
+      mes,
+      desde,
+      hasta,
+      dias: aNumero(o.dias) ?? hasta - desde + 1,
+      cto: o.cto,
+      ctp: o.ctp,
+      gr: o.gr,
+      cnae: o.cnae,
+      ocupacion: o.ocupacion,
+      trl: o.trl,
+      ccom,
+      atep: aNumero(o.atep) ?? ccom,
+      hefm: aNumero(o.hefm) ?? 0,
+      her: aNumero(o.her) ?? 0,
+    })
+  })
+  return { lineas, errores }
+}
+
+/**
+ * Reparte, mes a mes, las diferencias de cotización de cada año en proporción a los días
+ * cotizados de cada mes (los de la relación nominal si se han cargado; si no, los días
+ * naturales del tramo). Las horas extraordinarias van a la base de AT/EP y a la de horas
+ * extraordinarias; el exceso de presencia y las dietas a cotizar, a las de contingencias
+ * comunes y AT/EP.
+ */
+export function basesMensuales(resumen, cfgEntrada) {
+  const cfg = normalizarConfig(cfgEntrada)
+  const v = valoracion(resumen, cfg)
+  const filas = []
+  for (const x of v.filas) {
+    const t = x.trabajador
+    const f = resumen.datos.find((d) => d.trabajador === t).cuadrante.filas.find((y) => y.anio === x.anio)
+    const lineas = []
+    for (const mes of mesesDelPeriodo(f.desde, f.hasta)) {
+      const propias = (t.rnt || []).filter((l) => l.mes === mes)
+      if (propias.length) {
+        for (const l of propias) lineas.push({ ...l })
+      } else {
+        const dm = new Date(Date.UTC(+mes.slice(0, 4), +mes.slice(5, 7), 0)).getUTCDate()
+        const desde = mes === f.desde.slice(0, 7) ? +f.desde.slice(8, 10) : 1
+        const hasta = mes === f.hasta.slice(0, 7) ? +f.hasta.slice(8, 10) : dm
+        lineas.push({ mes, desde, hasta, dias: hasta - desde + 1, ...t.afiliacion, ccom: null, atep: null, hefm: null, her: null })
+      }
+    }
+    const totalDias = lineas.reduce((s2, l) => s2 + (l.dias || 0), 0) || 1
+    const baseComun = red2(x.importeOrd + x.dietas)
+    let restoHER = x.importeHE
+    let restoCCOM = baseComun
+    lineas.forEach((l, i) => {
+      const parte = (l.dias || 0) / totalDias
+      // La última línea recibe el resto, para que la suma coincida al céntimo con el total anual
+      const ultima = i === lineas.length - 1
+      const difHER = ultima ? red2(restoHER) : red2(x.importeHE * parte)
+      const difCCOM = ultima ? red2(restoCCOM) : red2(baseComun * parte)
+      restoHER -= difHER
+      restoCCOM -= difCCOM
+      filas.push({
+        trabajador: t,
+        anio: x.anio,
+        ...l,
+        cto: l.cto || t.afiliacion?.cto || '',
+        ctp: l.ctp || t.afiliacion?.ctp || '',
+        gr: l.gr || t.afiliacion?.gr || '',
+        cnae: l.cnae || t.afiliacion?.cnae || '',
+        ocupacion: l.ocupacion || t.afiliacion?.ocupacion || '',
+        trl: l.trl || t.afiliacion?.trl || '',
+        dif: { ccom: difCCOM, atep: red2(difCCOM + difHER), hefm: 0, her: difHER },
+      })
+    })
+  }
+  return filas
+}
+
+// Añade las líneas de la relación nominal a los trabajadores (por NAF, DNI o nombre)
+export function asignarRNT(trabajadores, lineas) {
+  let ts = trabajadores.map((t) => ({ ...t, rnt: [...(t.rnt || [])], afiliacion: { ...(t.afiliacion || {}) } }))
+  const resumen = []
+  for (const l of lineas) {
+    let t = ts.find((x) => l.naf && x.naf && x.naf.replace(/\s/g, '') === l.naf) || buscarTrabajador(ts, l.ipf) || (l.nombre ? buscarTrabajador(ts, l.nombre) : null)
+    if (!t) {
+      const vacio = ts.length === 1 && !ts[0].tacografo && !ts[0].dietas.length && !ts[0].rnt.length && /^Trabajador \d+$/.test(ts[0].nombre)
+      t = vacio ? ts[0] : nuevoTrabajador({ rnt: [], afiliacion: {} })
+      if (!vacio) ts.push(t)
+      t.nombre = l.nombre || l.ipf || l.naf || t.nombre
+    }
+    if (!t.naf && l.naf) t.naf = l.naf
+    if (!t.dni && l.ipf) t.dni = l.ipf
+    for (const k of ['cto', 'ctp', 'gr', 'cnae', 'ocupacion', 'trl']) if (!t.afiliacion[k] && l[k]) t.afiliacion[k] = l[k]
+    const linea = { ...l }
+    delete linea.naf
+    delete linea.ipf
+    delete linea.nombre
+    if (!t.rnt.some((r) => r.mes === linea.mes && r.desde === linea.desde && r.cto === linea.cto)) t.rnt.push(linea)
+    resumen.push(t.nombre)
+  }
+  for (const t of ts) t.rnt.sort((a, b) => (a.mes + String(a.desde).padStart(2, '0') < b.mes + String(b.desde).padStart(2, '0') ? -1 : 1))
+  return { trabajadores: ts, nombres: [...new Set(resumen)] }
 }

@@ -3,7 +3,7 @@
 
 import ExcelJS from 'exceljs'
 import { TIPOS_DIETA, DATOS_EXPEDIENTE, CRITERIOS_DIAS, PRORRATEOS, CONCEPTOS_COTIZACION, DIETAS_SALARIO } from '../../data/dietasJornada.js'
-import { normalizarConfig, valoracion, tiposDelAnio } from './calculo.js'
+import { normalizarConfig, valoracion, tiposDelAnio, basesMensuales } from './calculo.js'
 import { fechaES } from '../tacografo/tiempo.js'
 import { AUTOR, TEXTO_LICENCIA, textoCopyright } from '../../data/autoria.js'
 
@@ -38,9 +38,104 @@ function totales(ws, fila, columnas, euros) {
   r.eachCell((c) => (c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: GRIS } }))
 }
 
+const BORDE = { style: 'thin', color: { argb: 'FF9AA5B1' } }
+const BORDES = { top: BORDE, left: BORDE, bottom: BORDE, right: BORDE }
+
+function hojaBases(wb, resumen, cfg, expediente) {
+  const ws = wb.addWorksheet('Bases de cotización', { views: [{ state: 'frozen', ySplit: 4 }] })
+  const anchos = [15, 16, 30, 7, 7, 6, 10, 10, 10, 8, 8, 8, 7, 12, 12, 10, 10, 12, 12, 10, 10, 12, 12, 10, 10]
+  ws.columns = anchos.map((width) => ({ width }))
+  const titulo = (rango, texto, color) => {
+    ws.mergeCells(rango)
+    const c = ws.getCell(rango.split(':')[0])
+    c.value = texto
+    c.font = { bold: true, color: color ? { argb: 'FFFFFFFF' } : undefined }
+    c.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }
+    if (color) c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: color } }
+    c.border = BORDES
+  }
+  const valor = (rango, texto) => {
+    ws.mergeCells(rango)
+    const c = ws.getCell(rango.split(':')[0])
+    c.value = texto || ''
+    c.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true }
+    c.border = BORDES
+  }
+  // Cabecera
+  titulo('A1:B1', 'NOMBRE DE EMPRESA')
+  valor('C1:I1', expediente.empresa)
+  titulo('J1:M1', 'NÚMERO DE CCC')
+  valor('N1:Y1', expediente.ccc)
+  titulo('A2:B2', 'Nº DE REFERENCIA')
+  valor('C2:D2', expediente.referencia)
+  titulo('E2:G2', 'FECHA')
+  valor('H2:M2', `${fechaES(cfg.desde)}-${fechaES(cfg.hasta)}`)
+  titulo('N2:Q2', 'COTIZÓ', 'FF4B5563')
+  titulo('R2:U2', 'DIFERENCIAS DE COTIZACIÓN', 'FFB45309')
+  titulo('V2:Y2', 'BASES RESULTANTES', AZUL)
+  ws.getRow(1).height = 18
+  ws.getRow(2).height = 40
+  ws.mergeCells('A3:Y3')
+  cabecera(ws, 4, [
+    'NAF', 'Número Identificativo', 'Trabajador', 'CTO', 'CTP', 'GR', 'EPI / CNAE', 'Ocupación', 'Periodo',
+    'Días desde', 'Días hasta', 'Total Días', 'TRL',
+    'C_COM', 'AT EP', 'HEFM', 'HER',
+    'C_COM', 'AT EP', 'HEFM', 'HER',
+    'C_COM', 'AT EP', 'HEFM', 'HER',
+  ])
+  ws.getRow(4).height = 36
+
+  let fila = 5
+  for (const l of basesMensuales(resumen, cfg)) {
+    const r = ws.getRow(fila)
+    const texto = [
+      l.trabajador.naf || '', l.trabajador.dni || '', l.trabajador.nombre || '', l.cto, l.ctp, l.gr, l.cnae, l.ocupacion,
+      `${l.mes.slice(5, 7)}/${l.mes.slice(0, 4)}`, String(l.desde).padStart(2, '0'), String(l.hasta).padStart(2, '0'), String(l.dias), l.trl,
+    ]
+    texto.forEach((v, i) => {
+      const c = r.getCell(i + 1)
+      c.value = v ?? ''
+      c.numFmt = '@'
+    })
+    const cot = [l.ccom, l.atep, l.hefm, l.her]
+    const dif = [l.dif.ccom, l.dif.atep, l.dif.hefm, l.dif.her]
+    cot.forEach((v, i) => (r.getCell(14 + i).value = v))
+    dif.forEach((v, i) => (r.getCell(18 + i).value = v))
+    for (let i = 0; i < 4; i++) {
+      const cc = String.fromCharCode(78 + i) // N..Q
+      const cd = String.fromCharCode(82 + i) // R..U
+      r.getCell(22 + i).value = { formula: `N(${cc}${fila})+N(${cd}${fila})`, result: Math.round(((cot[i] || 0) + dif[i]) * 100) / 100 }
+    }
+    for (let c = 14; c <= 25; c++) r.getCell(c).numFmt = '#,##0.00'
+    for (let c = 1; c <= 25; c++) r.getCell(c).border = BORDES
+    if (dif.some((x) => x > 0)) for (let c = 18; c <= 21; c++) r.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ROJO_SUAVE } }
+    fila++
+  }
+  if (fila > 5) {
+    const r = ws.getRow(fila)
+    r.getCell(1).value = 'TOTAL'
+    for (let c = 14; c <= 25; c++) {
+      const col = String.fromCharCode(64 + c)
+      r.getCell(c).value = { formula: `SUM(${col}5:${col}${fila - 1})` }
+      r.getCell(c).numFmt = '#,##0.00'
+    }
+    r.font = { bold: true }
+    r.eachCell((c) => {
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: GRIS } }
+      c.border = BORDES
+    })
+  }
+  const nota = ws.getCell(`A${fila + 2}`)
+  nota.value =
+    'COTIZÓ: bases declaradas (relación nominal de trabajadores), si se han cargado; en blanco, para completarlas. DIFERENCIAS: horas extraordinarias en AT EP y HER; exceso de presencia y dietas a cotizar en C_COM y AT EP. Reparto mensual en proporción a los días cotizados de cada mes. Orientativo: revise los importes antes de usarlos.'
+  nota.font = { italic: true, size: 9, color: { argb: 'FF555555' } }
+  ws.mergeCells(`A${fila + 2}:Y${fila + 3}`)
+  nota.alignment = { wrapText: true, vertical: 'top' }
+}
+
 const nombreTipo = (id) => TIPOS_DIETA.find((t) => t.id === id)?.nombre || id
 
-export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }) {
+export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {}, incluirBases = false }) {
   const cfg = normalizarConfig(cfgEntrada)
   const wb = new ExcelJS.Workbook()
   wb.creator = AUTOR
@@ -210,6 +305,9 @@ export async function generarExcel({ resumen, cfg: cfgEntrada, expediente = {} }
   const notaV = wv.getRow(fila + 2).getCell(1)
   notaV.value = `Dietas integradas: ${DIETAS_SALARIO.find((d) => d.id === cfg.dietasSalario)?.nombre}. Las horas extraordinarias cotizan en la base de contingencias profesionales (AT/EP, desempleo, FOGASA, FP) y por la cotización adicional; el exceso de presencia y las dietas, en ambas bases. No se aplican topes de bases ni cotización de solidaridad. Verifica precios y tipos de cada ejercicio.`
   notaV.font = { italic: true }
+
+  // ── Bases de cotización por trabajador y mes (cotizado y diferencias) ──
+  if (incluirBases) hojaBases(wb, resumen, cfg, expediente)
 
   // ── Análisis de dietas ──
   const wa = wb.addWorksheet('Análisis dietas')

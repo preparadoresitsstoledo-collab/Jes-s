@@ -3612,3 +3612,23 @@ select.chip {
   padding: 1px 4px;
   border-radius: 4px;
 }
+.dietas__afiliacion {
+  margin: 14px 0 4px;
+}
+.dietas__afiliacion summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--azul-900);
+  margin-bottom: 8px;
+}
+.dietas__importar code {
+  word-break: break-word;
+}
+.dietas__avanzado {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--gris-300);
+}
+.dietas__avanzado input[type='password'] {
+  max-width: 220px;
+}
