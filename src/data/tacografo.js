@@ -21,6 +21,7 @@ export const CONFIG_POR_DEFECTO = {
   limiteHEAnual: 80, // art. 35.2 ET
   presenciaMaxSemanal: 20, // RD 1561/1995, art. 8.3 (promedio mensual)
   umbralEsperaH: 6, // aviso informativo de disponibilidad diaria (esperas de carga/descarga). 0 = desactivado
+  paisPropio: 'E', // país de la empresa (código del tacógrafo): el resto se considera extranjero
   mesesReferencia: 4, // RD 1561/1995, art. 10 bis.1: promedio de 48 h en 4 meses (6 por convenio sectorial estatal)
   nocturnoInicio: '22:00', // art. 36.1 ET
   nocturnoFin: '06:00',
@@ -71,4 +72,5 @@ export const NORMAS = {
   R561: 'Reglamento (CE) 561/2006',
   RD1561: 'RD 1561/1995',
   ET: 'Estatuto de los Trabajadores',
+  EXTRANJERO: 'Trabajo en el extranjero',
 }

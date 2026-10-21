@@ -212,6 +212,25 @@ export function generarBloques({
     }
   }
 
+  // ── Trabajo en el extranjero (según el tacógrafo) ──
+  const filasExt = resumen.datos.flatMap((d) => d.cuadrante.filas.filter((f) => f.diasExtranjero > 0).map((f) => ({ d, f })))
+  if (filasExt.length) {
+    B.push({ tipo: 'titulo', texto: 'Trabajo en el extranjero' })
+    B.push({
+      tipo: 'p',
+      texto: 'Según los países registrados en la tarjeta del conductor al empezar o terminar la jornada, hubo días de trabajo fuera de España. En esos días la dieta debería ser la del extranjero (con sus propios límites exentos) y, según el tipo de transporte, puede aplicarse la normativa sobre desplazamiento de conductores (Directiva (UE) 2020/1057): el cabotaje y los transportes entre terceros países se consideran desplazamiento; los transportes bilaterales y el tránsito, no.',
+    })
+    B.push({
+      tipo: 'tabla',
+      cabecera: ['Trabajador', 'Año', 'Días en el extranjero (tacógrafo)', 'Países', 'Días con dieta del extranjero (nóminas)'],
+      filas: filasExt.map(({ d, f }) => [d.trabajador.nombre || '—', f.anio, num(f.diasExtranjero), f.paisesExtranjero.join(', '), f.diasDietaExtranjero === null ? '—' : num(f.diasDietaExtranjero)]),
+    })
+    const menos = filasExt.filter(({ f }) => f.diasDietaExtranjero !== null && f.diasDietaExtranjero < f.diasExtranjero)
+    if (menos.length) {
+      B.push({ tipo: 'p', texto: `En ${menos.length === 1 ? 'un caso' : `${menos.length} casos`} las nóminas recogen menos días de dieta del extranjero que días trabajados fuera de España: conviene revisar el tipo de dieta abonada.` })
+    }
+  }
+
   // ── Diferencias salariales y de cotización ──
   const v = valoracion(resumen, cfg)
   if (v.totales.totalSalarial > 0) {

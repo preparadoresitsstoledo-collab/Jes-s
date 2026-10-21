@@ -457,6 +457,14 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
   // ── Días naturales (hora local) ──
   const vehiculos = conductor.vehiculos || []
   const kmPorFecha = new Map(conductor.dias.map((d) => [d.fecha, d.distancia]))
+  // Países registrados al inicio y al final de cada periodo de trabajo (EF Places), por fecha local
+  const paisesPorFecha = new Map()
+  for (const l of conductor.lugares || []) {
+    if (!l.pais) continue
+    const f = fechaLocal(l.ms, tz)
+    if (!paisesPorFecha.has(f)) paisesPorFecha.set(f, new Set())
+    paisesPorFecha.get(f).add(l.pais)
+  }
   const dias = []
   for (let f = desde; f <= hasta; f = sumarDias(f, 1)) {
     const a = inicioDia(f, tz)
@@ -491,6 +499,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
       amplitud: primera !== null ? aMin(ultima - primera) : 0,
       heDiaria: Math.max(0, aMin(trabajoEfectivo - H(cfg.jornadaDiariaMax))),
       km: kmPorFecha.get(f) || 0,
+      paises: [...(paisesPorFecha.get(f) || [])].join(', '),
       vehiculos: [...new Set(vehiculos.filter((v) => v.primerUso < b && v.ultimoUso >= a).map((v) => v.matricula))].join(', '),
       conActividad: primera !== null,
       incidencias: [],
@@ -499,7 +508,7 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
   const diaPorFecha = new Map(dias.map((d) => [d.fecha, d]))
   for (const inf of infracciones) {
     const d = diaPorFecha.get(inf.fecha)
-    if (d) d.incidencias.push(`${inf.informativa ? 'ⓘ ' : ''}${inf.articulo} ${inf.norma === NORMAS.R561 ? 'R. 561' : inf.norma === NORMAS.RD1561 ? 'RD 1561' : 'ET'}: ${inf.descripcion}`)
+    if (d) d.incidencias.push(`${inf.informativa ? 'ⓘ ' : ''}${inf.articulo} ${inf.norma === NORMAS.R561 ? 'R. 561' : inf.norma === NORMAS.RD1561 ? 'RD 1561' : inf.norma === NORMAS.EXTRANJERO ? '(extranjero)' : 'ET'}: ${inf.descripcion}`)
   }
 
   // ── Semanas naturales (lunes a domingo) ──
@@ -637,6 +646,28 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     if (promedio > 48 * 60 && diasC >= 28 * nRef) {
       const ini = inicioDia(ms[0].mes + '-01', tz)
       infraccion(ini > t0 ? ini : t0, NORMAS.RD1561, 'Art. 10 bis.1', `Promedio de trabajo superior a 48 h semanales en el periodo de ${nRef} meses ${q.periodo}`, promedio * MIN, H(48))
+    }
+  }
+
+  // ── Trabajo en el extranjero (países de inicio o fin de jornada distintos del propio) ──
+  // Informativo: puede aplicarse la normativa de desplazamiento de conductores (Directiva (UE)
+  // 2020/1057: el cabotaje y los transportes entre terceros países son desplazamiento; los
+  // bilaterales y el tránsito, no) y las dietas deberían ser las del extranjero.
+  {
+    const propio = cfg.paisPropio || 'E'
+    const porMes = new Map()
+    for (const d of dias) {
+      const fuera = d.paises ? d.paises.split(', ').filter((x) => x && x !== propio) : []
+      if (!fuera.length) continue
+      const mes = d.fecha.slice(0, 7)
+      if (!porMes.has(mes)) porMes.set(mes, { dias: 0, paises: new Set() })
+      const x = porMes.get(mes)
+      x.dias++
+      for (const pz of fuera) x.paises.add(pz)
+    }
+    for (const [mes, x] of porMes) {
+      const ini = inicioDia(mes + '-01', tz)
+      infraccion(ini > t0 ? ini : t0, NORMAS.EXTRANJERO, 'Directiva (UE) 2020/1057', `Trabajo en el extranjero (${[...x.paises].join(', ')}) en ${x.dias} día(s) de ${MESES[+mes.slice(5, 7) - 1]} de ${mes.slice(0, 4)}: revise si es transporte bilateral, tránsito, cabotaje o entre terceros países (régimen de desplazamiento) y si las dietas son las del extranjero`, null, null, { informativa: true })
     }
   }
 

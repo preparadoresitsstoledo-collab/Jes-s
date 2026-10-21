@@ -294,3 +294,29 @@ test('esperas: aviso informativo cuando la disponibilidad diaria es muy alta', (
   const r2 = analizar({ dias: lee(dias).dias }, { ...cfgUTC, umbralEsperaH: 0 })
   assert.equal(r2.infracciones.find((i) => i.articulo === 'Art. 3'), undefined)
 })
+
+test('países de la tarjeta: detecta trabajo en el extranjero (gen1 y gen2)', () => {
+  for (const gen2 of [false, true]) {
+    const dias = [
+      dia('2024-01-08', [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['10:00', 'DESCANSO'], ['10:45', 'CONDUCCION'], ['14:00', 'DESCANSO']]),
+      dia('2024-01-09', [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['10:00', 'DESCANSO'], ['10:45', 'CONDUCCION'], ['14:00', 'DESCANSO']]),
+    ]
+    const lugares = [
+      { fecha: '2024-01-08', hora: '06:00', tipo: 0, pais: 0x0f },
+      { fecha: '2024-01-08', hora: '14:00', tipo: 1, pais: 0x27 },
+      { fecha: '2024-01-09', hora: '06:00', tipo: 0, pais: 0x27 },
+      { fecha: '2024-01-09', hora: '14:00', tipo: 1, pais: 0x0f },
+    ]
+    const l = lee(dias, { gen2, lugares })
+    assert.equal(l.lugares.length, 4)
+    assert.equal(l.lugares[1].pais, 'P')
+    assert.equal(l.lugares[1].esInicio, false)
+    const [c] = agruparPorConductor([l])
+    const r = analizar(c, cfgUTC)
+    assert.equal(r.dias.find((d) => d.fecha === '2024-01-08').paises, 'E, P')
+    const ext = r.infracciones.filter((i) => i.norma === 'Trabajo en el extranjero')
+    assert.equal(ext.length, 1)
+    assert.match(ext[0].descripcion, /\(P\) en 2 día/)
+    assert.ok(ext[0].informativa)
+  }
+})

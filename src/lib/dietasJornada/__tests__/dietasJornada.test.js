@@ -252,3 +252,25 @@ test('bases cotizadas (relación nominal) y reparto mensual de las diferencias',
   assert.equal(filas[0].dif.her, Math.round((1000 * 13) / 61 * 100) / 100)
   assert.equal(filas[0].cto, '401')
 })
+
+test('trabajo en el extranjero: días del tacógrafo frente a dietas del extranjero', () => {
+  const t = nuevoTrabajador({
+    nombre: 'Conductor Portugal',
+    tacografo: {
+      fechas: ['2024-03-04', '2024-03-05', '2024-03-06'],
+      minutos: { '2024-03-04': 480, '2024-03-05': 480, '2024-03-06': 480 },
+      presencia: {},
+      extranjero: { '2024-03-05': 'P', '2024-03-06': 'P' },
+    },
+    dietas: [{ mes: '2024-03', tipo: 'extranjero_con', dias: 1, importe: 60 }],
+  })
+  const c = { ...cfg, desde: '2024-01-01', hasta: '2024-12-31' }
+  const resumen = resumenExpediente([t], c)
+  const f = resumen.datos[0].cuadrante.filas[0]
+  assert.equal(f.diasExtranjero, 2)
+  assert.deepEqual(f.paisesExtranjero, ['P'])
+  assert.equal(f.diasDietaExtranjero, 1)
+  const texto = bloquesATexto(generarBloques({ cfg: c, resumen, hoy: '2026-10-21' }))
+  assert.match(texto, /TRABAJO EN EL EXTRANJERO/)
+  assert.match(texto, /menos días de dieta del extranjero/)
+})

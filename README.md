@@ -271,6 +271,12 @@ disponibilidad: el análisis cuenta la disponibilidad como presencia y avisa (in
 de `umbralEsperaH` horas (6 por defecto). Límite de 20 h semanales de promedio mensual (art. 8.3); la presencia
 no computa para la jornada máxima ni para las horas extra salvo compensación con descanso.
 
+**Trabajo en el extranjero.** El lector obtiene de la tarjeta los países registrados al empezar y terminar cada
+jornada (EF Places, 1.ª y 2.ª generación). El analizador avisa (informativo) de los meses con trabajo fuera de
+España, para revisar el régimen de desplazamiento de conductores (Directiva (UE) 2020/1057) y las dietas; el
+Excel incluye la columna «Países». «Dietas y jornada» compara los días en el extranjero con los días de dieta del
+extranjero de las nóminas.
+
 ## Publicar en Axarnet (preparadoritsstoledo.es)
 
 La web pública está alojada en Axarnet. Para actualizarla:

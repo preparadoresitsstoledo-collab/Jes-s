@@ -36,7 +36,8 @@ export function m(hhmm) {
 
 /**
  * dias: [{ fecha: 'AAAA-MM-DD', cambios: [[minuto, 'CONDUCCION', {noInsertada, manual}], ...], km }]
- * opciones: { apellidos, nombre, numero, tamBuffer, desplazamiento, gen2, vehiculos }
+ * opciones: { apellidos, nombre, numero, tamBuffer, desplazamiento, gen2, vehiculos, lugares }
+ * lugares: [{ fecha, hora: 'HH:MM', tipo: 0 (inicio) | 1 (fin), pais: código numérico (0x0f España, 0x27 Portugal) }]
  */
 export function generarTarjeta(dias, opciones = {}) {
   const {
@@ -47,6 +48,7 @@ export function generarTarjeta(dias, opciones = {}) {
     desplazamiento = 13000, // fuerza la vuelta del búfer circular
     gen2 = false,
     vehiculos = [],
+    lugares = [],
   } = opciones
 
   const ident = [
@@ -94,6 +96,14 @@ export function generarTarjeta(dias, opciones = {}) {
     veh.push(...r.slice(0, tam))
   }
 
+  const tamL = gen2 ? 21 : 10
+  const lug = gen2 ? [...u16(Math.max(0, lugares.length - 1))] : [Math.max(0, lugares.length - 1)]
+  for (const l of lugares) {
+    const r = [...u32(seg(l.fecha) + m(l.hora) * 60), l.tipo, l.pais, 0, 0, 1, 0]
+    if (gen2) r.push(...new Array(11).fill(0))
+    lug.push(...r.slice(0, tamL))
+  }
+
   const ap = gen2 ? 2 : 0
   // EF Application_Identification: tamaños de las estructuras de la tarjeta
   const aplicacion = gen2
@@ -107,6 +117,7 @@ export function generarTarjeta(dias, opciones = {}) {
     ...tlv(0x0504, ap, actividad),
     ...tlv(0x0504, ap + 1, new Array(gen2 ? 64 : 128).fill(7)),
     ...tlv(0x0505, ap, veh),
+    ...(lugares.length ? tlv(0x0506, ap, lug) : []),
   ]
   return Uint8Array.from(bytes)
 }

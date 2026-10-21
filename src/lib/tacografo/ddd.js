@@ -22,6 +22,7 @@ const EF = {
   IDENTIFICACION: 0x0520,
   ACTIVIDAD: 0x0504,
   VEHICULOS: 0x0505,
+  LUGARES: 0x0506,
   DESCARGA: 0x050e,
 }
 
@@ -237,6 +238,29 @@ function leerVehiculos(d, gen2) {
   return vehiculos.sort((a, b) => a.primerUso - b.primerUso)
 }
 
+// EF Places: país y región introducidos al empezar y terminar cada periodo de trabajo diario.
+// gen1: puntero de 1 byte y registros de 10 bytes; gen2: puntero de 2 bytes y registros de 21 bytes
+// (añaden la posición GNSS, que no se usa aquí).
+const TIPOS_LUGAR = ['inicio', 'fin', 'inicio (manual)', 'fin (manual)', 'inicio (supuesto)', 'fin (supuesto)']
+function leerLugares(d, gen2) {
+  const tam = gen2 ? 21 : 10
+  const lugares = []
+  for (let p = gen2 ? 2 : 1; p + tam <= d.length; p += tam) {
+    const ms = timeReal(d, p)
+    if (!ms) continue
+    const tipo = d[p + 4]
+    lugares.push({
+      ms,
+      tipo: TIPOS_LUGAR[tipo] || 'otro',
+      esInicio: tipo % 2 === 0,
+      pais: nacion(d[p + 5]),
+      region: d[p + 6],
+      km: be24(d, p + 7),
+    })
+  }
+  return lugares.sort((a, b) => a.ms - b.ms)
+}
+
 // Detecta descargas de la UNIDAD INTRAVEHICULAR (archivos V): comienzan por 0x76
 function esArchivoVehiculo(b) {
   return b.length > 2 && b[0] === 0x76 && ((b[1] >= 0x01 && b[1] <= 0x05) || (b[1] >= 0x21 && b[1] <= 0x35))
@@ -290,6 +314,15 @@ export function leerArchivoTarjeta(entrada, nombre = '') {
     avisos.push('No se pudieron leer los vehículos utilizados')
   }
 
+  const lug2 = datos(EF.LUGARES, true)
+  const lug1 = datos(EF.LUGARES, false)
+  let lugares = []
+  try {
+    lugares = lug2 ? leerLugares(lug2.datos, true) : lug1 ? leerLugares(lug1.datos, false) : []
+  } catch {
+    avisos.push('No se pudieron leer los lugares (países) de inicio y fin de jornada')
+  }
+
   const descarga = datos(EF.DESCARGA, true) || datos(EF.DESCARGA, false)
 
   return {
@@ -299,6 +332,7 @@ export function leerArchivoTarjeta(entrada, nombre = '') {
     ultimaDescarga: descarga && descarga.datos.length >= 4 ? timeReal(descarga.datos, 0) : null,
     dias,
     vehiculos,
+    lugares,
     avisos,
   }
 }

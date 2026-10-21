@@ -382,6 +382,7 @@ export async function generarExcel({ conductor, resultado: r, cfg: cfgEntrada, e
     { titulo: 'Entradas manuales', ancho: 10, valor: (x) => t(x.manual), formato: FMT_HORAS },
     { titulo: 'Km', ancho: 7, valor: (x) => x.km || null },
     { titulo: 'Vehículos', ancho: 16, valor: (x) => x.vehiculos },
+    { titulo: 'Países (inicio/fin)', ancho: 12, valor: (x) => x.paises },
     { titulo: 'Incidencias', ancho: 80, valor: (x) => x.incidencias.join('\n'), ajustar: true },
   ], r.dias)
   r.dias.forEach((d, k) => {

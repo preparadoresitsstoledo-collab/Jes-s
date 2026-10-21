@@ -1202,6 +1202,9 @@ function Trabajador({ t, cfg, conv, avanzado, periodoValido, abierto, onToggle, 
         <strong>{t.nombre || 'Sin nombre'}</strong>
         <small>
           {t.tacografo ? `🚚 ${t.tacografo.fechas.length} días de tacógrafo · ` : ''}
+          {t.tacografo?.extranjero && Object.keys(t.tacografo.extranjero).length
+            ? `🌍 ${Object.keys(t.tacografo.extranjero).length} en el extranjero · `
+            : ''}
           {t.dietas.length ? `🧾 ${t.dietas.length} líneas de dietas · ` : ''}
           {t.vacaciones.length ? `🏖️ ${t.vacaciones.length} periodos de vacaciones · ` : ''}
           {t.rnt?.length ? `📑 ${t.rnt.length} meses cotizados` : ''}

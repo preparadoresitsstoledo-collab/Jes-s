@@ -109,13 +109,16 @@ export function resumenTacografo(resultado, archivos = []) {
   const fechas = []
   const minutos = {}
   const presencia = {}
+  const extranjero = {} // fecha → países distintos de España registrados en la tarjeta
   for (const d of resultado.dias) {
     if (!d.conActividad) continue
     fechas.push(d.fecha)
     minutos[d.fecha] = d.trabajoEfectivo
     presencia[d.fecha] = d.presencia
+    const fuera = (d.paises || '').split(', ').filter((x) => x && x !== 'E')
+    if (fuera.length) extranjero[d.fecha] = fuera.join(', ')
   }
-  return { fechas, minutos, presencia, desde: resultado.desde, hasta: resultado.hasta, archivos }
+  return { fechas, minutos, presencia, extranjero, desde: resultado.desde, hasta: resultado.hasta, archivos }
 }
 
 // ─────────────────────────── Cuadrante anual ───────────────────────────
@@ -157,6 +160,9 @@ export function cuadranteTrabajador(t, cfgEntrada) {
     const minEfectivo = fechasTac.reduce((s, f) => s + (t.tacografo.minutos?.[f] || 0), 0)
     const minPresencia = fechasTac.reduce((s, f) => s + (t.tacografo.presencia?.[f] || 0), 0)
     const diasTacografo = aNumero(manual.diasTacografo) ?? (t.tacografo ? fechasTac.length : null)
+    const fechasExtranjero = fechasTac.filter((f) => t.tacografo?.extranjero?.[f])
+    const paisesExtranjero = [...new Set(fechasExtranjero.flatMap((f) => t.tacografo.extranjero[f].split(', ')))]
+    const diasDietaExtranjero = lineas.filter((l) => String(l.tipo).startsWith('extranjero')).reduce((s2, l) => s2 + (aNumero(l.dias) || 0), 0)
     const horasEfectivas = aNumero(manual.horasEfectivas) ?? (t.tacografo ? aHoras(minEfectivo) : null)
     const horasPresencia = aNumero(manual.horasPresencia) ?? (t.tacografo ? aHoras(minPresencia) : null)
 
@@ -206,6 +212,9 @@ export function cuadranteTrabajador(t, cfgEntrada) {
       importeDietas,
       lineasDieta: lineas.length,
       diasTacografo,
+      diasExtranjero: t.tacografo ? fechasExtranjero.length : null,
+      paisesExtranjero,
+      diasDietaExtranjero: lineas.length ? diasDietaExtranjero : null,
       diasPeriodo,
       diasSuspension,
       diasComputables,
