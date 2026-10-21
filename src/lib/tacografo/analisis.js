@@ -69,6 +69,35 @@ export function construirTramos(dias) {
   return fusionarTramos(tramos)
 }
 
+// Esperas de carga y descarga (art. 10.4 RD 1561/1995): las 2 primeras horas de cada espera son
+// tiempo de presencia; desde la tercera, trabajo efectivo si no se comunicó de antemano su duración.
+// El tacógrafo no distingue el motivo de la disponibilidad: si se activa la opción, la parte de cada
+// periodo continuado de disponibilidad (salvo el del copiloto en conducción en equipo) que exceda de
+// 2 h se trata como trabajo efectivo.
+export function tratarEsperas(tramos, cfg) {
+  if (!cfg.esperasComoTrabajo) return tramos
+  const limite = 2 * 60 * MIN
+  const r = []
+  let acumulado = 0
+  for (const t of tramos) {
+    const esEspera = t.act === ACT.DISPONIBILIDAD && !(t.equipo && t.copiloto)
+    if (!esEspera) {
+      acumulado = 0
+      r.push(t)
+      continue
+    }
+    const dur = t.fin - t.ini
+    const quedaPresencia = Math.max(0, limite - acumulado)
+    if (dur <= quedaPresencia) r.push(t)
+    else {
+      if (quedaPresencia > 0) r.push({ ...t, fin: t.ini + quedaPresencia })
+      r.push({ ...t, ini: t.ini + quedaPresencia, act: ACT.TRABAJO, espera: true })
+    }
+    acumulado += dur
+  }
+  return r
+}
+
 function fusionarTramos(tramos) {
   const r = []
   for (const t of tramos) {
@@ -160,7 +189,7 @@ const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 's
 export function analizar(conductor, cfgEntrada, periodo = {}) {
   const cfg = normalizarConfig(cfgEntrada)
   const tz = cfg.zonaHoraria
-  const todos = construirTramos(conductor.dias)
+  const todos = tratarEsperas(construirTramos(conductor.dias), cfg)
   if (!todos.length) throw new Error('No hay actividades registradas')
 
   const primeraFecha = conductor.dias[0].fecha
@@ -423,6 +452,17 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     }
   }
 
+  // País registrado más reciente antes de un instante (fin de la jornada previa al descanso)
+  const lugaresOrden = (conductor.lugares || []).filter((l) => l.pais)
+  const paisAntes = (ms) => {
+    let pz = ''
+    for (const l of lugaresOrden) {
+      if (l.ms > ms + 5 * MIN) break
+      pz = l.pais
+    }
+    return pz
+  }
+
   // ── Descansos semanales (art. 8.6 y 8.6 bis) ──
   const semanales = jornadas.filter((j) => j.descanso && j.descanso.tipo.startsWith('semanal')).map((j) => j.descanso)
   for (let k = 0; k < semanales.length; k++) {
@@ -435,7 +475,27 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
         infraccion(w.ini, NORMAS.R561, 'Art. 8.6', `Descanso semanal iniciado después de seis periodos de 24 h desde el anterior (${fechaHoraLocal(anterior.fin, tz)})`, separacion, 6 * DIA)
       }
       if (w.reducido && anterior.reducido) {
-        infraccion(w.ini, NORMAS.R561, 'Art. 8.6', 'Dos descansos semanales reducidos consecutivos (revise si concurre la excepción del transporte internacional)', w.dur, H(45))
+        // Excepción del transporte internacional (art. 8.6, párrafos tercero y cuarto): ambos descansos
+        // reducidos iniciados fuera del Estado de establecimiento y, en las 4 semanas consecutivas,
+        // al menos 4 descansos semanales, 2 de ellos normales.
+        const propio = cfg.paisPropio || 'E'
+        const fueraA = paisAntes(anterior.ini)
+        const fueraW = paisAntes(w.ini)
+        const ambosFuera = fueraA && fueraW && fueraA !== propio && fueraW !== propio
+        let cumpleCuatro = false
+        if (ambosFuera) {
+          const desde = inicioDia(lunesDe(fechaLocal(anterior.ini, tz)), tz)
+          const hasta = desde + 28 * DIA
+          const enVentana = semanales.filter((x) => x.ini >= desde && x.ini < hasta)
+          cumpleCuatro = enVentana.length >= 4 && enVentana.filter((x) => x.dur >= H(45)).length >= 2
+        }
+        if (ambosFuera && cumpleCuatro) {
+          infraccion(w.ini, NORMAS.R561, 'Art. 8.6', `Dos descansos semanales reducidos consecutivos iniciados fuera de España (${fueraA}, ${fueraW}): se aplica la excepción del transporte internacional (compruebe que no fueron en el lugar de residencia del conductor)`, w.dur, H(45), { informativa: true })
+        } else {
+          infraccion(w.ini, NORMAS.R561, 'Art. 8.6', ambosFuera
+            ? `Dos descansos semanales reducidos consecutivos iniciados fuera de España, sin 4 descansos semanales (2 normales) en las 4 semanas: no se cumple la excepción del transporte internacional`
+            : 'Dos descansos semanales reducidos consecutivos (la excepción del transporte internacional exige que ambos se inicien fuera del Estado de establecimiento)', w.dur, H(45))
+        }
       }
     }
     if (w.reducido) {

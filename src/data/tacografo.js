@@ -12,6 +12,7 @@ export const CONFIG_POR_DEFECTO = {
   desconocidoComoDescanso: true, // tarjeta extraída sin actividad introducida
   sinDatosComoDescanso: true, // días sin registro en la tarjeta
   disponibilidadEsPausa: false, // ¿la disponibilidad ≥ 15 min interrumpe las 6 h de trabajo?
+  esperasComoTrabajo: false, // art. 10.4 RD 1561/1995: disponibilidad continuada > 2 h como trabajo efectivo
 
   // Convenio colectivo / Estatuto de los Trabajadores
   jornadaAnual: 1800, // horas de trabajo efectivo/año (VERIFICAR en el convenio)

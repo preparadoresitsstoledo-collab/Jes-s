@@ -29,8 +29,38 @@ function ComoConseguirArchivos() {
           <code>V_</code> o <code>M_</code>) no sirven.
         </li>
         <li>
+          La empresa debe llevar un <strong>registro del tiempo de trabajo</strong> de los trabajadores móviles,
+          conservarlo <strong>4 años</strong> (art. 34.9 ET) y darte copia si la pides (art. 10 bis.5 RD 1561/1995).
+        </li>
+        <li>
           Si te los dan en un <strong>ZIP</strong>, descomprímelo antes. Puedes cargar la carpeta entera: se leen
           también las subcarpetas.
+        </li>
+      </ul>
+    </Bloque>
+  )
+}
+
+function AQuienSeAplica() {
+  return (
+    <Bloque titulo="¿A quién se aplica?">
+      <ul>
+        <li>
+          A los <strong>trabajadores móviles del transporte por carretera</strong>: conductores, ayudantes y demás
+          personal que viaja en el vehículo y trabaja con él, su carga o sus pasajeros (art. 10.2 RD 1561/1995).
+        </li>
+        <li>
+          Los límites de conducción y descanso del Reglamento 561/2006 rigen en los vehículos de mercancías de más de
+          3,5 t (desde el 1 de julio de 2026, también de más de 2,5 t en transporte internacional o cabotaje) y en los
+          de viajeros de más de 9 plazas incluido el conductor, salvo las excepciones del propio Reglamento.
+        </li>
+        <li>
+          Los <strong>autónomos</strong> tienen su propia norma (RD 128/2013) y no se les aplican las reglas de
+          salario, horas extraordinarias ni cotización de la herramienta «Dietas y jornada».
+        </li>
+        <li>
+          El transporte sanitario en <strong>ambulancia</strong> no se considera transporte por carretera a estos
+          efectos según el Tribunal Supremo: allí no existe el tiempo de presencia como categoría propia.
         </li>
       </ul>
     </Bloque>
@@ -54,6 +84,22 @@ function LimitesTacografo() {
           La tarjeta registra la actividad con <strong>todas las empresas</strong> para las que hayas conducido. Si
           has trabajado para varias, separa los periodos de cada una (el trabajador debe informar a cada empresa del
           tiempo trabajado para otra, art. 10 bis.2 RD 1561/1995).
+        </li>
+        <li>
+          <strong>Esperas de carga y descarga:</strong> las 2 primeras horas de cada espera son tiempo de presencia;
+          desde la tercera son trabajo efectivo si la empresa no comunicó de antemano su duración (art. 10.4 RD
+          1561/1995). El tacógrafo no sabe por qué se esperó: activa la opción de los parámetros solo si las esperas
+          largas fueron de carga o descarga sin aviso previo.
+        </li>
+        <li>
+          La <strong>presencia</strong> no cuenta para la jornada máxima ni para el límite de horas extraordinarias,
+          pero debe pagarse, como mínimo, como hora ordinaria o compensarse con descanso retribuido; su límite de 20 h
+          semanales se calcula de promedio en el mes (art. 8.3 RD 1561/1995).
+        </li>
+        <li>
+          <strong>Transporte internacional:</strong> si la tarjeta registra países, la herramienta indica los días en
+          el extranjero y comprueba la excepción que permite dos descansos semanales reducidos seguidos fuera de
+          España (art. 8.6 Reglamento 561/2006).
         </li>
         <li>
           Las <strong>jornadas</strong> se cuentan como en el Reglamento 561/2006 (de un descanso diario al
@@ -94,6 +140,7 @@ export function GuiaTacografo() {
           extraordinarias que se pueden reclamar.
         </li>
       </ol>
+      <AQuienSeAplica />
       <ComoConseguirArchivos />
       <LimitesTacografo />
     </section>
@@ -161,6 +208,7 @@ export function GuiaDietasJornada() {
           </li>
         </ul>
       </Bloque>
+      <AQuienSeAplica />
       <ComoConseguirArchivos />
       <Bloque titulo="Qué documentos conviene reunir">
         <ul>
@@ -168,7 +216,12 @@ export function GuiaDietasJornada() {
           <li>Contrato de trabajo y categoría profesional; fecha de antigüedad.</li>
           <li>Calendario o cuadrante de vacaciones, y bajas o permisos del periodo.</li>
           <li>Partes de trabajo, hojas de ruta o registros de jornada, si los hay.</li>
-          <li>Descargas de la tarjeta de conductor.</li>
+          <li>Descargas de la tarjeta de conductor y el registro de tiempo de trabajo de la empresa.</li>
+          <li>
+            Si se reclama, los registros del tacógrafo son una prueba importante; si la empresa no los aporta o no
+            acredita haber pagado o compensado las horas, eso juega a favor del trabajador. Consulta a tu graduado
+            social o abogado laboralista.
+          </li>
         </ul>
       </Bloque>
       <LimitesTacografo />

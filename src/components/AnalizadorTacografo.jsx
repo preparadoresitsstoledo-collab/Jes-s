@@ -471,6 +471,10 @@ export default function AnalizadorTacografo() {
               <Casilla valor={cfg.disponibilidadEsPausa} onChange={(v) => setCfg({ disponibilidadEsPausa: v })}>
                 La disponibilidad de 15 min o más interrumpe el trabajo continuado (art. 10 bis.4 RD 1561/1995)
               </Casilla>
+              <Casilla valor={cfg.esperasComoTrabajo} onChange={(v) => setCfg({ esperasComoTrabajo: v })}>
+                Esperas de carga y descarga: la disponibilidad continuada que exceda de 2 h cuenta como trabajo efectivo
+                (art. 10.4 RD 1561/1995, cuando la empresa no comunicó de antemano su duración)
+              </Casilla>
               <div className="analizador__acciones">
                 <button className="btn--texto" onClick={() => setCfg({ ...CONFIG_POR_DEFECTO, preciosHE: cfg.preciosHE })}>
                   Restablecer valores por defecto

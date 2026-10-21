@@ -320,3 +320,39 @@ test('países de la tarjeta: detecta trabajo en el extranjero (gen1 y gen2)', ()
     assert.ok(ext[0].informativa)
   }
 })
+
+test('esperas de carga y descarga: más de 2 h de disponibilidad como trabajo efectivo (opcional)', () => {
+  const dias = [dia('2024-01-01', [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['08:00', 'DISPONIBILIDAD'], ['13:00', 'CONDUCCION'], ['15:00', 'DESCANSO']])]
+  const base = analizar({ dias: lee(dias).dias }, cfgUTC)
+  assert.equal(base.dias[0].presencia, 5 * 60)
+  assert.equal(base.dias[0].trabajoEfectivo, 4 * 60)
+  const r = analizar({ dias: lee(dias).dias }, { ...cfgUTC, esperasComoTrabajo: true })
+  assert.equal(r.dias[0].presencia, 2 * 60)
+  assert.equal(r.dias[0].trabajoEfectivo, 7 * 60)
+})
+
+test('excepción del transporte internacional: dos descansos semanales reducidos fuera de España', () => {
+  // 4 semanas: semanas 1 y 2 con descanso semanal reducido (30 h) en Portugal; semanas 3 y 4 con 48 h
+  const jornada = [['00:00', 'DESCANSO'], ['06:00', 'CONDUCCION'], ['10:00', 'DESCANSO'], ['10:45', 'CONDUCCION'], ['14:00', 'DESCANSO']]
+  const dias = []
+  const lugares = []
+  for (let d = 0; d < 28; d++) {
+    const f = sumarDias('2024-01-01', d)
+    const semana = Math.floor(d / 7)
+    const dow = d % 7 // 0 = lunes
+    const reducido = semana < 2
+    // reducido: se trabaja hasta el sábado y se vuelve el domingo a las 20:00 (30 h); normal: libre sábado y domingo
+    if ((reducido && dow === 6) || (!reducido && dow >= 5)) {
+      dias.push(dia(f, reducido ? [['00:00', 'DESCANSO'], ['20:00', 'CONDUCCION'], ['22:00', 'DESCANSO']] : [['00:00', 'DESCANSO']]))
+      continue
+    }
+    dias.push(dia(f, jornada))
+    lugares.push({ fecha: f, hora: '06:00', tipo: 0, pais: semana < 2 ? 0x27 : 0x0f }, { fecha: f, hora: '14:00', tipo: 1, pais: semana < 2 ? 0x27 : 0x0f })
+  }
+  const [c] = agruparPorConductor([lee(dias, { lugares, tamBuffer: 30000 })])
+  const r = analizar(c, cfgUTC)
+  const art86 = r.infracciones.filter((i) => i.articulo === 'Art. 8.6' && /consecutivos/.test(i.descripcion))
+  assert.equal(art86.length, 1)
+  assert.ok(art86[0].informativa, art86[0].descripcion)
+  assert.match(art86[0].descripcion, /excepción del transporte internacional/)
+})
