@@ -99,6 +99,11 @@ function LimitesTacografo() {
           opción de los parámetros solo si las esperas largas fueron de carga o descarga.
         </li>
         <li>
+          Son <strong>tiempo de presencia</strong> los periodos a disposición de la empresa sin trabajo efectivo:
+          esperas, expectativas, guardias, viajes sin servicio, averías, <strong>comidas en ruta</strong> y otros
+          similares; el convenio concreta cada supuesto (art. 8.1 RD 1561/1995).
+        </li>
+        <li>
           <strong>Ferry o tren, esperas en frontera y prohibiciones de circular</strong> son presencia solo si la
           empresa comunicó antes de salir su existencia y duración previsible; si no lo hizo, son trabajo efectivo
           (art. 10.4.a y b). El tiempo del copiloto sentado o en la litera mientras conduce el otro es presencia
@@ -124,9 +129,10 @@ function LimitesTacografo() {
           siguiente), no por días naturales; por eso una jornada puede empezar un día y terminar al siguiente.
         </li>
         <li>
-          Las incidencias marcadas como <strong>informativas</strong> (por ejemplo, descanso entre jornadas del
-          Estatuto o del RD 1561/1995) deben valorarse: para los conductores sujetos al Reglamento 561/2006 rigen,
-          en materia de descansos, los tiempos de ese Reglamento.
+          Las incidencias marcadas como <strong>informativas</strong> deben valorarse. Por ejemplo, el RD 1561/1995
+          (art. 9) exige 10 h de descanso entre jornadas y día y medio de descanso semanal, acumulable en periodos de
+          hasta cuatro semanas, «salvo disposiciones específicas»: para los conductores sujetos al Reglamento
+          561/2006 rigen, en materia de descansos, los tiempos de ese Reglamento.
         </li>
       </ul>
     </Bloque>

@@ -757,8 +757,9 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
     }
   }
 
-  // ── Descanso semanal de día y medio computable en periodos de 4 semanas (art. 9 RD 1561/1995) ──
-  // Informativo: en cada periodo de 4 semanas debe haber al menos 4 descansos de 36 h.
+  // ── Descanso semanal de día y medio computable en periodos de hasta 4 semanas (art. 9 RD 1561/1995) ──
+  // Informativo. El descanso semanal puede acumularse: en cada periodo de 4 semanas consecutivas deben
+  // sumarse al menos 6 días (4 × 36 h = 144 h) en descansos de al menos 36 h ininterrumpidas.
   {
     const lunesSemanas = [...new Set(jornadas.map((j) => j.semana))].sort()
     for (let k = 3; k < lunesSemanas.length; k++) {
@@ -767,9 +768,10 @@ export function analizar(conductor, cfgEntrada, periodo = {}) {
       const a = inicioDia(desdeL, tz)
       const b = inicioDia(sumarDias(lunesSemanas[k], 7), tz)
       if (a < t0 || b > t1) continue
-      const largos = bloques.filter((x) => x.ini >= a && x.ini < b && x.dur >= H(36)).length
-      if (largos < 4) {
-        infraccion(a, NORMAS.RD1561, 'Art. 9', `Menos de 4 descansos de 36 h en las cuatro semanas del ${fechaES(desdeL)} al ${fechaES(sumarDias(lunesSemanas[k], 6))} (${largos} de al menos 36 h; compruebe si rigen los descansos del R. 561/2006)`, null, null, { informativa: true })
+      const largos = bloques.filter((x) => x.ini >= a && x.ini < b && x.dur >= H(36))
+      const total = largos.reduce((s2, x) => s2 + Math.min(x.fin, b) - x.ini, 0)
+      if (total < H(144)) {
+        infraccion(a, NORMAS.RD1561, 'Art. 9', `Descanso semanal acumulado inferior a 6 días (${hhmm(aMin(total))} h en descansos de al menos 36 h) en las cuatro semanas del ${fechaES(desdeL)} al ${fechaES(sumarDias(lunesSemanas[k], 6))} (compruebe si rigen los descansos del R. 561/2006)`, total, H(144), { informativa: true })
       }
     }
   }

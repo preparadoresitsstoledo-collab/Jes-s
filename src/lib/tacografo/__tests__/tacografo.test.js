@@ -273,14 +273,14 @@ test('RD 1561/1995: promedio de 48 h en periodos móviles de 4 o 6 meses', () =>
   assert.equal(r6.infracciones.filter((i) => i.articulo === 'Art. 10 bis.1' && /48 h/.test(i.descripcion)).length, 1)
 })
 
-test('RD 1561/1995: menos de 4 descansos de 36 h en 4 semanas (informativo)', () => {
+test('RD 1561/1995: descanso semanal acumulado en 4 semanas inferior a 6 días (informativo)', () => {
   // 1 a 28 de enero de 2024 (de lunes a domingo): se trabaja todos los días, sin descansos de 36 h
   const dias = []
   for (let d = 0; d < 28; d++) {
     dias.push(dia(sumarDias('2024-01-01', d), [['00:00', 'DESCANSO'], ['08:00', 'CONDUCCION'], ['12:00', 'DESCANSO'], ['12:45', 'CONDUCCION'], ['15:00', 'DESCANSO']]))
   }
   const r = analizar({ dias: lee(dias).dias }, cfgUTC)
-  const sem = r.infracciones.filter((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 9' && /36 h/.test(i.descripcion))
+  const sem = r.infracciones.filter((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 9' && /acumulado/.test(i.descripcion))
   assert.equal(sem.length, 1)
   assert.ok(sem[0].informativa)
 })
@@ -384,4 +384,19 @@ test('presencia: periodo de referencia de 1 o 2 meses (art. 10.5 RD 1561/1995)',
   const r2 = analizar({ dias: lee(dias, { tamBuffer: 30000 }).dias }, { ...cfgUTC, mesesReferenciaPresencia: 2 })
   // Con 2 meses se promedia enero–febrero: 138 h < 20 × 60/7 = 171 h → sin incidencia
   assert.equal(pres(r2).length, 0)
+})
+
+test('RD 1561/1995: el descanso semanal puede acumularse (dos descansos largos en 4 semanas cumplen)', () => {
+  // Semanas 1 y 3: se trabaja de lunes a domingo; semanas 2 y 4: libres jueves, viernes y sábado (90 h cada vez)
+  const jornada = [['00:00', 'DESCANSO'], ['08:00', 'CONDUCCION'], ['12:00', 'DESCANSO'], ['12:45', 'CONDUCCION'], ['14:00', 'DESCANSO']]
+  const dias = []
+  for (let d = 0; d < 28; d++) {
+    const semana = Math.floor(d / 7)
+    const dow = d % 7
+    const libre = semana % 2 === 1 && dow >= 3 && dow <= 5
+    dias.push(dia(sumarDias('2024-01-01', d), libre ? [['00:00', 'DESCANSO']] : jornada))
+  }
+  const r = analizar({ dias: lee(dias, { tamBuffer: 30000 }).dias }, cfgUTC)
+  const sem = r.infracciones.filter((i) => i.norma === 'RD 1561/1995' && i.articulo === 'Art. 9' && /acumulado/.test(i.descripcion))
+  assert.equal(sem.length, 0)
 })
