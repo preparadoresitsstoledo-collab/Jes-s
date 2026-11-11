@@ -3,7 +3,8 @@ import { AbsoluteFill, staticFile } from "remotion";
 import { Audio } from "@remotion/media";
 import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
-import { duracionEscena, ESCENAS, FPS } from "./guion";
+import { ESCENAS, FPS } from "./guion";
+import { duracionEscena } from "./tiempos";
 import { Cierre, EscenaInterior, Exterior, Posteriores, Resumen, Titulo } from "./Escenas";
 
 const T = 12; // frames de fundido
@@ -23,7 +24,7 @@ export const DURACION_TOTAL = BLOQUES.reduce((a, b) => a + b.dur, 0) - T * (BLOQ
 
 export const ControlEmpleo: React.FC = () => (
   <AbsoluteFill style={{ background: "#0F1E36" }}>
-    <Audio src={staticFile("audio/ambiente.wav")} volume={0.35} loop />
+    <Audio src={staticFile("audio/ambiente.wav")} volume={0.22} loop />
     <TransitionSeries>
       {BLOQUES.flatMap((b, i) => {
         const items = [

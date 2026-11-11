@@ -476,13 +476,6 @@ const e5: EscenaDialogo = {
 
 export const ESCENAS: EscenaDialogo[] = [e1, e2, e3, e4, e5];
 
-export const duracionLinea = (l: Linea) => Math.round((1.4 + l.texto.length / 15 + (l.extra ?? 0)) * FPS);
-
-export const inicioEscena = (e: EscenaDialogo) => Math.round(e.inicio * FPS);
-
-export const duracionEscena = (e: EscenaDialogo) =>
-  inicioEscena(e) + e.lineas.reduce((acc, l) => acc + duracionLinea(l), 0) + Math.round(1.0 * FPS);
-
 export const PUNTOS_CLAVE = [
   { t: "Acreditarse y explicar el objeto de la visita", r: "Art. 13 Ley 23/2015" },
   { t: "Identificar a todas las personas presentes: nombre, documento, tarea, horario, salario y antigüedad", r: "Art. 13.3.a) Ley 23/2015" },

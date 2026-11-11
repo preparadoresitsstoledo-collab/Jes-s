@@ -4,7 +4,9 @@ import { Audio } from "@remotion/media";
 import { staticFile } from "remotion";
 import { Barra, Defs, FondoExterior, FondoInterior, MesaPrimerPlano } from "./Escenarios";
 import { Persona } from "./Persona";
-import { duracionLinea, EscenaDialogo, Expr, FPS, inicioEscena, NOMBRES, Plano, Pose, PUNTOS_CLAVE, Quien, Sfx } from "./guion";
+import { EscenaDialogo, Expr, FPS, NOMBRES, Plano, Pose, PUNTOS_CLAVE, Quien, Sfx } from "./guion";
+import { duracionLinea, duracionVoz, idLinea, inicioEscena } from "./tiempos";
+import { VOCES } from "./voces";
 
 const FONT = "Inter, 'DejaVu Sans', sans-serif";
 const NAVY = "#0F1E36";
@@ -28,9 +30,10 @@ const PersonaEn: React.FC<{
   escala?: number;
   suelo?: number;
   caminando?: boolean;
-}> = ({ quien, pose, expr, facing, x, hablando, escuchando, frame, escala = ESCALA, suelo = SUELO, caminando }) => (
+  apertura?: number;
+}> = ({ quien, pose, expr, facing, x, hablando, escuchando, frame, escala = ESCALA, suelo = SUELO, caminando, apertura }) => (
   <g transform={`translate(${x - 110 * escala} ${suelo - 530 * escala}) scale(${escala})`}>
-    <Persona quien={quien} pose={pose} expr={expr} facing={facing} hablando={hablando} escuchando={escuchando} frame={frame} caminando={caminando} />
+    <Persona quien={quien} pose={pose} expr={expr} facing={facing} hablando={hablando} escuchando={escuchando} frame={frame} caminando={caminando} apertura={apertura} />
   </g>
 );
 
@@ -234,9 +237,9 @@ export const EscenaInterior: React.FC<{ esc: EscenaDialogo }> = ({ esc }) => {
 
   const starts: number[] = [];
   let acc = inicioEscena(esc);
-  esc.lineas.forEach((l) => {
+  esc.lineas.forEach((_l, i) => {
     starts.push(acc);
-    acc += duracionLinea(l);
+    acc += duracionLinea(esc, i);
   });
   const finLinea = (i: number) => (i + 1 < starts.length ? starts[i + 1] : durationInFrames);
 
@@ -275,8 +278,14 @@ export const EscenaInterior: React.FC<{ esc: EscenaDialogo }> = ({ esc }) => {
   });
 
   const hablante: Quien | null = lin ? lin.quien : null;
-  const caracteres = lin ? Math.floor(Math.max(0, dt - 4) * 0.95) : 0;
-  const escribiendo = lin ? caracteres < lin.texto.length + 6 : false;
+  // Voz: empieza 3 fotogramas después del corte; el texto avanza al ritmo de la voz
+  const VOZ_DESFASE = 3;
+  const vozDur = idx >= 0 ? duracionVoz(esc, idx) * fps : 0;
+  const tv = dt - VOZ_DESFASE;
+  const caracteres = lin ? Math.min(lin.texto.length, Math.floor((Math.max(0, tv) / Math.max(1, vozDur)) * lin.texto.length * 1.04)) : 0;
+  const escribiendo = lin ? tv >= 0 && tv < vozDur : false;
+  const env = idx >= 0 ? VOCES[idLinea(esc, idx)]?.env : undefined;
+  const apertura = env && tv >= 0 ? (env[Math.floor(tv)] ?? 0) : undefined;
 
   const mirarA = (q: Quien): Quien => {
     if (lin && q === lin.quien) return lin.a ?? (q === "INSP" ? "LUCIA" : "INSP");
@@ -374,6 +383,7 @@ export const EscenaInterior: React.FC<{ esc: EscenaDialogo }> = ({ esc }) => {
         escuchando={!hab}
         frame={frame}
         caminando={pos[q].caminando}
+        apertura={hab ? apertura : undefined}
       />
     );
   };
@@ -403,7 +413,14 @@ export const EscenaInterior: React.FC<{ esc: EscenaDialogo }> = ({ esc }) => {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT, overflow: "hidden", background: "#000" }}>
-      <Audio src={staticFile("audio/tension.wav")} volume={() => 0.04 + 0.42 * tension * tension} loop />
+      <Audio src={staticFile("audio/tension.wav")} volume={() => (0.04 + 0.42 * tension * tension) * (escribiendo ? 0.45 : 1)} loop />
+      {esc.lineas.map((_l, i) =>
+        VOCES[idLinea(esc, i)] ? (
+          <Sequence key={`v${i}`} from={starts[i] + VOZ_DESFASE} durationInFrames={Math.ceil(duracionVoz(esc, i) * fps) + 6} layout="none">
+            <Audio src={staticFile(`voces/${idLinea(esc, i)}.wav`)} volume={1} />
+          </Sequence>
+        ) : null,
+      )}
       {esc.sfxInicio?.map((s, i) => (
         <Efecto key={`i${i}`} sfx={s.sfx} from={s.t * fps} dur={s.sfx === "pasos" ? 2.2 * fps : undefined} vol={s.sfx === "golpe" ? 0.9 : 0.6} />
       ))}

@@ -46,7 +46,34 @@ npx remotion render ControlEmpleoCafeteria out/control-empleo-cafeteria.mp4
 En entornos sin acceso a la descarga de Chrome, indica un navegador local:
 `REMOTION_CHROME=/ruta/a/chrome-headless-shell npx remotion render ...`
 
+## Voces
+
+Las voces se generan sin conexión con [Kokoro](https://github.com/thewh1teagle/kokoro-onnx)
+(TTS neuronal, voces en español):
+
+| Personaje | Voz | Ajuste |
+|---|---|---|
+| Inspector | `em_alex` | ritmo sereno |
+| Lucía | `ef_dora` | algo más rápida cuando está nerviosa |
+| Ramón | `em_santa` | más grave; más rápido y fuerte cuando se enfada |
+| Dani | `em_alex` | +2,5 semitonos (más joven) |
+
+Los archivos ya generados están en `public/voces/` y sus duraciones y envolventes (para la
+sincronía labial) en `src/voces.ts`. Si cambias el texto del guion, regénéralas:
+
+```bash
+pip install kokoro-onnx soundfile
+# descarga una vez los modelos (≈350 MB) en una carpeta fuera del repo:
+#   kokoro-v1.0.onnx y voices-v1.0.bin de
+#   https://github.com/thewh1teagle/kokoro-onnx/releases/tag/model-files-v1.0
+node --experimental-strip-types --no-warnings scripts/exportar-lineas.ts > /tmp/lineas.json
+python3 scripts/generar_voces.py /tmp/lineas.json /ruta/a/modelos-kokoro
+```
+
+La duración de cada línea, el ritmo de los subtítulos y el movimiento de la boca se ajustan
+solos a la voz. Pronunciaciones especiales (p. ej. «DNI» → «de ene i») en `PRONUNCIA` del script.
+
 ## Pendiente de revisar
 
 - Contrastar los apartados citados (en especial art. 50 LISOS y art. 13.3.a Ley 23/2015) con el texto consolidado del BOE.
-- El audio es sintético (ambiente, dron de tensión y efectos generados con ffmpeg); no hay locución.
+- Voces sintéticas (Kokoro): naturales pero sin la expresividad de un actor; para más calidad se pueden sustituir los WAV de `public/voces/` por grabaciones reales con el mismo nombre y volver a ejecutar solo la parte de duraciones.

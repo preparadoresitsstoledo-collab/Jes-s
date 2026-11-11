@@ -114,9 +114,10 @@ type Props = {
   escuchando?: boolean;
   frame: number;
   caminando?: boolean;
+  apertura?: number; // 0..1, sincronía labial con la voz
 };
 
-export const Persona: React.FC<Props> = ({ quien, pose, expr, facing, hablando, escuchando, frame, caminando }) => {
+export const Persona: React.FC<Props> = ({ quien, pose, expr, facing, hablando, escuchando, frame, caminando, apertura }) => {
   const s = ESTILOS[quien];
   const sem = quien.charCodeAt(0) + quien.length * 13;
   const respira = Math.sin(frame / 20 + sem) * 2;
@@ -146,7 +147,7 @@ export const Persona: React.FC<Props> = ({ quien, pose, expr, facing, hablando, 
   const ojoY = 78;
   const boca = (() => {
     if (hablando) {
-      const h = 3 + Math.abs(Math.sin(frame / 2.4 + Math.sin(frame / 7) * 2)) * 10;
+      const h = apertura !== undefined ? 2 + apertura * 13 : 3 + Math.abs(Math.sin(frame / 2.4 + Math.sin(frame / 7) * 2)) * 10;
       return <ellipse cx={110 + fx} cy={101} rx={expr === "angry" ? 11 : 9} ry={h / 2} fill="#5A1E1E" />;
     }
     switch (expr) {
