@@ -4,19 +4,16 @@ import { Audio } from "@remotion/media";
 import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { duracionEscena, ESCENAS, FPS } from "./guion";
-import { Capitulo, Cierre, EscenaInterior, Exterior, Posteriores, Resumen, Titulo } from "./Escenas";
+import { Cierre, EscenaInterior, Exterior, Posteriores, Resumen, Titulo } from "./Escenas";
 
-const T = 15; // frames de fundido
+const T = 12; // frames de fundido
 
 type Bloque = { id: string; dur: number; el: React.ReactNode };
 
 export const BLOQUES: Bloque[] = [
   { id: "titulo", dur: 6 * FPS, el: <Titulo /> },
-  { id: "exterior", dur: 10 * FPS, el: <Exterior /> },
-  ...ESCENAS.flatMap((esc) => [
-    { id: `cap${esc.numero}`, dur: Math.round(2.4 * FPS), el: <Capitulo numero={esc.numero} titulo={esc.capitulo} /> },
-    { id: `esc${esc.numero}`, dur: duracionEscena(esc), el: <EscenaInterior esc={esc} /> },
-  ]),
+  { id: "exterior", dur: Math.round(9.2 * FPS), el: <Exterior /> },
+  ...ESCENAS.map((esc) => ({ id: `esc${esc.numero}`, dur: duracionEscena(esc), el: <EscenaInterior esc={esc} /> })),
   { id: "posteriores", dur: 10 * FPS, el: <Posteriores /> },
   { id: "resumen", dur: 17 * FPS, el: <Resumen /> },
   { id: "cierre", dur: 6 * FPS, el: <Cierre /> },

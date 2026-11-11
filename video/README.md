@@ -10,7 +10,7 @@ para formación en Inspección de Trabajo y Seguridad Social.
 | Bloque | Contenido |
 |---|---|
 | Título | Caso práctico · Control de empleo en una cafetería |
-| Exterior | Llegada del inspector · orden de servicio |
+| Exterior | Llegada del inspector, coche y peatón, puerta que se abre · orden de servicio |
 | Escena 1 | Entrada y acreditación (art. 13.1 Ley 23/2015) |
 | Escena 2 | Trabajadora sin DNI · toma de datos (art. 13.3.a Ley 23/2015, art. 50 LISOS) |
 | Escena 3 | Aparece el empresario: «vuelva otro día» · desescalar |
@@ -21,6 +21,19 @@ para formación en Inspección de Trabajo y Seguridad Social.
 
 Todo el texto (diálogos, notas jurídicas y claves) está en `src/guion.ts`; se puede editar
 sin tocar la animación: la duración de cada escena se recalcula sola.
+
+### Puesta en escena (también en `src/guion.ts`)
+
+Cada línea de diálogo admite:
+
+- `plano`: `general`, `dos` (plano a dos), `medio` o `primer` (primer plano). Corte seco al empezar la línea.
+- `reaccion`: a mitad de la línea, corte al plano de reacción de ese personaje.
+- `a`: a quién se dirige (los personajes miran a quien habla).
+- `cambios`: pose, expresión o posición `x` (el personaje camina hasta allí, con pasos).
+- `sfx`: `campana`, `pasos`, `taza`, `papel`, `golpe`, `vapor`, `mesa`.
+
+Poses: `stand`, `card` (acreditación), `folder`, `paper` (portapapeles; el inspector toma notas
+mientras escucha), `tray`, `point`, `hands`, `arms` (brazos cruzados), `hips` (brazos en jarra), `give` (entrega un papel).
 
 ## Uso
 
@@ -36,4 +49,4 @@ En entornos sin acceso a la descarga de Chrome, indica un navegador local:
 ## Pendiente de revisar
 
 - Contrastar los apartados citados (en especial art. 50 LISOS y art. 13.3.a Ley 23/2015) con el texto consolidado del BOE.
-- El audio es solo ambiente sintético y un dron de tensión; no hay locución.
+- El audio es sintético (ambiente, dron de tensión y efectos generados con ffmpeg); no hay locución.

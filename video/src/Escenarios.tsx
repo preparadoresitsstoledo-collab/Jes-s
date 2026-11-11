@@ -27,6 +27,12 @@ export const Defs: React.FC = () => (
       <stop offset="0" stopColor="#8EC5EC" />
       <stop offset="1" stopColor="#D8ECF7" />
     </linearGradient>
+    <clipPath id="ventana">
+      <rect x={1240} y={110} width={600} height={420} />
+    </clipPath>
+    <filter id="difuso" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
     <radialGradient id="luz" cx="0.5" cy="0.2" r="0.8">
       <stop offset="0" stopColor="#FFE9B8" stopOpacity="0.35" />
       <stop offset="1" stopColor="#000" stopOpacity="0" />
@@ -61,7 +67,7 @@ const Cliente: React.FC<{ x: number; color: string; pelo: string; frame: number 
   );
 };
 
-export const FondoInterior: React.FC<{ frame: number }> = ({ frame }) => (
+export const FondoInterior: React.FC<{ frame: number; reloj: number; vapor: number | null }> = ({ frame, reloj, vapor }) => (
   <g>
     {/* pared */}
     <rect x={0} y={0} width={1920} height={830} fill="#E7D3B5" />
@@ -75,9 +81,39 @@ export const FondoInterior: React.FC<{ frame: number }> = ({ frame }) => (
         <rect key={i} x={1270 + i * 150} y={330} width={70} height={110} fill="#6E5A44" opacity={0.6} />
       ))}
       <rect x={1240} y={470} width={600} height={60} fill="#9A9A96" />
+      <g clipPath="url(#ventana)">
+        {[
+          { v: 2.1, o: 0, c: "#3D4A5C", d: 1 },
+          { v: 1.6, o: 900, c: "#7A4E3A", d: -1 },
+          { v: 2.6, o: 400, c: "#55606E", d: 1 },
+        ].map((p, i) => {
+          const rango = 1100;
+          const pos = (((frame * p.v + p.o) % rango) + rango) % rango;
+          const x = p.d === 1 ? 1100 + pos : 2200 - pos;
+          const b = Math.abs(Math.sin(frame / 5 + i)) * 4;
+          return (
+            <g key={i} transform={`translate(${x} ${-b})`} opacity={0.75}>
+              <circle cx={0} cy={380} r={18} fill="#2E2A28" />
+              <rect x={-20} y={398} width={40} height={78} rx={14} fill={p.c} />
+              <rect x={-14} y={470} width={10} height={50} fill="#2E2A28" transform={`rotate(${Math.sin(frame / 5 + i) * 18} -9 470)`} />
+              <rect x={4} y={470} width={10} height={50} fill="#2E2A28" transform={`rotate(${-Math.sin(frame / 5 + i) * 18} 9 470)`} />
+            </g>
+          );
+        })}
+      </g>
       <rect x={1230} y={100} width={620} height={440} fill="none" stroke="#5A341C" strokeWidth={20} />
       <rect x={1532} y={100} width={14} height={440} fill="#5A341C" />
       <rect x={1240} y={110} width={600} height={420} fill="#FFFFFF" opacity={0.12} />
+    </g>
+    {/* reloj de pared */}
+    <g transform="translate(1125 80)">
+      <circle r={34} fill="#FFFFFF" stroke="#3E2312" strokeWidth={6} />
+      {Array.from({ length: 12 }).map((_, i) => (
+        <rect key={i} x={-1.5} y={-29} width={3} height={6} fill="#3E2312" transform={`rotate(${i * 30})`} />
+      ))}
+      <rect x={-2.5} y={-18} width={5} height={20} rx={2} fill="#222" transform={`rotate(${10 * 30 + 20 + reloj / 120})`} />
+      <rect x={-1.5} y={-26} width={3} height={28} rx={1} fill="#222" transform={`rotate(${(40 + reloj / 60) * 6})`} />
+      <rect x={-0.8} y={-28} width={1.6} height={32} fill="#C8102E" transform={`rotate(${Math.floor(frame / 30) * 6})`} />
     </g>
     {/* pizarra de menú */}
     <g transform="translate(1040 150)">
@@ -113,6 +149,23 @@ export const FondoInterior: React.FC<{ frame: number }> = ({ frame }) => (
       <rect x={190} y={60} width={30} height={40} fill="#3A3A3A" />
       <circle cx={130} cy={30} r={12} fill="#C8102E" />
     </g>
+    {vapor !== null && vapor >= 0 && vapor < 75
+      ? [0, 1, 2, 3].map((i) => {
+          const t = vapor - i * 6;
+          if (t < 0) return null;
+          return (
+            <circle
+              key={i}
+              cx={355 + i * 8 + Math.sin(t / 6 + i) * 10}
+              cy={500 - t * 2.2}
+              r={14 + t * 0.5}
+              fill="#FFFFFF"
+              opacity={Math.max(0, 0.55 - t / 75)}
+              filter="url(#difuso)"
+            />
+          );
+        })
+      : null}
     {/* lámparas */}
     {[420, 840, 1480].map((x) => (
       <g key={x}>
